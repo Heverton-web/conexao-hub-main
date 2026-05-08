@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useMemo, useRef } from "react";
 import { createPortal } from "react-dom";
 import { mockDb, GamificationLevel, CollectionProgress } from "../lib/mockDb";
+import { generateFullDatabaseSQL } from "../lib/sqlGenerator";
 import {
   Material,
   Language,
@@ -10,7 +11,8 @@ import {
   UserStatus,
   MaterialType,
   AccessLog,
-  Collection } from
+  Collection,
+  SystemIntegrations } from
 "../types";
 import { colorMix } from "../lib/utils";
 import { useLanguage } from "../contexts/LanguageContext";
@@ -228,6 +230,26 @@ export const Admin: React.FC = () => {
     null
   );
   const [localConfig, setLocalConfig] = useState(config);
+  const [localIntegrations, setLocalIntegrations] = useState<SystemIntegrations>({
+    id: '',
+    geminiApiKey: '',
+    openaiApiKey: '',
+    groqApiKey: '',
+    openrouterApiKey: '',
+    geminiFunction: 'translate',
+    openaiFunction: 'image',
+    groqFunction: 'summarize',
+    openrouterFunction: 'chatbot',
+    geminiActive: true,
+    openaiActive: true,
+    groqActive: true,
+    openrouterActive: true,
+    supabaseUrl: '',
+    supabaseAnonKey: '',
+    supabasePublishableKey: '',
+    createdAt: '',
+    updatedAt: '',
+  });
   // Collections state
   const [collections, setCollections] = useState<Collection[]>([]);
   const [isCollectionFormOpen, setIsCollectionFormOpen] = useState(false);
@@ -323,6 +345,14 @@ export const Admin: React.FC = () => {
   useEffect(() => {
     setLocalConfig(config);
   }, [config]);
+
+  useEffect(() => {
+    if (settingsTab === "integrations") {
+      mockDb.getSystemIntegrations().then((data) => {
+        setLocalIntegrations(data);
+      });
+    }
+  }, [settingsTab]);
 
   const loadMaterials = () => {
     mockDb.getMaterials("super_admin").then(setMaterials);
@@ -602,8 +632,13 @@ export const Admin: React.FC = () => {
 
   const handleSaveSettings = async () => {
     try {
-      await updateConfig(localConfig);
-      toast.success("Configurações salvas e aplicadas!");
+      if (settingsTab === "integrations") {
+        await mockDb.updateSystemIntegrations(localIntegrations);
+        toast.success("Integrações salvas com sucesso!");
+      } else {
+        await updateConfig(localConfig);
+        toast.success("Configurações salvas e aplicadas!");
+      }
     } catch (e: any) {
       toast.error("Erro: " + e.message);
     }
@@ -2013,32 +2048,249 @@ export const Admin: React.FC = () => {
 
               {settingsTab === "integrations" &&
             <div
-              className="p-6 rounded-xl shadow-sm animate-fade-in"
+              className="p-6 rounded-xl shadow-sm animate-fade-in space-y-6"
               style={{ backgroundColor: "var(--color-surface)" }}>
 
-                  <div>
-                    <label className="block text-sm font-medium mb-1" style={{ color: "var(--color-text-main)" }}>
-                      URL do Webhook (N8N)
-                    </label>
-                    <div className="flex gap-2">
-                      <div
-                    className="p-3 rounded-l-lg font-bold text-xs flex items-center"
-                    style={{ backgroundColor: "var(--color-bg)", color: "var(--color-text-muted)" }}>
-
-                        POST
+                  {/* API Keys Section */}
+                  <div className="border-t pt-6" style={{ borderColor: "var(--color-border)" }}>
+                    <h4 className="text-sm font-bold mb-4 flex items-center gap-2" style={{ color: "var(--color-text-main)" }}>
+                      <Sparkles size={16} className="text-yellow-500" />
+                      Chaves de API - LLMs
+                    </h4>
+                    
+                    <div className="space-y-4">
+                      {/* Gemini */}
+                      <div className="p-4 rounded-lg" style={{ backgroundColor: "var(--color-bg)" }}>
+                        <div className="flex items-center justify-between mb-3">
+                          <span className="text-sm font-bold" style={{ color: "var(--color-text-main)" }}>Gemini</span>
+                          <label className="flex items-center gap-2 cursor-pointer">
+                            <span className="text-xs" style={{ color: "var(--color-text-muted)" }}>Ativo</span>
+                            <button
+                              type="button"
+                              onClick={() => setLocalIntegrations({ ...localIntegrations, geminiActive: !localIntegrations.geminiActive })}
+                              className={`w-10 h-5 rounded-full transition-colors ${localIntegrations.geminiActive ? 'bg-green-500' : 'bg-gray-600'}`}
+                            >
+                              <span className={`block w-4 h-4 rounded-full bg-white transition-transform ${localIntegrations.geminiActive ? 'translate-x-5' : 'translate-x-0.5'}`} />
+                            </button>
+                          </label>
+                        </div>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                          <input
+                            type="password"
+                            placeholder="Cole sua chave da API Gemini..."
+                            value={localIntegrations.geminiApiKey || ""}
+                            onChange={(e) => setLocalIntegrations({ ...localIntegrations, geminiApiKey: e.target.value })}
+                            className="p-2 rounded-lg bg-black/20 focus:ring-2 outline-none font-mono text-sm"
+                            style={{ color: "var(--color-text-main)" }}
+                          />
+                          <select
+                            value={localIntegrations.geminiFunction || 'translate'}
+                            onChange={(e) => setLocalIntegrations({ ...localIntegrations, geminiFunction: e.target.value as any })}
+                            className="p-2 rounded-lg bg-black/20 focus:ring-2 outline-none text-sm"
+                            style={{ color: "var(--color-text-main)" }}
+                          >
+                            <option value="translate">📝 Tradução</option>
+                            <option value="image">🖼️ Imagens</option>
+                            <option value="summarize">📄 Resumo</option>
+                            <option value="chatbot">💬 Chatbot</option>
+                          </select>
+                        </div>
                       </div>
-                      <input
-                    type="text"
-                    placeholder="https://n8n.seu-dominio.com/webhook/..."
-                    value={localConfig.webhookUrl || ""}
-                    onChange={(e) => setLocalConfig({ ...localConfig, webhookUrl: e.target.value })}
-                    className="flex-1 p-2.5 rounded-r-lg bg-black/20 focus:ring-2 outline-none font-mono text-sm"
-                    style={{ color: "var(--color-text-main)" }} />
 
+                      {/* OpenAI */}
+                      <div className="p-4 rounded-lg" style={{ backgroundColor: "var(--color-bg)" }}>
+                        <div className="flex items-center justify-between mb-3">
+                          <span className="text-sm font-bold" style={{ color: "var(--color-text-main)" }}>OpenAI</span>
+                          <label className="flex items-center gap-2 cursor-pointer">
+                            <span className="text-xs" style={{ color: "var(--color-text-muted)" }}>Ativo</span>
+                            <button
+                              type="button"
+                              onClick={() => setLocalIntegrations({ ...localIntegrations, openaiActive: !localIntegrations.openaiActive })}
+                              className={`w-10 h-5 rounded-full transition-colors ${localIntegrations.openaiActive ? 'bg-green-500' : 'bg-gray-600'}`}
+                            >
+                              <span className={`block w-4 h-4 rounded-full bg-white transition-transform ${localIntegrations.openaiActive ? 'translate-x-5' : 'translate-x-0.5'}`} />
+                            </button>
+                          </label>
+                        </div>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                          <input
+                            type="password"
+                            placeholder="Cole sua chave da API OpenAI..."
+                            value={localIntegrations.openaiApiKey || ""}
+                            onChange={(e) => setLocalIntegrations({ ...localIntegrations, openaiApiKey: e.target.value })}
+                            className="p-2 rounded-lg bg-black/20 focus:ring-2 outline-none font-mono text-sm"
+                            style={{ color: "var(--color-text-main)" }}
+                          />
+                          <select
+                            value={localIntegrations.openaiFunction || 'image'}
+                            onChange={(e) => setLocalIntegrations({ ...localIntegrations, openaiFunction: e.target.value as any })}
+                            className="p-2 rounded-lg bg-black/20 focus:ring-2 outline-none text-sm"
+                            style={{ color: "var(--color-text-main)" }}
+                          >
+                            <option value="translate">📝 Tradução</option>
+                            <option value="image">🖼️ Imagens</option>
+                            <option value="summarize">📄 Resumo</option>
+                            <option value="chatbot">💬 Chatbot</option>
+                          </select>
+                        </div>
+                      </div>
+
+                      {/* Groq */}
+                      <div className="p-4 rounded-lg" style={{ backgroundColor: "var(--color-bg)" }}>
+                        <div className="flex items-center justify-between mb-3">
+                          <span className="text-sm font-bold" style={{ color: "var(--color-text-main)" }}>Groq</span>
+                          <label className="flex items-center gap-2 cursor-pointer">
+                            <span className="text-xs" style={{ color: "var(--color-text-muted)" }}>Ativo</span>
+                            <button
+                              type="button"
+                              onClick={() => setLocalIntegrations({ ...localIntegrations, groqActive: !localIntegrations.groqActive })}
+                              className={`w-10 h-5 rounded-full transition-colors ${localIntegrations.groqActive ? 'bg-green-500' : 'bg-gray-600'}`}
+                            >
+                              <span className={`block w-4 h-4 rounded-full bg-white transition-transform ${localIntegrations.groqActive ? 'translate-x-5' : 'translate-x-0.5'}`} />
+                            </button>
+                          </label>
+                        </div>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                          <input
+                            type="password"
+                            placeholder="Cole sua chave da API Groq..."
+                            value={localIntegrations.groqApiKey || ""}
+                            onChange={(e) => setLocalIntegrations({ ...localIntegrations, groqApiKey: e.target.value })}
+                            className="p-2 rounded-lg bg-black/20 focus:ring-2 outline-none font-mono text-sm"
+                            style={{ color: "var(--color-text-main)" }}
+                          />
+                          <select
+                            value={localIntegrations.groqFunction || 'summarize'}
+                            onChange={(e) => setLocalIntegrations({ ...localIntegrations, groqFunction: e.target.value as any })}
+                            className="p-2 rounded-lg bg-black/20 focus:ring-2 outline-none text-sm"
+                            style={{ color: "var(--color-text-main)" }}
+                          >
+                            <option value="translate">📝 Tradução</option>
+                            <option value="image">🖼️ Imagens</option>
+                            <option value="summarize">📄 Resumo</option>
+                            <option value="chatbot">💬 Chatbot</option>
+                          </select>
+                        </div>
+                      </div>
+
+                      {/* OpenRouter */}
+                      <div className="p-4 rounded-lg" style={{ backgroundColor: "var(--color-bg)" }}>
+                        <div className="flex items-center justify-between mb-3">
+                          <span className="text-sm font-bold" style={{ color: "var(--color-text-main)" }}>OpenRouter</span>
+                          <label className="flex items-center gap-2 cursor-pointer">
+                            <span className="text-xs" style={{ color: "var(--color-text-muted)" }}>Ativo</span>
+                            <button
+                              type="button"
+                              onClick={() => setLocalIntegrations({ ...localIntegrations, openrouterActive: !localIntegrations.openrouterActive })}
+                              className={`w-10 h-5 rounded-full transition-colors ${localIntegrations.openrouterActive ? 'bg-green-500' : 'bg-gray-600'}`}
+                            >
+                              <span className={`block w-4 h-4 rounded-full bg-white transition-transform ${localIntegrations.openrouterActive ? 'translate-x-5' : 'translate-x-0.5'}`} />
+                            </button>
+                          </label>
+                        </div>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                          <input
+                            type="password"
+                            placeholder="Cole sua chave da API OpenRouter..."
+                            value={localIntegrations.openrouterApiKey || ""}
+                            onChange={(e) => setLocalIntegrations({ ...localIntegrations, openrouterApiKey: e.target.value })}
+                            className="p-2 rounded-lg bg-black/20 focus:ring-2 outline-none font-mono text-sm"
+                            style={{ color: "var(--color-text-main)" }}
+                          />
+                          <select
+                            value={localIntegrations.openrouterFunction || 'chatbot'}
+                            onChange={(e) => setLocalIntegrations({ ...localIntegrations, openrouterFunction: e.target.value as any })}
+                            className="p-2 rounded-lg bg-black/20 focus:ring-2 outline-none text-sm"
+                            style={{ color: "var(--color-text-main)" }}
+                          >
+                            <option value="translate">📝 Tradução</option>
+                            <option value="image">🖼️ Imagens</option>
+                            <option value="summarize">📄 Resumo</option>
+                            <option value="chatbot">💬 Chatbot</option>
+                          </select>
+                        </div>
+                      </div>
                     </div>
-                    <p className="text-xs mt-3 leading-relaxed" style={{ color: "var(--color-text-muted)" }}>
-                      Esta URL será chamada via POST com um payload JSON sempre que uma mensagem for enviada.
+                  </div>
+
+                  {/* Supabase Section */}
+                  <div className="border-t pt-6" style={{ borderColor: "var(--color-border)" }}>
+                    <h4 className="text-sm font-bold mb-4 flex items-center gap-2" style={{ color: "var(--color-text-main)" }}>
+                      <Globe size={16} className="text-green-500" />
+                      Credenciais Supabase
+                    </h4>
+                    
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      {/* Supabase URL */}
+                      <div className="md:col-span-2">
+                        <label className="block text-xs font-medium mb-1" style={{ color: "var(--color-text-muted)" }}>
+                          Supabase Project URL
+                        </label>
+                        <input
+                          type="text"
+                          placeholder="https://xxxxxxxxxxxxx.supabase.co"
+                          value={localIntegrations.supabaseUrl || ""}
+                          onChange={(e) => setLocalIntegrations({ ...localIntegrations, supabaseUrl: e.target.value })}
+                          className="w-full p-2.5 rounded-lg bg-black/20 focus:ring-2 outline-none font-mono text-sm"
+                          style={{ color: "var(--color-text-main)" }}
+                        />
+                      </div>
+
+                      {/* Supabase Anon Key */}
+                      <div>
+                        <label className="block text-xs font-medium mb-1" style={{ color: "var(--color-text-muted)" }}>
+                          Supabase Anon Key
+                        </label>
+                        <input
+                          type="password"
+                          placeholder="Cole sua chave anônima..."
+                          value={localIntegrations.supabaseAnonKey || ""}
+                          onChange={(e) => setLocalIntegrations({ ...localIntegrations, supabaseAnonKey: e.target.value })}
+                          className="w-full p-2.5 rounded-lg bg-black/20 focus:ring-2 outline-none font-mono text-sm"
+                          style={{ color: "var(--color-text-main)" }}
+                        />
+                      </div>
+
+                      {/* Supabase Publishable Key */}
+                      <div>
+                        <label className="block text-xs font-medium mb-1" style={{ color: "var(--color-text-muted)" }}>
+                          Supabase Publishable Key
+                        </label>
+                        <input
+                          type="password"
+                          placeholder="Cole sua chave publicável..."
+                          value={localIntegrations.supabasePublishableKey || ""}
+                          onChange={(e) => setLocalIntegrations({ ...localIntegrations, supabasePublishableKey: e.target.value })}
+                          className="w-full p-2.5 rounded-lg bg-black/20 focus:ring-2 outline-none font-mono text-sm"
+                          style={{ color: "var(--color-text-main)" }}
+                        />
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* SQL Script Button */}
+                  <div className="border-t pt-6" style={{ borderColor: "var(--color-border)" }}>
+                    <h4 className="text-sm font-bold mb-4 flex items-center gap-2" style={{ color: "var(--color-text-main)" }}>
+                      <FileText size={16} className="text-blue-500" />
+                      Script do Banco de Dados
+                    </h4>
+                    <p className="text-xs mb-4 leading-relaxed" style={{ color: "var(--color-text-muted)" }}>
+                      Copie este script SQL para criar todas as tabelas do banco de dados. Execute no Supabase SQL Editor.
                     </p>
+                    <button
+                      onClick={() => {
+                        const sql = generateFullDatabaseSQL();
+                        navigator.clipboard.writeText(sql).then(() => {
+                          toast.success("Script SQL copiado para a área de transferência!");
+                        }).catch(() => {
+                          toast.error("Erro ao copiar. Tente manualmente.");
+                        });
+                      }}
+                      className="liquid-glass-gold px-5 py-2.5 rounded-lg text-sm font-bold flex items-center gap-2"
+                      style={{ color: "var(--color-accent)" }}
+                    >
+                      <Copy size={16} /> Copiar Script SQL
+                    </button>
                   </div>
                 </div>
             }

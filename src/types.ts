@@ -251,3 +251,36 @@ export const WEBHOOK_EVENTS: { value: WebhookEvent; label: string }[] = [
   { value: 'invite.generated', label: 'Convite gerado' },
   { value: 'invite.shared', label: 'Convite compartilhado' },
 ];
+
+export type AIFunction = 'translate' | 'image' | 'summarize' | 'chatbot';
+
+export interface SystemIntegrations {
+  id: string;
+  
+  // API Keys
+  geminiApiKey?: string;
+  openaiApiKey?: string;
+  groqApiKey?: string;
+  openrouterApiKey?: string;
+  
+  // Function Assignment
+  geminiFunction?: AIFunction;
+  openaiFunction?: AIFunction;
+  groqFunction?: AIFunction;
+  openrouterFunction?: AIFunction;
+  
+  // Active Status (cost control)
+  geminiActive?: boolean;
+  openaiActive?: boolean;
+  groqActive?: boolean;
+  openrouterActive?: boolean;
+  
+  // Supabase
+  supabaseUrl?: string;
+  supabaseAnonKey?: string;
+  supabasePublishableKey?: string;
+  
+  // Timestamps
+  createdAt: string;
+  updatedAt: string;
+}

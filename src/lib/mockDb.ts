@@ -1,6 +1,7 @@
 import { supabase } from './supabaseClient';
-import { Material, UserProfile, Role, SystemConfig, ColorScheme, UserStatus, AccessLog, Language, MaterialAsset, Collection, CollectionItem, UserProgress, ThemeModeConfig, EnvironmentThemes, Webhook, WebhookEventFilter, WebhookLog } from '../types';
+import { Material, UserProfile, Role, SystemConfig, ColorScheme, UserStatus, AccessLog, Language, MaterialAsset, Collection, CollectionItem, UserProgress, ThemeModeConfig, EnvironmentThemes, Webhook, WebhookEventFilter, WebhookLog, SystemIntegrations } from '../types';
 import { DEFAULT_DARK, DEFAULT_THEME_MODE, mergeScheme, DEFAULT_ENVIRONMENT_THEMES } from './themeDefaults';
+import { encrypt, decrypt } from './crypto';
 
 export interface CollectionProgress {
   id: string;
@@ -777,6 +778,118 @@ export const mockDb = {
       responseBody: data.response_body,
       createdAt: data.created_at,
     };
+  },
+
+  getSystemIntegrations: async (): Promise<SystemIntegrations> => {
+    const { data, error } = await supabase
+      .from('system_integrations')
+      .select('*')
+      .limit(1)
+      .single();
+
+    if (error || !data) {
+      return {
+        id: '',
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+      };
+    }
+
+    return {
+      id: data.id,
+      geminiApiKey: data.gemini_api_key_encrypted ? await decrypt(data.gemini_api_key_encrypted) : undefined,
+      openaiApiKey: data.openai_api_key_encrypted ? await decrypt(data.openai_api_key_encrypted) : undefined,
+      groqApiKey: data.groq_api_key_encrypted ? await decrypt(data.groq_api_key_encrypted) : undefined,
+      openrouterApiKey: data.openrouter_api_key_encrypted ? await decrypt(data.openrouter_api_key_encrypted) : undefined,
+      geminiFunction: data.gemini_function || 'translate',
+      openaiFunction: data.openai_function || 'image',
+      groqFunction: data.groq_function || 'summarize',
+      openrouterFunction: data.openrouter_function || 'chatbot',
+      geminiActive: data.gemini_active ?? true,
+      openaiActive: data.openai_active ?? true,
+      groqActive: data.groq_active ?? true,
+      openrouterActive: data.openrouter_active ?? true,
+      supabaseUrl: data.supabase_url || undefined,
+      supabaseAnonKey: data.supabase_anon_key_encrypted ? await decrypt(data.supabase_anon_key_encrypted) : undefined,
+      supabasePublishableKey: data.supabase_publishable_key_encrypted ? await decrypt(data.supabase_publishable_key_encrypted) : undefined,
+      createdAt: data.created_at,
+      updatedAt: data.updated_at,
+    };
+  },
+
+  updateSystemIntegrations: async (integrations: Partial<SystemIntegrations>): Promise<void> => {
+    const updateData: Record<string, unknown> = {
+      updated_at: new Date().toISOString(),
+    };
+
+    if (integrations.geminiApiKey !== undefined) {
+      updateData.gemini_api_key_encrypted = integrations.geminiApiKey ? await encrypt(integrations.geminiApiKey) : null;
+    }
+    if (integrations.openaiApiKey !== undefined) {
+      updateData.openai_api_key_encrypted = integrations.openaiApiKey ? await encrypt(integrations.openaiApiKey) : null;
+    }
+    if (integrations.groqApiKey !== undefined) {
+      updateData.groq_api_key_encrypted = integrations.groqApiKey ? await encrypt(integrations.groqApiKey) : null;
+    }
+    if (integrations.openrouterApiKey !== undefined) {
+      updateData.openrouter_api_key_encrypted = integrations.openrouterApiKey ? await encrypt(integrations.openrouterApiKey) : null;
+    }
+    if (integrations.supabaseUrl !== undefined) {
+      updateData.supabase_url = integrations.supabaseUrl || null;
+    }
+    if (integrations.supabaseAnonKey !== undefined) {
+      updateData.supabase_anon_key_encrypted = integrations.supabaseAnonKey ? await encrypt(integrations.supabaseAnonKey) : null;
+    }
+    if (integrations.supabasePublishableKey !== undefined) {
+      updateData.supabase_publishable_key_encrypted = integrations.supabasePublishableKey ? await encrypt(integrations.supabasePublishableKey) : null;
+    }
+
+    // Function assignments
+    if (integrations.geminiFunction !== undefined) {
+      updateData.gemini_function = integrations.geminiFunction;
+    }
+    if (integrations.openaiFunction !== undefined) {
+      updateData.openai_function = integrations.openaiFunction;
+    }
+    if (integrations.groqFunction !== undefined) {
+      updateData.groq_function = integrations.groqFunction;
+    }
+    if (integrations.openrouterFunction !== undefined) {
+      updateData.openrouter_function = integrations.openrouterFunction;
+    }
+
+    // Active status
+    if (integrations.geminiActive !== undefined) {
+      updateData.gemini_active = integrations.geminiActive;
+    }
+    if (integrations.openaiActive !== undefined) {
+      updateData.openai_active = integrations.openaiActive;
+    }
+    if (integrations.groqActive !== undefined) {
+      updateData.groq_active = integrations.groqActive;
+    }
+    if (integrations.openrouterActive !== undefined) {
+      updateData.openrouter_active = integrations.openrouterActive;
+    }
+
+    const { data: existing } = await supabase
+      .from('system_integrations')
+      .select('id')
+      .limit(1)
+      .single();
+
+    if (existing) {
+      const { error } = await supabase
+        .from('system_integrations')
+        .update(updateData)
+        .eq('id', existing.id);
+      if (error) throw error;
+    } else {
+      const { error } = await supabase
+        .from('system_integrations')
+        .insert(updateData);
+      if (error) throw error;
+    }
   },
 
   login: async () => {},
