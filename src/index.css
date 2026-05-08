@@ -1,0 +1,264 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Definition of the design system. All colors, gradients, fonts, etc should be defined here. 
+All colors MUST be HSL.
+*/
+
+@layer base {
+  :root, .dark {
+    --background: 222.2 84% 4.9%;
+    --foreground: 210 40% 98%;
+
+    --card: 222.2 84% 4.9%;
+    --card-foreground: 210 40% 98%;
+
+    --popover: 222.2 84% 4.9%;
+    --popover-foreground: 210 40% 98%;
+
+    --primary: 210 40% 98%;
+    --primary-foreground: 222.2 47.4% 11.2%;
+
+    --secondary: 217.2 32.6% 17.5%;
+    --secondary-foreground: 210 40% 98%;
+
+    --muted: 217.2 32.6% 17.5%;
+    --muted-foreground: 215 20.2% 65.1%;
+
+    --accent: 217.2 32.6% 17.5%;
+    --accent-foreground: 210 40% 98%;
+
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 210 40% 98%;
+
+    --border: 217.2 32.6% 17.5%;
+    --input: 217.2 32.6% 17.5%;
+    --ring: 212.7 26.8% 83.9%;
+
+    --radius: 0.5rem;
+
+    --sidebar-background: 240 5.9% 10%;
+    --sidebar-foreground: 240 4.8% 95.9%;
+    --sidebar-primary: 224.3 76.3% 48%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 240 3.7% 15.9%;
+    --sidebar-accent-foreground: 240 4.8% 95.9%;
+    --sidebar-border: 240 3.7% 15.9%;
+    --sidebar-ring: 217.2 91.2% 59.8%;
+  }
+}
+
+/* Hub Conexao CSS Variables - injected dynamically by BrandContext */
+/* Dark-mode fallbacks (overridden at runtime) */
+:root {
+  --color-bg: #0f172a;
+  --color-surface: #1e293b;
+  --color-border: transparent;
+  --color-text-main: #f8fafc;
+  --color-text-muted: #94a3b8;
+  --color-accent: #c9a655;
+  --color-success: #22c55e;
+  --color-warning: #eab308;
+  --color-error: #ef4444;
+  --color-gradient-start: #c9a655;
+  --color-gradient-mid: #e8d48b;
+  --color-gradient-end: #a8873a;
+  --color-hover-bg: #334155;
+  --color-hover-border: #c9a65540;
+  --color-hover-scale: 1.02;
+  --color-hover-shadow: #c9a65525;
+}
+
+/* Custom scrollbar - accent color, 5px */
+*::-webkit-scrollbar {
+  width: 5px;
+  height: 5px;
+}
+*::-webkit-scrollbar-track {
+  background: transparent;
+}
+*::-webkit-scrollbar-thumb {
+  background: var(--color-accent);
+  border-radius: 999px;
+}
+*::-webkit-scrollbar-thumb:hover {
+  background: color-mix(in srgb, var(--color-accent) 80%, black);
+}
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-accent) transparent;
+}
+
+.animation-delay-2000 {
+  animation-delay: 2s;
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+/* Liquid Glass Premium – uses theme variables */
+/* Fallbacks for browsers without color-mix() support (Safari <16.2) */
+.liquid-glass {
+  /* Fallback */
+  background: rgba(30, 41, 59, 0.25);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+}
+@supports (color: color-mix(in srgb, red 50%, blue)) {
+  .liquid-glass {
+    background: linear-gradient(
+      135deg,
+      color-mix(in srgb, var(--color-glass-tint) 25%, transparent) 0%,
+      color-mix(in srgb, var(--color-glass-tint) 8%, transparent) 50%,
+      color-mix(in srgb, var(--color-glass-tint) 15%, transparent) 100%
+    );
+    backdrop-filter: blur(var(--env-glass-blur, 20px)) saturate(180%);
+    -webkit-backdrop-filter: blur(var(--env-glass-blur, 20px)) saturate(180%);
+    border: 1px solid color-mix(in srgb, var(--color-glass-tint) 20%, transparent);
+    box-shadow:
+      0 8px 32px var(--color-shadow, rgba(0, 0, 0, 0.3)),
+      inset 0 1px 0 color-mix(in srgb, var(--color-glass-tint) 30%, transparent),
+      inset 0 -1px 0 color-mix(in srgb, var(--color-glass-tint) 10%, transparent);
+  }
+}
+
+/* Liquid Glass Gold – translucent golden interactive state */
+.liquid-glass-gold {
+  /* Fallback */
+  background: rgba(201, 166, 85, 0.12);
+  border: 1px solid rgba(201, 166, 85, 0.15);
+  box-shadow: 0 4px 20px rgba(201, 166, 85, 0.08);
+  backdrop-filter: blur(16px) saturate(160%);
+  -webkit-backdrop-filter: blur(16px) saturate(160%);
+}
+@supports (color: color-mix(in srgb, red 50%, blue)) {
+  .liquid-glass-gold {
+    background: linear-gradient(
+      135deg,
+      color-mix(in srgb, var(--color-gradient-start) 18%, transparent) 0%,
+      color-mix(in srgb, var(--color-gradient-mid) 8%, transparent) 40%,
+      color-mix(in srgb, var(--color-gradient-end) 14%, transparent) 70%,
+      color-mix(in srgb, var(--color-gradient-start) 10%, transparent) 100%
+    );
+    border: 1px solid color-mix(in srgb, var(--color-gradient-start) 22%, transparent);
+    box-shadow:
+      0 4px 20px color-mix(in srgb, var(--color-gradient-start) 8%, transparent),
+      inset 0 1px 0 color-mix(in srgb, var(--color-gradient-mid) 12%, transparent),
+      inset 0 -1px 0 color-mix(in srgb, var(--color-gradient-end) 6%, transparent);
+  }
+}
+
+/* Icon Box – standardized icon container: dark rounded square + gold icon */
+.icon-box {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 0.75rem;
+  background-color: rgba(15, 23, 42, 0.8);
+  border: 1px solid rgba(201, 166, 85, 0.2);
+  color: var(--color-accent);
+  flex-shrink: 0;
+  transition: all 0.3s ease;
+}
+@supports (color: color-mix(in srgb, red 50%, blue)) {
+  .icon-box {
+    background-color: color-mix(in srgb, var(--color-surface) 60%, black);
+    border-color: color-mix(in srgb, var(--color-accent) 20%, transparent);
+  }
+}
+
+.icon-box-sm {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  border-radius: 0.5rem;
+  background-color: rgba(15, 23, 42, 0.8);
+  border: 1px solid rgba(201, 166, 85, 0.2);
+  color: var(--color-accent);
+  flex-shrink: 0;
+  transition: all 0.3s ease;
+}
+@supports (color: color-mix(in srgb, red 50%, blue)) {
+  .icon-box-sm {
+    background-color: color-mix(in srgb, var(--color-surface) 60%, black);
+    border-color: color-mix(in srgb, var(--color-accent) 20%, transparent);
+  }
+}
+
+.icon-box-lg {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 3rem;
+  height: 3rem;
+  border-radius: 0.875rem;
+  background-color: rgba(15, 23, 42, 0.8);
+  border: 1px solid rgba(201, 166, 85, 0.2);
+  color: var(--color-accent);
+  flex-shrink: 0;
+  transition: all 0.3s ease;
+}
+@supports (color: color-mix(in srgb, red 50%, blue)) {
+  .icon-box-lg {
+    background-color: color-mix(in srgb, var(--color-surface) 60%, black);
+    border-color: color-mix(in srgb, var(--color-accent) 20%, transparent);
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+  }
+
+  /* Force dark background on native <select> and <option> elements — no borders */
+  select {
+    background-color: var(--color-surface, #1e293b);
+    color: var(--color-text-main, #f8fafc);
+    border: none !important;
+    outline: none;
+  }
+  select option {
+    background-color: var(--color-surface, #1e293b);
+    color: var(--color-text-main, #f8fafc);
+  }
+}
+
+/*
+ * Global fallback for browsers that don't support color-mix()
+ * (Safari <16.2, older Chrome/Firefox)
+ * The .no-color-mix class is added to <html> by main.tsx at startup.
+ * These overrides ensure the UI is usable even without color-mix.
+ */
+.no-color-mix [style*="color-mix"] {
+  /* Force visible backgrounds on elements using color-mix in inline styles */
+  --_fallback-applied: 1;
+}
+
+/* Ensure inline color-mix doesn't break rendering on unsupported browsers.
+   Browsers that don't understand color-mix() in inline styles will simply
+   ignore those property values, resulting in transparent/invisible elements.
+   This block provides safe defaults via CSS custom properties. */
+.no-color-mix {
+  --color-surface-alpha: rgba(30, 41, 59, 0.4);
+  --color-accent-alpha: rgba(201, 166, 85, 0.1);
+  --color-accent-alpha-strong: rgba(201, 166, 85, 0.15);
+  --color-border-alpha: rgba(255, 255, 255, 0.08);
+  --color-bg-alpha: rgba(15, 23, 42, 0.5);
+  --color-warning-alpha: rgba(234, 179, 8, 0.1);
+}

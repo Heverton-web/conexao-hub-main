@@ -1,0 +1,10 @@
+project_id = "frgfevvaxqvvsonzzuuf"
+
+[functions.delete-user]
+verify_jwt = false
+
+[functions.generate-trail-cover]
+verify_jwt = false
+
+[functions.translate-title]
+verify_jwt = false
