@@ -2,11 +2,12 @@ import React, { useState, useEffect, useRef } from 'react';
 import { createPortal } from 'react-dom';
 import { Material, Language, MaterialType, Role, MaterialAsset } from '../../types';
 import { useLanguage } from '../../contexts/LanguageContext';
-import { X, Save, FileText, Image as ImageIcon, Video, Check, Users, Shield, Link as LinkIcon, AlertCircle, Star, Headphones, Globe, Upload, Languages, Copy, CheckCircle2, Loader2 } from 'lucide-react';
+import { X, Save, FileText, Image as ImageIcon, Video, Check, Users, Shield, Link as LinkIcon, AlertCircle, Star, Headphones, Globe, Upload, Languages, Copy, CheckCircle2, Loader2, Sparkles } from 'lucide-react';
 import { TagInput } from './TagInput';
 import { supabase } from '@/integrations/supabase/client';
 import { colorMix } from '../../lib/utils';
 import { toast } from '@/hooks/use-toast';
+import { translateText, summarizeText } from '../../lib/aiService';
 
 interface TypeCardProps {
   value: MaterialType;
@@ -111,6 +112,9 @@ export const MaterialFormModal: React.FC<MaterialFormModalProps> = ({ initialDat
   const [translating, setTranslating] = useState(false);
   const [translations, setTranslations] = useState<Record<string, string> | null>(null);
   const [copiedLang, setCopiedLang] = useState<string | null>(null);
+  const [summarizing, setSummarizing] = useState(false);
+  const [summaryText, setSummaryText] = useState('');
+  const [summaryInput, setSummaryInput] = useState('');
 
   useEffect(() => {
     if (initialData) {
@@ -253,6 +257,25 @@ export const MaterialFormModal: React.FC<MaterialFormModalProps> = ({ initialDat
       toast({ title: 'Erro na tradução', description: err?.message || 'Tente novamente', variant: 'destructive' });
     } finally {
       setTranslating(false);
+    }
+  };
+
+  const handleSummarize = async () => {
+    if (!summaryInput.trim()) return;
+    setSummarizing(true);
+    setSummaryText('');
+    try {
+      const result = await summarizeText(summaryInput.trim());
+      if (result.success && result.summary) {
+        setSummaryText(result.summary);
+        toast({ title: 'Resumo gerado!', description: 'O texto foi resumido com sucesso.' });
+      } else {
+        toast({ title: 'Erro ao resumir', description: result.error || 'Tente novamente', variant: 'destructive' });
+      }
+    } catch (err: any) {
+      toast({ title: 'Erro ao resumir', description: err?.message || 'Tente novamente', variant: 'destructive' });
+    } finally {
+      setSummarizing(false);
     }
   };
 
@@ -437,6 +460,49 @@ export const MaterialFormModal: React.FC<MaterialFormModalProps> = ({ initialDat
                   >
                     <CheckCircle2 size={12} /> Aplicar todos nos campos de título
                   </button>
+                </div>
+              )}
+            </div>
+
+            {/* Resumir Texto com IA */}
+            <div className="mt-4">
+              <label className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider mb-2" style={{ color: 'var(--color-text-muted)' }}>
+                <Sparkles size={12} /> Resumir Texto (IA)
+              </label>
+              <div className="flex gap-2 mb-2">
+                <textarea
+                  placeholder="Cole o texto que deseja resumir..."
+                  className="flex-1 p-2.5 rounded-lg outline-none text-sm focus:ring-2 resize-none"
+                  style={{ backgroundColor: 'var(--color-surface)', color: 'var(--color-text-main)', minHeight: '80px' }}
+                  value={summaryInput}
+                  onChange={e => setSummaryInput(e.target.value)}
+                />
+                <button
+                  type="button"
+                  onClick={handleSummarize}
+                  disabled={summarizing || !summaryInput.trim()}
+                  className="px-4 py-2.5 rounded-lg text-sm font-semibold flex items-center gap-1.5 transition-all disabled:opacity-40 hover:opacity-90"
+                  style={{ backgroundColor: 'var(--color-accent)', color: 'white' }}
+                >
+                  {summarizing ? <Loader2 size={14} className="animate-spin" /> : <Sparkles size={14} />}
+                  {summarizing ? 'Resumindo...' : 'Resumir'}
+                </button>
+              </div>
+
+              {summaryText && (
+                <div className="p-3 rounded-lg animate-fade-in" style={{ backgroundColor: 'var(--color-surface)' }}>
+                  <div className="flex items-center justify-between mb-2">
+                    <span className="text-xs font-bold" style={{ color: 'var(--color-text-muted)' }}>Resumo:</span>
+                    <button
+                      type="button"
+                      onClick={() => navigator.clipboard.writeText(summaryText)}
+                      className="p-1 rounded hover:opacity-70"
+                      style={{ color: 'var(--color-text-muted)' }}
+                    >
+                      <Copy size={12} />
+                    </button>
+                  </div>
+                  <p className="text-sm leading-relaxed" style={{ color: 'var(--color-text-main)' }}>{summaryText}</p>
                 </div>
               )}
             </div>
