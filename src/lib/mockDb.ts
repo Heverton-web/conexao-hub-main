@@ -958,7 +958,7 @@ export const mockDb = {
 
     // Return default config if none exists
     return {
-      enabled: true,
+      enabled: false,
       webhookUrl: '',
       allowedRoles: ['client', 'distributor', 'consultant', 'manager'],
     };
