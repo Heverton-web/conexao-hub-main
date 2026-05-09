@@ -33,6 +33,36 @@ const localUsers: UserProfile[] = [
     { id: 'mock-manager', name: 'Gestor Demo', email: 'manager@demo.com', role: 'manager', whatsapp: '11955555555', status: 'active', points: 0, preferences: { theme: 'dark', language: 'pt-br' } }
 ];
 
+const localMaterials: Material[] = [
+    { id: 'mat-1', type: 'video', title: { 'pt-br': 'Tutorial de Implantes', 'en-us': 'Implant Tutorial', 'es-es': 'Tutorial de Implantes' }, description: { 'pt-br': 'Aprenda sobre implantes dentários', 'en-us': 'Learn about dental implants', 'es-es': 'Aprende sobre implantes dentales' }, thumbnail: '', videoUrl: 'https://example.com/video1', duration: 120, active: true, allowedRoles: ['client', 'distributor', 'consultant', 'manager', 'super_admin'], tags: ['implante', 'tutorial'], category: 'odontologia', assets: [] },
+    { id: 'mat-2', type: 'pdf', title: { 'pt-br': 'Guia de Marketing', 'en-us': 'Marketing Guide', 'es-es': 'Guía de Marketing' }, description: { 'pt-br': ' Estratégias de marketing para consultórios', 'en-us': 'Marketing strategies for clinics', 'es-es': 'Estrategias de marketing para clínicas' }, thumbnail: '', pdfUrl: 'https://example.com/pdf1', active: true, allowedRoles: ['client', 'distributor', 'consultant', 'manager', 'super_admin'], tags: ['marketing', 'vendas'], category: 'marketing', assets: [] },
+    { id: 'mat-3', type: 'trilha', title: { 'pt-br': 'Trilha de Vendas', 'en-us': 'Sales Trail', 'es-es': 'Trayecto de Ventas' }, description: { 'pt-br': 'Curso completo de vendas', 'en-us': 'Complete sales course', 'es-es': 'Curso completo de ventas' }, thumbnail: '', active: true, allowedRoles: ['client', 'distributor', 'consultant', 'manager', 'super_admin'], tags: ['vendas', 'trilha'], category: 'vendas', items: ['item-1', 'item-2'], assets: [] },
+    { id: 'mat-4', type: 'video', title: { 'pt-br': 'Apresentação comercial', 'en-us': 'Commercial Presentation', 'es-es': 'Presentación Comercial' }, description: { 'pt-br': 'Aprenda a apresentar para pacientes', 'en-us': 'Learn to present to patients', 'es-es': 'Aprende a presentar a pacientes' }, thumbnail: '', videoUrl: 'https://example.com/video2', duration: 180, active: true, allowedRoles: ['distributor', 'consultant', 'manager', 'super_admin'], tags: ['vendas', 'apresentação'], category: 'vendas', assets: [] },
+];
+
+const localCollections: Collection[] = [
+    { id: 'col-1', title: { 'pt-br': 'Kit Iniciante', 'en-us': 'Starter Kit', 'es-es': 'Kit de Inicio' }, description: { 'pt-br': 'Tudo que você precisa para começar', 'en-us': 'Everything you need to start', 'es-es': 'Todo lo que necesitas para comenzar' }, thumbnail: '', active: true, allowedRoles: ['client', 'distributor', 'consultant', 'manager', 'super_admin'], items: ['item-1', 'item-2', 'item-3'], createdAt: '2024-01-01', updatedAt: '2024-01-15', createdBy: 'mock-admin' },
+    { id: 'col-2', title: { 'pt-br': 'Kit Marketing', 'en-us': 'Marketing Kit', 'es-es': 'Kit de Marketing' }, description: { 'pt-br': 'Materiais de marketing profissionais', 'en-us': 'Professional marketing materials', 'es-es': 'Materiales de marketing profesionales' }, thumbnail: '', active: true, allowedRoles: ['distributor', 'consultant', 'manager', 'super_admin'], items: ['item-4', 'item-5'], createdAt: '2024-02-01', updatedAt: '2024-02-10', createdBy: 'mock-admin' },
+];
+
+const localAccessLogs: AccessLog[] = [
+    { id: 'log-1', materialId: 'mat-1', materialTitle: { 'pt-br': 'Tutorial de Implantes' }, userId: 'mock-client', userName: 'Cliente Exemplo', userRole: 'client', language: 'pt-br', timestamp: new Date().toISOString() },
+    { id: 'log-2', materialId: 'mat-2', materialTitle: { 'pt-br': 'Guia de Marketing' }, userId: 'mock-consult', userName: 'Consultor Demo', userRole: 'consultant', language: 'pt-br', timestamp: new Date().toISOString() },
+];
+
+const localCollectionProgress: CollectionProgress[] = [
+    { id: 'cp-1', userId: 'mock-client', collectionId: 'col-1', status: 'completed', startedAt: '2024-01-01', completedAt: '2024-01-10' },
+    { id: 'cp-2', userId: 'mock-client', collectionId: 'col-2', status: 'started', startedAt: '2024-02-01' },
+];
+
+const localCollectionItems: CollectionItem[] = [
+    { id: 'item-1', collectionId: 'col-1', materialId: 'mat-1', orderIndex: 1, material: localMaterials[0] },
+    { id: 'item-2', collectionId: 'col-1', materialId: 'mat-2', orderIndex: 2, material: localMaterials[1] },
+    { id: 'item-3', collectionId: 'col-1', materialId: 'mat-3', orderIndex: 3, material: localMaterials[2] },
+    { id: 'item-4', collectionId: 'col-2', materialId: 'mat-2', orderIndex: 1, material: localMaterials[1] },
+    { id: 'item-5', collectionId: 'col-2', materialId: 'mat-4', orderIndex: 2, material: localMaterials[3] },
+];
+
 const mapProfileFromDb = (data: any): UserProfile => ({
   id: data.id,
   name: data.name,
@@ -265,6 +295,9 @@ export const mockDb = {
   },
 
   getUsers: async (): Promise<UserProfile[]> => {
+    if (isMockMode) {
+      return localUsers;
+    }
     const { data: profiles, error } = await supabase.from('profiles').select('*').order('name');
     if (error) throw error;
     
@@ -278,6 +311,9 @@ export const mockDb = {
   },
 
   getMaterials: async (role: Role): Promise<Material[]> => {
+    if (isMockMode) {
+      return localMaterials.filter(m => m.active && m.allowedRoles.includes(role));
+    }
     let query = supabase.from('materials').select(`*, material_assets (*)`).order('created_at', { ascending: false });
 
     if (role !== 'super_admin' && role !== 'manager') {
@@ -298,6 +334,9 @@ export const mockDb = {
   },
 
   getAccessLogs: async (): Promise<AccessLog[]> => {
+    if (isMockMode) {
+      return localAccessLogs;
+    }
     const { data: logs, error } = await supabase
       .from('access_logs')
       .select('id, material_id, user_id, language, timestamp')
@@ -344,6 +383,9 @@ export const mockDb = {
   // ---- Collections ----
 
   getCollections: async (role: Role): Promise<Collection[]> => {
+    if (isMockMode) {
+      return localCollections.filter(c => c.active && c.allowedRoles.includes(role));
+    }
     let query = supabase.from('collections').select('*').order('created_at', { ascending: false });
     if (role !== 'super_admin' && role !== 'manager') {
       query = query.eq('active', true).contains('allowed_roles', [role]);
@@ -364,6 +406,9 @@ export const mockDb = {
   },
 
   getCollectionItems: async (collectionId: string): Promise<CollectionItem[]> => {
+    if (isMockMode) {
+      return localCollectionItems.filter(item => item.collectionId === collectionId);
+    }
     const { data, error } = await supabase
       .from('collection_items')
       .select(`*, materials(*, material_assets(*))`)
@@ -511,6 +556,9 @@ export const mockDb = {
   },
 
   getAllCollectionProgress: async (): Promise<CollectionProgress[]> => {
+    if (isMockMode) {
+      return localCollectionProgress;
+    }
     const { data, error } = await supabase.from('collection_progress').select('*');
     if (error) { console.error('Error fetching all collection progress:', error); return []; }
     return (data || []).map((p: any) => ({
