@@ -166,50 +166,45 @@ export const Dashboard: React.FC = () => {
     setViewingMaterial({ mat, lang, collectionId: currentCollectionId });
   };
 
-  const handleCloseViewer = async () => {
-    if (viewingMaterial && user) {
-      const mat = viewingMaterial.mat;
-      const colId = viewingMaterial.collectionId;
-      const existing = userProgress.find(p => p.materialId === mat.id && p.collectionId === colId);
+const handleCloseViewer = async () => {
+    // Primeiro fecha o modal SEMPRE, independentemente de erros
+    setViewingMaterial(null);
+    
+    // Depois tenta marcar como completo (sem bloquear o fechamento)
+    try {
+      if (viewingMaterial && user) {
+        const mat = viewingMaterial.mat;
+        const colId = viewingMaterial.collectionId;
+        const existing = userProgress.find(p => p.materialId === mat.id && p.collectionId === colId);
 
-      if (existing?.status !== 'completed') {
-        await mockDb.upsertProgress(user.id, mat.id, 'completed', colId);
+        if (existing?.status !== 'completed') {
+          await mockDb.upsertProgress(user.id, mat.id, 'completed', colId);
 
-        // Trigger webhook for material completed
-        const totalPoints = mat.points;
-        WebhookEvents.materialCompleted({
-          userId: user.id,
-          userRole: user.role,
-          materialId: mat.id,
-          points: totalPoints,
-        });
+          // Trigger webhook for material completed
+          const totalPoints = mat.points;
+          WebhookEvents.materialCompleted({
+            userId: user.id,
+            userRole: user.role,
+            materialId: mat.id,
+            points: totalPoints,
+          });
 
-        if (mat.points > 0) {
-          const remainingXp = mat.points - Math.floor(mat.points * 0.3);
-          await mockDb.addPoints(user.id, remainingXp);
-          addUserPoints(remainingXp);
-        }
-
-        setUserProgress(prev => {
-          const filtered = prev.filter(p => !(p.materialId === mat.id && p.collectionId === colId));
-          return [...filtered, { id: existing?.id || '', userId: user.id, materialId: mat.id, collectionId: colId, status: 'completed' as const, completedAt: new Date().toISOString(), createdAt: existing?.createdAt || new Date().toISOString() }];
-        });
-
-        if (colId && selectedCollection) {
-          const materialIds = collectionItemMap[selectedCollection.id] || [];
-          const updatedCompleted = userProgress.filter(p => p.status === 'completed' && p.collectionId === colId && materialIds.includes(p.materialId) && p.materialId !== mat.id).length + 1;
-          if (updatedCompleted >= materialIds.length && materialIds.length > 0) {
-            if (selectedCollection.points > 0) {
-              await mockDb.addPoints(user.id, selectedCollection.points);
-              addUserPoints(selectedCollection.points);
-            }
-            const trailTitle = selectedCollection.title[language] || selectedCollection.title['pt-br'] || 'Trilha';
-            setCelebration({ trailName: trailTitle, bonusXp: selectedCollection.points });
+          if (mat.points > 0) {
+            const remainingXp = mat.points - Math.floor(mat.points * 0.3);
+            await mockDb.addPoints(user.id, remainingXp);
+            addUserPoints(remainingXp);
           }
+
+          setUserProgress(prev => {
+            const filtered = prev.filter(p => !(p.materialId === mat.id && p.collectionId === colId));
+            return [...filtered, { id: crypto.randomUUID(), userId: user.id, materialId: mat.id, collectionId: colId, status: 'completed', completedAt: new Date().toISOString(), createdAt: new Date().toISOString() }];
+          });
         }
       }
+    } catch (error) {
+      console.error('Erro ao marcar material como completo:', error);
+      // O modal já foi fechado acima, o erro não afeta mais nada
     }
-    setViewingMaterial(null);
   };
 
   const userLevel = getUserLevel(user?.points || 0);
