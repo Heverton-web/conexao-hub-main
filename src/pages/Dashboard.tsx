@@ -199,6 +199,37 @@ const handleCloseViewer = async () => {
             const filtered = prev.filter(p => !(p.materialId === mat.id && p.collectionId === colId));
             return [...filtered, { id: crypto.randomUUID(), userId: user.id, materialId: mat.id, collectionId: colId, status: 'completed', completedAt: new Date().toISOString(), createdAt: new Date().toISOString() }];
           });
+
+          // Check if collection is now complete and award collection points
+          if (colId) {
+            const collectionMaterialIds = collectionItemMap[colId] || [];
+            if (collectionMaterialIds.length > 0) {
+              // Get updated progress (including the one we just added)
+              const allCompleted = collectionMaterialIds.every(matId => 
+                userProgress.some(p => p.materialId === matId && p.collectionId === colId && p.status === 'completed') || matId === mat.id
+              );
+              
+              if (allCompleted) {
+                const collection = collections.find(c => c.id === colId);
+                if (collection && collection.points > 0) {
+                  await mockDb.upsertCollectionProgress(user.id, colId, 'completed');
+                  await mockDb.addPoints(user.id, collection.points);
+                  addUserPoints(collection.points);
+                  
+                  // Trigger webhook for collection completed
+                  WebhookEvents.collectionCompleted({
+                    userId: user.id,
+                    userRole: user.role,
+                    collectionId: colId,
+                    points: collection.points,
+                  });
+
+                  setCelebration({ trailName: collection.title['pt-br'] || collection.title['en'] || 'Trilha', bonusXp: collection.points });
+                  setTimeout(() => setCelebration(null), 5000);
+                }
+              }
+            }
+          }
         }
       }
     } catch (error) {
