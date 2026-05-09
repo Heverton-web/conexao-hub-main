@@ -2,6 +2,10 @@ import { supabase } from './supabaseClient';
 import { Material, UserProfile, Role, SystemConfig, ColorScheme, UserStatus, AccessLog, Language, MaterialAsset, Collection, CollectionItem, UserProgress, ThemeModeConfig, EnvironmentThemes, Webhook, WebhookEventFilter, WebhookLog, SystemIntegrations } from '../types';
 import { DEFAULT_DARK, DEFAULT_THEME_MODE, mergeScheme, DEFAULT_ENVIRONMENT_THEMES } from './themeDefaults';
 import { encrypt, decrypt } from './crypto';
+import { mockMode } from './mockMode';
+import { mockStore } from './mockStore';
+
+const isMock = () => mockMode.enabled;
 
 export interface CollectionProgress {
   id: string;
@@ -616,6 +620,25 @@ export const mockDb = {
   // ---- Invite Tokens ----
 
   getInviteTokens: async () => {
+    if (isMock()) {
+      const tokens = mockStore.get('invite_tokens');
+      return tokens.map((t: any) => ({
+        id: t.id,
+        token: t.token,
+        role: t.role,
+        status: (t.used_at ? 'used' : new Date(t.expires_at) < new Date() ? 'expired' : 'active'),
+        usedBy: t.used_by,
+        usedAt: t.used_at,
+        expiresAt: t.expires_at,
+        createdAt: t.created_at,
+        senderName: t.sender_name,
+        recipientName: t.recipient_name,
+        recipientPhone: t.recipient_phone,
+        recipientMessage: t.recipient_message,
+        sharePreparedAt: t.share_prepared_at,
+        sharedAt: t.shared_at,
+      }));
+    }
     const { data, error } = await supabase
       .from('invite_tokens')
       .select('*')
@@ -665,6 +688,21 @@ export const mockDb = {
   },
 
   createInviteToken: async (role: string, expiresInDays: number = 7) => {
+    if (isMock()) {
+      const expiresAt = new Date();
+      expiresAt.setDate(expiresAt.getDate() + expiresInDays);
+      const token = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
+      const newToken = mockStore.insert('invite_tokens', {
+        token,
+        role: role as any,
+        used_by: null,
+        used_at: null,
+        expires_at: expiresAt.toISOString(),
+        created_at: new Date().toISOString(),
+        status: 'active'
+      });
+      return newToken;
+    }
     const expiresAt = new Date();
     expiresAt.setDate(expiresAt.getDate() + expiresInDays);
     const { data, error } = await supabase
@@ -677,11 +715,20 @@ export const mockDb = {
   },
 
   deleteInviteToken: async (id: string) => {
+    if (isMock()) {
+      mockStore.delete('invite_tokens', id);
+      return;
+    }
     const { error } = await supabase.from('invite_tokens').delete().eq('id', id);
     if (error) throw error;
   },
 
   validateInviteToken: async (token: string) => {
+    if (isMock()) {
+      const t = mockStore.find('invite_tokens', (r) => r.token === token && !r.used_at && new Date(r.expires_at) > new Date());
+      if (!t) return null;
+      return { id: t.id, token: t.token, role: t.role, expiresAt: t.expires_at };
+    }
     const { data, error } = await supabase
       .from('invite_tokens')
       .select('*')
@@ -695,6 +742,10 @@ export const mockDb = {
   },
 
   markInviteTokenUsed: async (tokenId: string, userId: string) => {
+    if (isMock()) {
+      mockStore.update('invite_tokens', tokenId, { used_by: userId, used_at: new Date().toISOString(), status: 'used' });
+      return;
+    }
     const { error } = await supabase
       .from('invite_tokens')
       .update({ used_by: userId, used_at: new Date().toISOString(), status: 'used' } as any)
