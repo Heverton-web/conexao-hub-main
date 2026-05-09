@@ -297,3 +297,29 @@ export interface SystemIntegrations {
   createdAt: string;
   updatedAt: string;
 }
+
+// Badge System Types
+export type BadgeTriggerType = 'material_completed' | 'collection_completed' | 'points_reached' | 'streak_days' | 'ranking_position' | 'login_count';
+
+export interface Badge {
+  id: string;
+  name: string;
+  description: string;
+  iconName: 'star' | 'book' | 'graduation' | 'rocket' | 'trophy' | 'diamond' | 'crown' | 'flame' | 'shield' | 'stars';
+  triggerType: BadgeTriggerType;
+  triggerValue: number;
+  pointsReward: number;
+  color: string;
+  createdAt: string;
+}
+
+export interface UserBadge {
+  id: string;
+  userId: string;
+  badgeId: string;
+  earnedAt: string;
+}
+
+export interface BadgeWithDetails extends UserBadge {
+  badge: Badge;
+}

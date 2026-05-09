@@ -12,7 +12,8 @@ import {
   MaterialType,
   AccessLog,
   Collection,
-  SystemIntegrations } from
+  SystemIntegrations,
+  Badge } from
 "../types";
 import { colorMix } from "../lib/utils";
 import { useLanguage } from "../contexts/LanguageContext";
@@ -75,6 +76,7 @@ import {
 Power,
   Bot } from
   "lucide-react";
+import { BadgeFormModal } from "../components/admin/BadgeFormModal";
 import { MaterialFormModal } from "../components/hub/MaterialFormModal";
 import { ThemeEditorPanel } from "../components/hub/ThemeEditorPanel";
 import { ViewerModal } from "../components/hub/ViewerModal";
@@ -202,7 +204,7 @@ export const Admin: React.FC = () => {
   const { t, language } = useLanguage();
   const { config, updateConfig } = useBrand();
 
-  const [activeTab, setActiveTab] = useState<"materials" | "users" | "settings" | "analytics" | "collections">(
+  const [activeTab, setActiveTab] = useState<"materials" | "users" | "settings" | "analytics" | "collections" | "badges">(
     "materials"
   );
   const [settingsTab, setSettingsTab] = useState<"identity" | "integrations" | "themes" | "invites" | "gamification" | "chatbot">(
@@ -267,6 +269,10 @@ export const Admin: React.FC = () => {
   const [newLevelName, setNewLevelName] = useState("");
   const [newLevelPoints, setNewLevelPoints] = useState(0);
   const [newLevelColor, setNewLevelColor] = useState("#c9a655");
+  // Badges state
+  const [badges, setBadges] = useState<Badge[]>([]);
+  const [isBadgeFormOpen, setIsBadgeFormOpen] = useState(false);
+  const [editingBadge, setEditingBadge] = useState<Badge | null>(null);
   const analyticsRef = useRef<HTMLDivElement>(null);
   // Invite tokens state
   const [inviteTokens, setInviteTokens] = useState<any[]>([]);
@@ -344,9 +350,10 @@ export const Admin: React.FC = () => {
     if (activeTab === "users") loadUsers();
     if (activeTab === "analytics") loadAnalytics();
     if (activeTab === "collections") loadCollections();
-    if (activeTab === "settings") {
+    if (activeTab === "settings" || activeTab === "badges") {
       loadGamificationLevels();
       loadInviteTokens();
+      loadBadges();
     }
   }, [activeTab]);
 
@@ -379,6 +386,9 @@ export const Admin: React.FC = () => {
   };
   const loadInviteTokens = () => {
     mockDb.getInviteTokens().then(setInviteTokens).catch((e) => console.error(e));
+  };
+  const loadBadges = () => {
+    mockDb.getBadges().then(setBadges).catch((e) => console.error(e));
   };
   const generateInviteToken = async () => {
     if (!inviteRole) {
@@ -710,6 +720,7 @@ export const Admin: React.FC = () => {
           {renderTabButton("collections", "Trilhas", BookOpen)}
           {renderTabButton("analytics", t("tab.analytics"), BarChart2)}
           {renderTabButton("settings", t("tab.settings"), Settings)}
+          {renderTabButton("badges", "Badges", Award)}
         </div>
       </div>
 
@@ -1291,14 +1302,14 @@ export const Admin: React.FC = () => {
                 <Download size={16} />
                 <span className="hidden md:inline">CSV</span>
               </button>
-              
+              <button
+              onClick={exportAnalyticsPdf}
+              className="liquid-glass-gold px-3 py-2 rounded-lg flex items-center gap-2 shadow-lg transition-all hover:scale-105 whitespace-nowrap text-sm"
+              style={{ color: "var(--color-accent)" }}>
 
-
-
-
-
-
-
+                <FileText size={16} />
+                <span className="hidden md:inline">PDF</span>
+              </button>
             </div>
           </div>
 
@@ -2827,6 +2838,94 @@ export const Admin: React.FC = () => {
           </div>
         </div>
       }
+      
+      {/* Badges Tab */}
+      {activeTab === "badges" &&
+        <div className="animate-fade-in space-y-6">
+          <div className="flex justify-between items-center">
+            <div>
+              <h3 className="text-xl font-bold flex items-center gap-2" style={{ color: "var(--color-text-main)" }}>
+                <div className="icon-box"><Award size={20} /></div> Gerenciar Badges
+              </h3>
+              <p className="text-sm" style={{ color: "var(--color-text-muted)" }}>
+                Configure as conquistas e recompensas da plataforma.
+              </p>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 gap-6">
+            <div className="p-6 rounded-xl shadow-sm" style={{ backgroundColor: "var(--color-surface)" }}>
+              <div className="flex items-center gap-2 mb-6">
+                <Award size={18} style={{ color: "var(--color-accent)" }} />
+                <h4 className="font-bold" style={{ color: "var(--color-text-main)" }}>Lista de Badges</h4>
+              </div>
+
+              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
+                {badges.map((badge) => (
+                  <div
+                    key={badge.id}
+                    className="group relative flex flex-col items-center p-4 rounded-xl transition-all hover:scale-105"
+                    style={{ 
+                      backgroundColor: "var(--color-bg)",
+                      border: `2px solid ${badge.color}40`,
+                    }}
+                  >
+                    <div className="absolute top-2 right-2 flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                      <button
+                        onClick={() => { setEditingBadge(badge); setIsBadgeFormOpen(true); }}
+                        className="p-1.5 rounded-lg bg-white/10 hover:bg-white/20 text-white transition-colors"
+                      >
+                        <Edit size={14} />
+                      </button>
+                      <button
+                        onClick={async () => {
+                          if (confirm(`Excluir badge "${badge.name}"?`)) {
+                            await mockDb.deleteBadge(badge.id);
+                            loadBadges();
+                          }
+                        }}
+                        className="p-1.5 rounded-lg bg-red-500/20 hover:bg-red-500/40 text-red-500 transition-colors"
+                      >
+                        <Trash2 size={14} />
+                      </button>
+                    </div>
+
+                    <div
+                      className="w-14 h-14 rounded-full flex items-center justify-center mb-3 shadow-lg"
+                      style={{
+                        background: `linear-gradient(135deg, ${badge.color}40 0%, ${badge.color}80 50%, ${badge.color}40 100%)`,
+                        border: `2px solid ${badge.color}`,
+                        boxShadow: `0 4px 12px ${badge.color}30`,
+                      }}
+                    >
+                      <Award size={24} style={{ color: badge.color }} />
+                    </div>
+                    <p className="text-sm font-bold text-center" style={{ color: "var(--color-text-main)" }}>
+                      {badge.name}
+                    </p>
+                    <p className="text-[10px] text-center opacity-60 mt-1" style={{ color: "var(--color-text-muted)" }}>
+                      {badge.triggerValue} {badge.triggerType === 'points_reached' ? 'XP' : 'unidades'}
+                    </p>
+                  </div>
+                ))}
+                
+                <button
+                  onClick={() => { setEditingBadge(null); setIsBadgeFormOpen(true); }}
+                  className="flex flex-col items-center justify-center p-4 rounded-xl border-2 border-dashed transition-colors hover:bg-white/5"
+                  style={{ borderColor: "var(--color-border)" }}
+                >
+                  <div className="w-14 h-14 rounded-full flex items-center justify-center mb-3 bg-white/5">
+                    <Plus size={24} style={{ color: "var(--color-text-muted)" }} />
+                  </div>
+                  <p className="text-sm font-medium" style={{ color: "var(--color-text-muted)" }}>
+                    Novo Badge
+                  </p>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      }
 
       {isFormOpen &&
       <MaterialFormModal
@@ -2867,6 +2966,14 @@ export const Admin: React.FC = () => {
         message={t("confirm.delete.message")}
         onConfirm={confirmDelete}
         onClose={() => setIsConfirmOpen(false)} />
+
+      {isBadgeFormOpen && (
+        <BadgeFormModal
+          badge={editingBadge}
+          onClose={() => { setIsBadgeFormOpen(false); setEditingBadge(null); }}
+          onSave={() => { loadBadges(); }}
+        />
+      )}
 
       {rejectingUser && (
         <RejectUserModal

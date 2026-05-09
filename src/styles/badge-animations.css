@@ -1,0 +1,182 @@
+/* ═══════════════════════════════════════════════════════════
+   BADGE UNLOCK ANIMATIONS
+   Confete dourado + Cadeado quebrando
+   ═══════════════════════════════════════════════════════════ */
+
+/* Container de confete */
+.badge-confete-container {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+  z-index: 10;
+}
+
+/* Partícula de confete dourado */
+.badge-confete-particle {
+  position: absolute;
+  width: 4px;
+  height: 4px;
+  background: #c9a655;
+  border-radius: 50%;
+  opacity: 0;
+}
+
+/* Animação de confete dispersando */
+@keyframes confete-gold-1 {
+  0%   { transform: translate(0, 0) rotate(0deg) scale(1);   opacity: 1; }
+  100% { transform: translate(-30px, -60px) rotate(720deg) scale(0); opacity: 0; }
+}
+@keyframes confete-gold-2 {
+  0%   { transform: translate(0, 0) rotate(0deg) scale(1);   opacity: 1; }
+  100% { transform: translate(30px, -60px) rotate(-720deg) scale(0); opacity: 0; }
+}
+@keyframes confete-gold-3 {
+  0%   { transform: translate(0, 0) rotate(0deg) scale(1);   opacity: 1; }
+  100% { transform: translate(-20px, -80px) rotate(360deg) scale(0.5); opacity: 0; }
+}
+@keyframes confete-gold-4 {
+  0%   { transform: translate(0, 0) rotate(0deg) scale(1);   opacity: 1; }
+  100% { transform: translate(20px, -80px) rotate(-360deg) scale(0.5); opacity: 0; }
+}
+@keyframes confete-gold-5 {
+  0%   { transform: translate(0, 0) rotate(0deg) scale(1);   opacity: 1; }
+  100% { transform: translate(0, -100px) rotate(540deg) scale(0.3); opacity: 0; }
+}
+@keyframes confete-gold-6 {
+  0%   { transform: translate(0, 0) rotate(0deg) scale(1);   opacity: 1; }
+  100% { transform: translate(-40px, -40px) rotate(-540deg) scale(0.3); opacity: 0; }
+}
+@keyframes confete-gold-7 {
+  0%   { transform: translate(0, 0) rotate(0deg) scale(1);   opacity: 1; }
+  100% { transform: translate(40px, -40px) rotate(720deg) scale(0.3); opacity: 0; }
+}
+@keyframes confete-gold-8 {
+  0%   { transform: translate(0, 0) rotate(0deg) scale(1);   opacity: 1; }
+  100% { transform: translate(-15px, -90px) rotate(180deg) scale(0.6); opacity: 0; }
+}
+@keyframes confete-gold-9 {
+  0%   { transform: translate(0, 0) rotate(0deg) scale(1);   opacity: 1; }
+  100% { transform: translate(15px, -90px) rotate(-180deg) scale(0.6); opacity: 0; }
+}
+@keyframes confete-gold-10 {
+  0%   { transform: translate(0, 0) rotate(0deg) scale(1);   opacity: 1; }
+  100% { transform: translate(-25px, -50px) rotate(900deg) scale(0.4); opacity: 0; }
+}
+@keyframes confete-gold-11 {
+  0%   { transform: translate(0, 0) rotate(0deg) scale(1);   opacity: 1; }
+  100% { transform: translate(25px, -50px) rotate(-900deg) scale(0.4); opacity: 0; }
+}
+@keyframes confete-gold-12 {
+  0%   { transform: translate(0, 0) rotate(0deg) scale(1);   opacity: 1; }
+  100% { transform: translate(0, -120px) rotate(1080deg) scale(0.2); opacity: 0; }
+}
+
+/* Aplicação das animações de confete */
+.confete-1  { animation: confete-gold-1  2.5s ease-out forwards; }
+.confete-2  { animation: confete-gold-2  1.8s ease-out forwards; }
+.confete-3  { animation: confete-gold-3  2.2s ease-out forwards; }
+.confete-4  { animation: confete-gold-4  2.0s ease-out forwards; }
+.confete-5  { animation: confete-gold-5  3.0s ease-out forwards; }
+.confete-6  { animation: confete-gold-6  1.5s ease-out forwards; }
+.confete-7  { animation: confete-gold-7  2.9s ease-out forwards; }
+.confete-8  { animation: confete-gold-8  2.2s ease-out forwards; }
+.confete-9  { animation: confete-gold-9  1.7s ease-out forwards; }
+.confete-10 { animation: confete-gold-10 2.4s ease-out forwards; }
+.confete-11 { animation: confete-gold-11 2.1s ease-out forwards; }
+.confete-12 { animation: confete-gold-12 1.9s ease-out forwards; }
+
+/* Animação do Cadeado Quebrando */
+@keyframes lock-crack-1 {
+  0%   { transform: scaleX(1) scaleY(1); opacity: 1; }
+  15%  { transform: scaleX(1.3) scaleY(0.8); opacity: 1; }
+  30%  { transform: scaleX(0) scaleY(1.2); opacity: 0.5; }
+  31%  { opacity: 0; }
+  100% { opacity: 0; }
+}
+@keyframes lock-crack-2 {
+  0%   { transform: scaleX(1) scaleY(1); opacity: 1; }
+  15%  { transform: scaleX(0.8) scaleY(1.3); opacity: 1; }
+  30%  { transform: scaleX(1.2) scaleY(0); opacity: 0.5; }
+  31%  { opacity: 0; }
+  100% { opacity: 0; }
+}
+@keyframes lock-crack-3 {
+  0%   { transform: scaleX(1) scaleY(1); opacity: 1; }
+  15%  { transform: scaleX(0.6) scaleY(1.5); opacity: 0.8; }
+  30%  { transform: scaleX(1.5) scaleY(0.6); opacity: 0.3; }
+  31%  { opacity: 0; }
+  100% { opacity: 0; }
+}
+
+.animate-lock-crack-1 { animation: lock-crack-1 0.6s ease-in forwards; }
+.animate-lock-crack-2 { animation: lock-crack-2 0.6s ease-in forwards; }
+.animate-lock-crack-3 { animation: lock-crack-3 0.6s ease-in forwards; }
+
+/* Brilho pulsante do badge desbloqueado */
+@keyframes unlock-glow {
+  0%   { box-shadow: 0 0 0px rgba(201, 166, 85, 0); }
+  50%  { box-shadow: 0 0 30px rgba(201, 166, 85, 0.6), 0 0 60px rgba(201, 166, 85, 0.3); }
+  100% { box-shadow: 0 0 0px rgba(201, 166, 85, 0); }
+}
+
+.animate-unlock-glow {
+  animation: unlock-glow 2s ease-in-out infinite;
+}
+
+/* Flash brilhante no badge */
+@keyframes unlock-flash {
+  0%   { filter: brightness(1); }
+  30%  { filter: brightness(2.5); }
+  60%  { filter: brightness(1.5); }
+  100% { filter: brightness(1); }
+}
+
+.animate-unlock-flash {
+  animation: unlock-flash 0.8s ease-out forwards;
+}
+
+/* Escala de entrada do badge desbloqueado */
+@keyframes badge-pop-in {
+  0%   { transform: scale(0) rotate(-10deg); opacity: 0; }
+  50%  { transform: scale(1.2) rotate(5deg); opacity: 1; }
+  70%  { transform: scale(0.95) rotate(-2deg); }
+  100% { transform: scale(1) rotate(0deg); opacity: 1; }
+}
+
+.animate-badge-pop {
+  animation: badge-pop-in 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+
+/* Estado "recém-desbloqueado" com borda pulsante */
+@keyframes border-pulse-gold {
+  0%, 100% { border-color: #c9a655; box-shadow: 0 0 5px rgba(201, 166, 85, 0.3); }
+  50%      { border-color: #e8d48b; box-shadow: 0 0 20px rgba(201, 166, 85, 0.6); }
+}
+
+.animate-border-pulse {
+  animation: border-pulse-gold 2s ease-in-out infinite;
+}
+
+/* Partículas de brilho (shimmer) */
+@keyframes shimmer-particle {
+  0%   { transform: translateX(-100%) translateY(0) scale(0); opacity: 0; }
+  20%  { opacity: 1; }
+  80%  { opacity: 1; }
+  100% { transform: translateX(100%) translateY(-100%) scale(1); opacity: 0; }
+}
+
+.shimmer-particle {
+  position: absolute;
+  width: 3px;
+  height: 3px;
+  background: radial-gradient(circle, #fff8dc, #c9a655);
+  border-radius: 50%;
+  animation: shimmer-particle 2s linear infinite;
+}
+
+.shimmer-1 { animation-delay: 0s; top: 20%; left: 10%; }
+.shimmer-2 { animation-delay: 0.3s; top: 40%; right: 15%; }
+.shimmer-3 { animation-delay: 0.6s; bottom: 30%; left: 20%; }
+.shimmer-4 { animation-delay: 0.9s; top: 10%; right: 25%; }
+.shimmer-5 { animation-delay: 1.2s; bottom: 10%; left: 40%; }

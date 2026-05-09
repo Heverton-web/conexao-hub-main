@@ -18,6 +18,8 @@ import {
 import { Progress } from '../components/ui/progress';
 import { TrailCompletionCelebration } from '../components/hub/TrailCompletionCelebration';
 import { ChatWidget } from '../components/hub/ChatWidget';
+import { BadgeDisplay, BadgeGrid } from '../components/hub/BadgeDisplay';
+import { BadgeNotification, useBadgeNotification } from '../components/hub/BadgeNotification';
 import { colorMix } from '../lib/utils';
 
 export const Dashboard: React.FC = () => {
@@ -40,6 +42,7 @@ export const Dashboard: React.FC = () => {
   const [selectedCollection, setSelectedCollection] = useState<Collection | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [celebration, setCelebration] = useState<{ trailName: string; bonusXp: number } | null>(null);
+  const { awardedBadge, showBadge, BadgeNotificationComponent } = useBadgeNotification();
 
   useEffect(() => {
     if (user) {
@@ -189,11 +192,17 @@ const handleCloseViewer = async () => {
             points: totalPoints,
           });
 
-          if (mat.points > 0) {
-            const remainingXp = mat.points - Math.floor(mat.points * 0.3);
-            await mockDb.addPoints(user.id, remainingXp);
-            addUserPoints(remainingXp);
+if (mat.points > 0) {
+          const remainingXp = mat.points - Math.floor(mat.points * 0.3);
+          await mockDb.addPoints(user.id, remainingXp);
+          addUserPoints(remainingXp);
+          
+          const completedCount = userProgress.filter(p => p.status === 'completed').length + 1;
+          const awardedBadges = await mockDb.checkAndAwardBadges(user.id, 'material_completed', completedCount);
+          if (awardedBadges.length > 0) {
+            showBadge(awardedBadges[0]);
           }
+        }
 
           setUserProgress(prev => {
             const filtered = prev.filter(p => !(p.materialId === mat.id && p.collectionId === colId));
@@ -280,6 +289,17 @@ const handleCloseViewer = async () => {
               <p className="text-[10px] mt-1.5 text-right" style={{ color: 'var(--color-text-muted)' }}>
                 Próximo: {nextThreshold} XP
               </p>
+            </div>
+          )}
+
+          {/* Badges */}
+          {user && (
+            <div className="rounded-2xl p-4 border border-white/10" style={{ backgroundColor: colorMix('var(--color-surface)', 40, 'rgba(30,41,59,0.4)') }}>
+              <div className="flex items-center gap-2 mb-3">
+                <Trophy size={14} style={{ color: 'var(--color-accent)' }} />
+                <span className="text-xs font-bold uppercase tracking-wider" style={{ color: 'var(--color-text-muted)' }}>Conquistas</span>
+              </div>
+              <BadgeDisplay userId={user.id} size="sm" showLocked={true} />
             </div>
           )}
 
@@ -587,6 +607,7 @@ const handleCloseViewer = async () => {
         onClose={() => setCelebration(null)}
       />
 
+      <BadgeNotificationComponent />
       <ChatWidget />
     </div>
   );

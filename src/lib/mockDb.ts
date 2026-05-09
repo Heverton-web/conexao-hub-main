@@ -1,5 +1,5 @@
 import { supabase } from './supabaseClient';
-import { Material, UserProfile, Role, SystemConfig, ColorScheme, UserStatus, AccessLog, Language, MaterialAsset, Collection, CollectionItem, UserProgress, ThemeModeConfig, EnvironmentThemes, Webhook, WebhookEventFilter, WebhookLog, SystemIntegrations, getUserLevel } from '../types';
+import { Material, UserProfile, Role, SystemConfig, ColorScheme, UserStatus, AccessLog, Language, MaterialAsset, Collection, CollectionItem, UserProgress, ThemeModeConfig, EnvironmentThemes, Webhook, WebhookEventFilter, WebhookLog, SystemIntegrations, getUserLevel, Badge, UserBadge, BadgeWithDetails } from '../types';
 import { DEFAULT_DARK, DEFAULT_THEME_MODE, mergeScheme, DEFAULT_ENVIRONMENT_THEMES } from './themeDefaults';
 import { encrypt, decrypt } from './crypto';
 import { mockMode } from './mockMode';
@@ -38,16 +38,16 @@ const localUsers: UserProfile[] = [
 ];
 
 const localMaterials: Material[] = [
-    { id: 'mat-1', type: 'video', title: { 'pt-br': 'Tutorial de Implantes', 'en-us': 'Implant Tutorial', 'es-es': 'Tutorial de Implantes' }, active: true, allowedRoles: ['client', 'distributor', 'consultant', 'manager', 'super_admin'], assets: { 'pt-br': { url: 'https://example.com/video1', subtitleUrl: '', status: 'ready' } }, createdAt: '2024-01-01', points: 10, tags: ['implante', 'tutorial'], category: 'odontologia' },
-    { id: 'mat-2', type: 'pdf', title: { 'pt-br': 'Guia de Marketing', 'en-us': 'Marketing Guide', 'es-es': 'Guía de Marketing' }, active: true, allowedRoles: ['client', 'distributor', 'consultant', 'manager', 'super_admin'], assets: { 'pt-br': { url: 'https://example.com/pdf1', subtitleUrl: '', status: 'ready' } }, createdAt: '2024-01-15', points: 10, tags: ['marketing', 'vendas'], category: 'marketing' },
-    { id: 'mat-3', type: 'trilha', title: { 'pt-br': 'Trilha de Vendas', 'en-us': 'Sales Trail', 'es-es': 'Trayecto de Ventas' }, active: true, allowedRoles: ['client', 'distributor', 'consultant', 'manager', 'super_admin'], assets: {}, createdAt: '2024-02-01', points: 50, tags: ['vendas', 'trilha'], category: 'vendas' },
-    { id: 'mat-4', type: 'video', title: { 'pt-br': 'Apresentação comercial', 'en-us': 'Commercial Presentation', 'es-es': 'Presentación Comercial' }, active: true, allowedRoles: ['distributor', 'consultant', 'manager', 'super_admin'], assets: { 'pt-br': { url: 'https://example.com/video2', subtitleUrl: '', status: 'ready' } }, createdAt: '2024-02-10', points: 20, tags: ['vendas', 'apresentação'], category: 'vendas' },
-    { id: 'mat-5', type: 'pdf', title: { 'pt-br': 'Kit Dentista', 'en-us': 'Dentist Kit', 'es-es': 'Kit Dentista' }, active: true, allowedRoles: ['client'], assets: { 'pt-br': { url: 'https://example.com/pdf2', subtitleUrl: '', status: 'ready' } }, createdAt: '2024-02-15', points: 15, tags: ['kit', 'dentista'], category: 'odontologia' },
-    { id: 'mat-6', type: 'video', title: { 'pt-br': 'Estratégias de Growth', 'en-us': 'Growth Strategies', 'es-es': 'Estrategias de Crecimiento' }, active: true, allowedRoles: ['distributor', 'consultant', 'manager', 'super_admin'], assets: { 'pt-br': { url: 'https://example.com/video3', subtitleUrl: '', status: 'ready' } }, createdAt: '2024-02-20', points: 25, tags: ['growth', 'marketing'], category: 'marketing' },
-    { id: 'mat-7', type: 'video', title: { 'pt-br': 'Técnicas de Vendas', 'en-us': 'Sales Techniques', 'es-es': 'Técnicas de Ventas' }, active: true, allowedRoles: ['client', 'distributor', 'consultant', 'manager', 'super_admin'], assets: { 'pt-br': { url: 'https://example.com/video4', subtitleUrl: '', status: 'ready' } }, createdAt: '2024-03-01', points: 30, tags: ['vendas', 'técnicas'], category: 'vendas' },
-    { id: 'mat-8', type: 'pdf', title: { 'pt-br': 'Manual do Consultor', 'en-us': 'Consultant Manual', 'es-es': 'Manual del Consultor' }, active: true, allowedRoles: ['consultant', 'manager', 'super_admin'], assets: { 'pt-br': { url: 'https://example.com/pdf3', subtitleUrl: '', status: 'ready' } }, createdAt: '2024-03-05', points: 40, tags: ['consultor', 'manual'], category: 'gestão' },
-    { id: 'mat-9', type: 'trilha', title: { 'pt-br': 'Gestão de Clínica', 'en-us': 'Clinic Management', 'es-es': 'Gestión de Clínica' }, active: true, allowedRoles: ['manager', 'super_admin'], assets: {}, createdAt: '2024-03-10', points: 100, tags: ['gestão', 'clínica'], category: 'gestão' },
-    { id: 'mat-10', type: 'video', title: { 'pt-br': 'Tudo sobre Implantes', 'en-us': 'All About Implants', 'es-es': 'Todo sobre Implantes' }, active: true, allowedRoles: ['client', 'distributor', 'consultant', 'manager', 'super_admin'], assets: { 'pt-br': { url: 'https://example.com/video5', subtitleUrl: '', status: 'ready' } }, createdAt: '2024-03-15', points: 50, tags: ['implante', 'odontologia'], category: 'odontologia' },
+    { id: 'mat-1', type: 'video', title: { 'pt-br': 'Tutorial de Implantes', 'en-us': 'Implant Tutorial', 'es-es': 'Tutorial de Implantes' }, active: true, allowedRoles: ['client', 'distributor', 'consultant', 'manager', 'super_admin'], assets: { 'pt-br': { url: 'https://example.com/video1', subtitleUrl: '', status: 'published' } }, createdAt: '2024-01-01', points: 10, tags: ['implante', 'tutorial'], category: 'odontologia' },
+    { id: 'mat-2', type: 'pdf', title: { 'pt-br': 'Guia de Marketing', 'en-us': 'Marketing Guide', 'es-es': 'Guía de Marketing' }, active: true, allowedRoles: ['client', 'distributor', 'consultant', 'manager', 'super_admin'], assets: { 'pt-br': { url: 'https://example.com/pdf1', subtitleUrl: '', status: 'published' } }, createdAt: '2024-01-15', points: 10, tags: ['marketing', 'vendas'], category: 'marketing' },
+    { id: 'mat-3', type: 'pdf', title: { 'pt-br': 'Trilha de Vendas', 'en-us': 'Sales Trail', 'es-es': 'Trayecto de Ventas' }, active: true, allowedRoles: ['client', 'distributor', 'consultant', 'manager', 'super_admin'], assets: {}, createdAt: '2024-02-01', points: 50, tags: ['vendas', 'trilha'], category: 'vendas' },
+    { id: 'mat-4', type: 'video', title: { 'pt-br': 'Apresentação comercial', 'en-us': 'Commercial Presentation', 'es-es': 'Presentación Comercial' }, active: true, allowedRoles: ['distributor', 'consultant', 'manager', 'super_admin'], assets: { 'pt-br': { url: 'https://example.com/video2', subtitleUrl: '', status: 'published' } }, createdAt: '2024-02-10', points: 20, tags: ['vendas', 'apresentação'], category: 'vendas' },
+    { id: 'mat-5', type: 'pdf', title: { 'pt-br': 'Kit Dentista', 'en-us': 'Dentist Kit', 'es-es': 'Kit Dentista' }, active: true, allowedRoles: ['client'], assets: { 'pt-br': { url: 'https://example.com/pdf2', subtitleUrl: '', status: 'published' } }, createdAt: '2024-02-15', points: 15, tags: ['kit', 'dentista'], category: 'odontologia' },
+    { id: 'mat-6', type: 'video', title: { 'pt-br': 'Estratégias de Growth', 'en-us': 'Growth Strategies', 'es-es': 'Estrategias de Crecimiento' }, active: true, allowedRoles: ['distributor', 'consultant', 'manager', 'super_admin'], assets: { 'pt-br': { url: 'https://example.com/video3', subtitleUrl: '', status: 'published' } }, createdAt: '2024-02-20', points: 25, tags: ['growth', 'marketing'], category: 'marketing' },
+    { id: 'mat-7', type: 'video', title: { 'pt-br': 'Técnicas de Vendas', 'en-us': 'Sales Techniques', 'es-es': 'Técnicas de Ventas' }, active: true, allowedRoles: ['client', 'distributor', 'consultant', 'manager', 'super_admin'], assets: { 'pt-br': { url: 'https://example.com/video4', subtitleUrl: '', status: 'published' } }, createdAt: '2024-03-01', points: 30, tags: ['vendas', 'técnicas'], category: 'vendas' },
+    { id: 'mat-8', type: 'pdf', title: { 'pt-br': 'Manual do Consultor', 'en-us': 'Consultant Manual', 'es-es': 'Manual del Consultor' }, active: true, allowedRoles: ['consultant', 'manager', 'super_admin'], assets: { 'pt-br': { url: 'https://example.com/pdf3', subtitleUrl: '', status: 'published' } }, createdAt: '2024-03-05', points: 40, tags: ['consultor', 'manual'], category: 'gestão' },
+    { id: 'mat-9', type: 'pdf', title: { 'pt-br': 'Gestão de Clínica', 'en-us': 'Clinic Management', 'es-es': 'Gestión de Clínica' }, active: true, allowedRoles: ['manager', 'super_admin'], assets: {}, createdAt: '2024-03-10', points: 100, tags: ['gestão', 'clínica'], category: 'gestão' },
+    { id: 'mat-10', type: 'video', title: { 'pt-br': 'Tudo sobre Implantes', 'en-us': 'All About Implants', 'es-es': 'Todo sobre Implantes' }, active: true, allowedRoles: ['client', 'distributor', 'consultant', 'manager', 'super_admin'], assets: { 'pt-br': { url: 'https://example.com/video5', subtitleUrl: '', status: 'published' } }, createdAt: '2024-03-15', points: 50, tags: ['implante', 'odontologia'], category: 'odontologia' },
 ];
 
 const mapProfileFromDb = (data: any): UserProfile => ({
@@ -166,7 +166,7 @@ export const mockDb = {
       environmentThemes: (data as any).environment_themes && Object.keys((data as any).environment_themes).length > 0
         ? { ...DEFAULT_ENVIRONMENT_THEMES, ...(data as any).environment_themes }
         : DEFAULT_ENVIRONMENT_THEMES,
-      showMockLoginCards: data.show_mock_login_cards ?? true,
+      showMockLoginCards: (data as any).show_mock_login_cards ?? true,
     };
   },
 
@@ -535,13 +535,22 @@ export const mockDb = {
     const payload: any = { user_id: userId, material_id: materialId, status, collection_id: collectionId || null };
     if (status === 'completed') payload.completed_at = new Date().toISOString();
     const { error } = await supabase.from('user_progress').upsert(payload, { onConflict: 'user_id,material_id,collection_id' });
-    if (error) console.error('Error upserting progress:', error);
+    if (error) {
+      console.error('Error upserting progress:', error);
+    } else if (status === 'completed') {
+      // Check for badges related to material completion
+      const { data: progress } = await supabase.from('user_progress').select('id').eq('user_id', userId).eq('status', 'completed');
+      await mockDb.checkAndAwardBadges(userId, 'material_completed', progress?.length || 0);
+    }
   },
 
   addPoints: async (userId: string, points: number): Promise<void> => {
     const { data: profile } = await supabase.from('profiles').select('points').eq('id', userId).single();
     const currentPoints = (profile?.points || 0) + points;
     await supabase.from('profiles').update({ points: currentPoints }).eq('id', userId);
+    
+    // Check for badges related to points
+    await mockDb.checkAndAwardBadges(userId, 'points_reached', currentPoints);
   },
 
   // ---- Gamification Levels ----
@@ -816,7 +825,7 @@ export const mockDb = {
       if (!t) return null;
       return { id: t.id, token: t.token, role: t.role, expiresAt: t.expires_at };
     }
-    const { data, error } = await supabase
+    const query = (supabase as any)
       .from('invite_tokens')
       .select('*')
       .eq('token', token)
@@ -824,6 +833,7 @@ export const mockDb = {
       .is('used_at', null)
       .gt('expires_at', new Date().toISOString())
       .single();
+    const { data, error } = await query;
     if (error || !data) return null;
     return { id: data.id, token: data.token, role: data.role, expiresAt: data.expires_at };
   },
@@ -842,13 +852,14 @@ export const mockDb = {
 
   // Webhooks CRUD
   getWebhooks: async (): Promise<Webhook[]> => {
-    const { data, error } = await supabase
+    const db = supabase as any;
+    const { data, error } = await db
       .from('webhooks')
       .select('*')
       .order('created_at', { ascending: false });
     if (error) throw error;
-    return (data || []).map((w) => ({
-      id: w.id,
+    return (data || []).map((w: any) => ({
+      id: String(w.id),
       name: w.name,
       url: w.url,
       event: w.event,
@@ -860,10 +871,11 @@ export const mockDb = {
   },
 
   getWebhookById: async (id: string): Promise<Webhook | null> => {
-    const { data, error } = await supabase.from('webhooks').select('*').eq('id', id).single();
+    const db = supabase as any;
+    const { data, error } = await db.from('webhooks').select('*').eq('id', id).single();
     if (error || !data) return null;
     return {
-      id: data.id,
+      id: String(data.id),
       name: data.name,
       url: data.url,
       event: data.event,
@@ -875,14 +887,15 @@ export const mockDb = {
   },
 
   getWebhooksByEvent: async (event: string): Promise<Webhook[]> => {
-    const { data, error } = await supabase
+    const db = supabase as any;
+    const { data, error } = await db
       .from('webhooks')
       .select('*')
       .eq('event', event)
       .eq('active', true);
     if (error) throw error;
-    return (data || []).map((w) => ({
-      id: w.id,
+    return (data || []).map((w: any) => ({
+      id: String(w.id),
       name: w.name,
       url: w.url,
       event: w.event,
@@ -900,7 +913,8 @@ export const mockDb = {
     eventFilter?: WebhookEventFilter;
     active?: boolean;
   }): Promise<Webhook> => {
-    const { data, error } = await supabase
+    const db = supabase as any;
+    const { data, error } = await db
       .from('webhooks')
       .insert({
         name: webhook.name,
@@ -913,7 +927,7 @@ export const mockDb = {
       .single();
     if (error) throw error;
     return {
-      id: data.id,
+      id: String(data.id),
       name: data.name,
       url: data.url,
       event: data.event,
@@ -931,6 +945,7 @@ export const mockDb = {
     eventFilter: WebhookEventFilter;
     active: boolean;
   }>): Promise<void> => {
+    const db = supabase as any;
     const updateData: Record<string, unknown> = {};
     if (webhook.name !== undefined) updateData.name = webhook.name;
     if (webhook.url !== undefined) updateData.url = webhook.url;
@@ -939,25 +954,27 @@ export const mockDb = {
     if (webhook.active !== undefined) updateData.active = webhook.active;
     updateData.updated_at = new Date().toISOString();
 
-    const { error } = await supabase.from('webhooks').update(updateData).eq('id', id);
+    const { error } = await db.from('webhooks').update(updateData).eq('id', id);
     if (error) throw error;
   },
 
   deleteWebhook: async (id: string): Promise<void> => {
-    const { error } = await supabase.from('webhooks').delete().eq('id', id);
+    const db = supabase as any;
+    const { error } = await db.from('webhooks').delete().eq('id', id);
     if (error) throw error;
   },
 
   getWebhookLogs: async (webhookId: string): Promise<WebhookLog[]> => {
-    const { data, error } = await supabase
+    const db = supabase as any;
+    const { data, error } = await db
       .from('webhook_logs')
       .select('*')
       .eq('webhook_id', webhookId)
       .order('created_at', { ascending: false })
       .limit(50);
     if (error) throw error;
-    return (data || []).map((l) => ({
-      id: l.id,
+    return (data || []).map((l: any) => ({
+      id: String(l.id),
       webhookId: l.webhook_id,
       event: l.event,
       payload: l.payload || {},
@@ -976,7 +993,8 @@ export const mockDb = {
     responseCode?: number;
     responseBody?: string;
   }): Promise<WebhookLog> => {
-    const { data, error } = await supabase
+    const db = supabase as any;
+    const { data, error } = await db
       .from('webhook_logs')
       .insert({
         webhook_id: log.webhookId,
@@ -990,7 +1008,7 @@ export const mockDb = {
       .single();
     if (error) throw error;
     return {
-      id: data.id,
+      id: String(data.id),
       webhookId: data.webhook_id,
       event: data.event,
       payload: data.payload || {},
@@ -1002,7 +1020,8 @@ export const mockDb = {
   },
 
   getSystemIntegrations: async (): Promise<SystemIntegrations> => {
-    const { data, error } = await supabase
+    const db = supabase as any;
+    const { data, error } = await db
       .from('system_integrations')
       .select('*')
       .limit(1)
@@ -1093,20 +1112,21 @@ export const mockDb = {
       updateData.openrouter_active = integrations.openrouterActive;
     }
 
-    const { data: existing } = await supabase
+    const db2 = supabase as any;
+    const { data: existing } = await db2
       .from('system_integrations')
       .select('id')
       .limit(1)
       .single();
 
     if (existing) {
-      const { error } = await supabase
+      const { error } = await db2
         .from('system_integrations')
         .update(updateData)
         .eq('id', existing.id);
       if (error) throw error;
     } else {
-      const { error } = await supabase
+      const { error } = await db2
         .from('system_integrations')
         .insert(updateData);
       if (error) throw error;
@@ -1115,7 +1135,8 @@ export const mockDb = {
 
   // ---- Chatbot Config ----
   getChatbotConfig: async (): Promise<{ enabled: boolean; webhookUrl: string; allowedRoles: string[] }> => {
-    const { data, error } = await supabase.from('chatbot_config').select('*').limit(1).single();
+    const db = supabase as any;
+    const { data, error } = await db.from('chatbot_config').select('*').limit(1).single();
     
     if (error && error.code !== 'PGRST116') {
       console.error('Error fetching chatbot config:', error);
@@ -1129,7 +1150,6 @@ export const mockDb = {
       };
     }
 
-    // Return default config if none exists
     return {
       enabled: false,
       webhookUrl: '',
@@ -1138,10 +1158,11 @@ export const mockDb = {
   },
 
   updateChatbotConfig: async (config: { enabled: boolean; webhookUrl: string; allowedRoles: string[] }): Promise<void> => {
-    const { data: existing } = await supabase.from('chatbot_config').select('id').limit(1).single();
+    const db = supabase as any;
+    const { data: existing } = await db.from('chatbot_config').select('id').limit(1).single();
 
     if (existing) {
-      const { error } = await supabase
+      const { error } = await db
         .from('chatbot_config')
         .update({
           enabled: config.enabled,
@@ -1152,7 +1173,7 @@ export const mockDb = {
         .eq('id', existing.id);
       if (error) throw error;
     } else {
-      const { error } = await supabase
+      const { error } = await db
         .from('chatbot_config')
         .insert({
           enabled: config.enabled,
@@ -1171,7 +1192,8 @@ export const mockDb = {
     materialsFound?: number;
     collectionsFound?: number;
   }): Promise<void> => {
-    const { error } = await supabase.from('chat_logs').insert({
+    const db = supabase as any;
+    const { error } = await db.from('chat_logs').insert({
       user_id: log.userId,
       message: log.message,
       response: log.response,
@@ -1184,5 +1206,219 @@ export const mockDb = {
   login: async () => {},
   register: async () => {},
   loginMock: async () => {},
-};
 
+  // ---- BADGES SYSTEM ----
+  getBadges: async (): Promise<Badge[]> => {
+    if (isMock()) {
+      const rows = mockStore.get('badges');
+      return rows.map(b => ({
+        id: b.id,
+        name: b.name,
+        description: b.description,
+        iconName: b.icon_name,
+        triggerType: b.trigger_type,
+        triggerValue: b.trigger_value,
+        pointsReward: b.points_reward,
+        color: b.color,
+        createdAt: b.created_at,
+      }));
+    }
+    const db = supabase as any;
+    const { data, error } = await db.from('badges').select('*').order('trigger_value');
+    if (error) {
+      console.error('Error fetching badges:', error);
+      return [];
+    }
+    return data?.map((b: any) => ({
+      id: b.id,
+      name: b.name,
+      description: b.description,
+      iconName: b.icon_name,
+      triggerType: b.trigger_type,
+      triggerValue: b.trigger_value,
+      pointsReward: b.points_reward,
+      color: b.color,
+      createdAt: b.created_at,
+    })) || [];
+  },
+
+  getUserBadges: async (userId: string): Promise<BadgeWithDetails[]> => {
+    if (isMock()) {
+      const ubRows = mockStore.filter('user_badges', r => r.user_id === userId);
+      const badgeRows = mockStore.get('badges');
+      return ubRows.map(ub => {
+        const b = badgeRows.find(bg => bg.id === ub.badge_id);
+        if (!b) return null;
+        return {
+          id: ub.id,
+          userId: ub.user_id,
+          badgeId: ub.badge_id,
+          earnedAt: ub.earned_at,
+          badge: {
+            id: b.id,
+            name: b.name,
+            description: b.description,
+            iconName: b.icon_name,
+            triggerType: b.trigger_type,
+            triggerValue: b.trigger_value,
+            pointsReward: b.points_reward,
+            color: b.color,
+            createdAt: b.created_at,
+          },
+        };
+      }).filter(Boolean) as BadgeWithDetails[];
+    }
+    const db = supabase as any;
+    const { data, error } = await db
+      .from('user_badges')
+      .select('*, badges(*)')
+      .eq('user_id', userId);
+    if (error) {
+      console.error('Error fetching user badges:', error);
+      return [];
+    }
+    return data?.map((ub: any) => ({
+      id: ub.id,
+      userId: ub.user_id,
+      badgeId: ub.badge_id,
+      earnedAt: ub.earned_at,
+      badge: {
+        id: ub.badges.id,
+        name: ub.badges.name,
+        description: ub.badges.description,
+        iconName: ub.badges.icon_name,
+        triggerType: ub.badges.trigger_type,
+        triggerValue: ub.badges.trigger_value,
+        pointsReward: ub.badges.points_reward,
+        color: ub.badges.color,
+        createdAt: ub.badges.created_at,
+      },
+    })) || [];
+  },
+
+  awardBadge: async (userId: string, badgeId: string): Promise<boolean> => {
+    if (isMock()) {
+      const existing = mockStore.find('user_badges', r => r.user_id === userId && r.badge_id === badgeId);
+      if (existing) return false;
+      mockStore.insert('user_badges', {
+        user_id: userId,
+        badge_id: badgeId,
+        earned_at: new Date().toISOString(),
+      });
+      return true;
+    }
+    const db = supabase as any;
+    const existing = await db
+      .from('user_badges')
+      .select('id')
+      .eq('user_id', userId)
+      .eq('badge_id', badgeId)
+      .single();
+    if (existing.data) return false;
+    const { error } = await db.from('user_badges').insert({
+      user_id: userId,
+      badge_id: badgeId,
+      earned_at: new Date().toISOString(),
+    });
+    return !error;
+  },
+
+  checkAndAwardBadges: async (userId: string, triggerType: string, value: number): Promise<Badge[]> => {
+    const awardedBadges: Badge[] = [];
+    const badges = await mockDb.getBadges();
+    const userBadges = await mockDb.getUserBadges(userId);
+    const earnedBadgeIds = userBadges.map(ub => ub.badgeId);
+
+    for (const badge of badges) {
+      if (earnedBadgeIds.includes(badge.id)) continue;
+      if (badge.triggerType !== triggerType) continue;
+      if (value >= badge.triggerValue) {
+        const awarded = await mockDb.awardBadge(userId, badge.id);
+        if (awarded) {
+          if (badge.pointsReward > 0) {
+            await mockDb.addPoints(userId, badge.pointsReward);
+          }
+          awardedBadges.push(badge);
+        }
+      }
+    }
+    return awardedBadges;
+  },
+
+  createBadge: async (badge: Omit<Badge, 'id' | 'createdAt'>): Promise<void> => {
+    if (isMock()) {
+      mockStore.insert('badges', {
+        name: badge.name,
+        description: badge.description,
+        icon_name: badge.iconName,
+        trigger_type: badge.triggerType,
+        trigger_value: badge.triggerValue,
+        points_reward: badge.pointsReward,
+        color: badge.color,
+        created_at: new Date().toISOString(),
+      });
+      return;
+    }
+    const db = supabase as any;
+    const id = `badge-${Date.now()}`;
+    const { error } = await db.from('badges').insert({
+      id,
+      name: badge.name,
+      description: badge.description,
+      icon_name: badge.iconName,
+      trigger_type: badge.triggerType,
+      trigger_value: badge.triggerValue,
+      points_reward: badge.pointsReward,
+      color: badge.color,
+      created_at: new Date().toISOString(),
+    });
+    if (error) throw error;
+  },
+
+  updateBadge: async (id: string, badge: Partial<Omit<Badge, 'id' | 'createdAt'>>): Promise<void> => {
+    if (isMock()) {
+      const updates: Record<string, any> = {};
+      if (badge.name !== undefined) updates.name = badge.name;
+      if (badge.description !== undefined) updates.description = badge.description;
+      if (badge.iconName !== undefined) updates.icon_name = badge.iconName;
+      if (badge.triggerType !== undefined) updates.trigger_type = badge.triggerType;
+      if (badge.triggerValue !== undefined) updates.trigger_value = badge.triggerValue;
+      if (badge.pointsReward !== undefined) updates.points_reward = badge.pointsReward;
+      if (badge.color !== undefined) updates.color = badge.color;
+      mockStore.update('badges', id, updates);
+      return;
+    }
+    const db = supabase as any;
+    const updateData: Record<string, any> = {};
+    if (badge.name !== undefined) updateData.name = badge.name;
+    if (badge.description !== undefined) updateData.description = badge.description;
+    if (badge.iconName !== undefined) updateData.icon_name = badge.iconName;
+    if (badge.triggerType !== undefined) updateData.trigger_type = badge.triggerType;
+    if (badge.triggerValue !== undefined) updateData.trigger_value = badge.triggerValue;
+    if (badge.pointsReward !== undefined) updateData.points_reward = badge.pointsReward;
+    if (badge.color !== undefined) updateData.color = badge.color;
+    const { error } = await db.from('badges').update(updateData).eq('id', id);
+    if (error) throw error;
+  },
+
+  deleteBadge: async (id: string): Promise<void> => {
+    if (isMock()) {
+      mockStore.delete('badges', id);
+      return;
+    }
+    const db = supabase as any;
+    const { error } = await db.from('badges').delete().eq('id', id);
+    if (error) throw error;
+  },
+
+  getAllUserBadges: async (): Promise<{ userId: string; badgeId: string; earnedAt: string }[]> => {
+    if (isMock()) {
+      const rows = mockStore.get('user_badges');
+      return rows.map(ub => ({ userId: ub.user_id, badgeId: ub.badge_id, earnedAt: ub.earned_at }));
+    }
+    const db = supabase as any;
+    const { data, error } = await db.from('user_badges').select('user_id, badge_id, earned_at');
+    if (error) return [];
+    return data?.map((ub: any) => ({ userId: ub.user_id, badgeId: ub.badge_id, earnedAt: ub.earned_at })) || [];
+  },
+};
