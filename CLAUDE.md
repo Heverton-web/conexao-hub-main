@@ -5,7 +5,7 @@
 
 ## Comportamento
 - Pensar e raciocinar em pt-br
--riar em pt-br
+- Criar em pt-br
 - Manter consistência linguística em todas as interações
 
 ## Memória de Sessão
