@@ -5,13 +5,30 @@ import { colorMix } from '../../lib/utils';
 
 interface ChatWidgetProps {
   className?: string;
+  showIconOnly?: boolean;
+  isOpen?: boolean;
+  onOpenChange?: (open: boolean) => void;
 }
 
-export const ChatWidget: React.FC<ChatWidgetProps> = ({ className = '' }) => {
-  const [isOpen, setIsOpen] = useState(false);
+export const ChatWidget: React.FC<ChatWidgetProps> = ({ 
+  className = '', 
+  showIconOnly = false,
+  isOpen: externalIsOpen,
+  onOpenChange: onExternalOpenChange
+}) => {
+  const [internalIsOpen, setInternalIsOpen] = useState(false);
   const [inputValue, setInputValue] = useState('');
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
+  
+  const isOpen = externalIsOpen !== undefined ? externalIsOpen : internalIsOpen;
+  const setIsOpen = (open: boolean) => {
+    if (onExternalOpenChange) {
+      onExternalOpenChange(open);
+    } else {
+      setInternalIsOpen(open);
+    }
+  };
   
   const { messages, isLoading, error, sendMessage, clearChat } = useChat();
 
@@ -51,26 +68,34 @@ export const ChatWidget: React.FC<ChatWidgetProps> = ({ className = '' }) => {
   };
 
   return (
-    <div className={`fixed bottom-4 right-4 z-50 ${className}`}>
+    <div 
+      className="fixed bottom-4 right-4 z-[9999] pointer-events-none"
+      style={{ 
+        position: 'fixed', 
+        bottom: '1rem', 
+        right: '1rem', 
+        zIndex: 9999 
+      }}
+    >
       {/* Botão flutuante */}
       {!isOpen && (
         <button
           onClick={() => setIsOpen(true)}
-          className="flex items-center gap-2 px-4 py-3 rounded-full shadow-lg transition-all duration-300 hover:scale-105"
+          className={`flex items-center rounded-full shadow-lg transition-all duration-300 hover:scale-105 pointer-events-auto ${showIconOnly ? 'p-2' : 'gap-2 px-4 py-3'}`}
           style={{
             background: 'linear-gradient(135deg, var(--color-accent) 0%, var(--color-gradient-end) 100%)',
             color: 'var(--color-accent-foreground)',
           }}
         >
-          <Bot size={20} />
-          <span className="font-medium text-sm">Assistente</span>
+          <Bot size={showIconOnly ? 20 : 20} />
+          {!showIconOnly && <span className="font-medium text-sm">Assistente</span>}
         </button>
       )}
 
       {/* Chat container */}
       {isOpen && (
         <div
-          className="w-[380px] h-[500px] rounded-2xl shadow-2xl flex flex-col overflow-hidden animate-in slide-in-from-bottom-4 fade-in duration-300"
+          className="w-[380px] h-[500px] rounded-2xl shadow-2xl flex flex-col overflow-hidden animate-in slide-in-from-bottom-4 fade-in duration-300 pointer-events-auto"
           style={{
             backgroundColor: 'var(--color-surface)',
             border: '1px solid var(--color-border)',
