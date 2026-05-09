@@ -14,4 +14,9 @@
 
 ## Commits
 - Sempre fazer commit das alterações quando solicitado pelo usuário
-- Push automático após commit (a menos que o usuário solicite o contrário)
+- **NÃO FAÇA PUSH ou MERGE sem autorização explícita do usuário!**
+
+## Regras de Segurança
+- Nunca fazer push ou merge sem autorização explícita
+- Sempre pedir confirmação antes de modificar branches principais
+- Pedir autorização antes de qualquer operação que modifique o repositório remoto
