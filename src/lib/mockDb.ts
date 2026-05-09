@@ -185,7 +185,10 @@ export const mockDb = {
   },
 
   getProfileById: async (id: string): Promise<UserProfile | null> => {
-    if (id.startsWith('mock-')) return localUsers.find(u => u.id === id) || null;
+    if (id.startsWith('mock-')) {
+      const user = localUsers.find(u => u.id === id) || null;
+      return user;
+    }
 
     const [profileResult, roleResult] = await Promise.all([
       supabase.from('profiles').select('*').eq('id', id).single(),

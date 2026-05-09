@@ -112,11 +112,16 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
                      role === 'distributor' ? 'mock-distrib' :
                      role === 'manager' ? 'mock-manager' : 'mock-consult';
 
-      const profile = await mockDb.getProfileById(mockId);
-      if (profile) {
-          setUser(profile);
+      try {
+        const profile = await mockDb.getProfileById(mockId);
+        if (profile) {
+            setUser(profile);
+        }
+      } catch (error) {
+        console.error('Erro no loginMock:', error);
+      } finally {
+        setIsLoading(false);
       }
-      setIsLoading(false);
   };
 
   const ensureProfile = async (userId: string, data: any) => {

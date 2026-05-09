@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useMemo } from "react";
+import React, { useEffect, useState, useMemo, useCallback } from "react";
 import { mockDb, CollectionProgress, GamificationLevel } from "../lib/mockDb";
 import {
   Material,
