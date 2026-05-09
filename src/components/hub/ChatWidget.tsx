@@ -2,6 +2,8 @@ import React, { useState, useRef, useEffect } from 'react';
 import { useChat } from '../../hooks/useChat';
 import { Send, X, Bot, Trash2, Loader2, FileText, Layers } from 'lucide-react';
 import { colorMix } from '../../lib/utils';
+import { isChatbotEnabledForRole } from '../../lib/chatService';
+import { useAuth } from '../../contexts/AuthContext';
 
 interface ChatWidgetProps {
   className?: string;
@@ -16,10 +18,41 @@ export const ChatWidget: React.FC<ChatWidgetProps> = ({
   isOpen: externalIsOpen,
   onOpenChange: onExternalOpenChange
 }) => {
+  const { user } = useAuth();
   const [internalIsOpen, setInternalIsOpen] = useState(false);
   const [inputValue, setInputValue] = useState('');
+  const [isEnabled, setIsEnabled] = useState(true);
+  const [loadingConfig, setLoadingConfig] = useState(true);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
+
+  // Verificar se o chatbot está habilitado para este perfil
+  useEffect(() => {
+    const checkEnabled = async () => {
+      if (!user?.role) {
+        setIsEnabled(false);
+        setLoadingConfig(false);
+        return;
+      }
+      
+      try {
+        const enabled = await isChatbotEnabledForRole(user.role);
+        setIsEnabled(enabled);
+      } catch (error) {
+        console.error('Erro ao verificar config do chatbot:', error);
+        setIsEnabled(false);
+      } finally {
+        setLoadingConfig(false);
+      }
+    };
+    
+    checkEnabled();
+  }, [user?.role]);
+  
+  // Não renderizar se não está habilitado ou carregando
+  if (loadingConfig || !isEnabled) {
+    return null;
+  }
   
   const isOpen = externalIsOpen !== undefined ? externalIsOpen : internalIsOpen;
   const setIsOpen = (open: boolean) => {

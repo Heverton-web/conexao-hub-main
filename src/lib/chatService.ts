@@ -25,10 +25,38 @@ export interface ChatResponse {
   collections: ChatResult[];
 }
 
-const N8N_WEBHOOK_URL = 'http://n8n:5678/webhook/chat-rag';
+export interface ChatbotConfig {
+  enabled: boolean;
+  webhookUrl: string;
+  allowedRoles: string[];
+}
+
 const TIMEOUT_MS = 30000;
 
-const DEMO_MODE = true;
+// Cache da configuração do chatbot
+let cachedConfig: ChatbotConfig | null = null;
+let configLoaded = false;
+
+export async function getChatbotConfig(): Promise<ChatbotConfig> {
+  if (configLoaded && cachedConfig) {
+    return cachedConfig;
+  }
+  
+  try {
+    const config = await mockDb.getChatbotConfig();
+    cachedConfig = config;
+    configLoaded = true;
+    return config;
+  } catch (error) {
+    console.error('Erro ao carregar config do chatbot:', error);
+    return { enabled: false, webhookUrl: '', allowedRoles: ['client', 'distributor', 'consultant', 'manager'] };
+  }
+}
+
+export async function isChatbotEnabledForRole(role: string): Promise<boolean> {
+  const config = await getChatbotConfig();
+  return config.enabled && config.allowedRoles.includes(role);
+}
 
 const GREETING_RESPONSES = [
   "Olá! Sou o assistente da plataforma. Posso ajudá-lo a encontrar materiais e trilhas. Sobre qual assunto gostaria de saber mais?",
@@ -161,17 +189,44 @@ async function demoChatMessage(message: string): Promise<ChatResponse> {
   };
 }
 
-export async function sendChatMessage(message: string): Promise<ChatResponse> {
-  if (DEMO_MODE) {
-    console.log('[Chat Demo Mode] Processing message:', message);
-    return demoChatMessage(message);
+export async function sendChatMessage(message: string, userId?: string): Promise<ChatResponse> {
+  const config = await getChatbotConfig();
+  
+  // Se não está habilitado, retorna erro
+  if (!config.enabled) {
+    throw new Error('Chatbot está desabilitado');
   }
+  
+  // Se não tem webhook configurado, usa modo demo
+  const useDemoMode = !config.webhookUrl || config.webhookUrl.trim() === '';
+  
+  if (useDemoMode) {
+    console.log('[Chat Demo Mode] Processing message:', message);
+    const result = await demoChatMessage(message);
+    
+    // Log da conversa em modo demo também (para métricas)
+    if (userId) {
+      await mockDb.saveChatLog({
+        userId,
+        message,
+        response: result.answer,
+        materialsFound: result.materials.length,
+        collectionsFound: result.collections.length,
+      });
+    }
+    
+    return result;
+  }
+  
+  // Modo produção: usar webhook do n8n
+  const webhookUrl = config.webhookUrl;
+  console.log('[Chat Production Mode] Using webhook:', webhookUrl);
   
   const controller = new AbortController();
   const timeoutId = setTimeout(() => controller.abort(), TIMEOUT_MS);
 
   try {
-    const response = await fetch(N8N_WEBHOOK_URL, {
+    const response = await fetch(webhookUrl, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -190,11 +245,24 @@ export async function sendChatMessage(message: string): Promise<ChatResponse> {
     }
 
     const data = await response.json();
-    return {
+    const result = {
       answer: data.answer || 'Desculpe, não consegui processar sua mensagem.',
       materials: data.materials || [],
       collections: data.collections || [],
     };
+    
+    // Log da conversa
+    if (userId) {
+      await mockDb.saveChatLog({
+        userId,
+        message,
+        response: result.answer,
+        materialsFound: result.materials.length,
+        collectionsFound: result.collections.length,
+      });
+    }
+    
+    return result;
   } catch (error) {
     clearTimeout(timeoutId);
     

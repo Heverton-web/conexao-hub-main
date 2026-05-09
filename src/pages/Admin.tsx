@@ -72,8 +72,9 @@ import {
   Headphones,
   Globe,
   Play,
-  Power } from
-"lucide-react";
+Power,
+  Bot } from
+  "lucide-react";
 import { MaterialFormModal } from "../components/hub/MaterialFormModal";
 import { ThemeEditorPanel } from "../components/hub/ThemeEditorPanel";
 import { ViewerModal } from "../components/hub/ViewerModal";
@@ -203,7 +204,7 @@ export const Admin: React.FC = () => {
   const [activeTab, setActiveTab] = useState<"materials" | "users" | "settings" | "analytics" | "collections">(
     "materials"
   );
-  const [settingsTab, setSettingsTab] = useState<"identity" | "integrations" | "themes" | "invites" | "gamification">(
+  const [settingsTab, setSettingsTab] = useState<"identity" | "integrations" | "themes" | "invites" | "gamification" | "chatbot">(
     "identity"
   );
   const [materials, setMaterials] = useState<Material[]>([]);
@@ -273,6 +274,12 @@ export const Admin: React.FC = () => {
   const [inviteGenerating, setInviteGenerating] = useState(false);
   // Reject modal state
   const [rejectingUser, setRejectingUser] = useState<UserProfile | null>(null);
+  // Chatbot config state
+  const [chatbotConfig, setChatbotConfig] = useState({
+    enabled: false,
+    webhookUrl: '',
+    allowedRoles: ['client', 'distributor', 'consultant', 'manager'] as Role[]
+  });
   const exportAnalyticsCsv = () => {
     const headers = ['Material', 'Tipo', 'Visualizações', 'Usuários Únicos', 'Último Acesso'];
     const rows = aggregatedMetrics.map((item) => {
@@ -1842,6 +1849,7 @@ export const Admin: React.FC = () => {
                 {renderSettingsSidebarItem("integrations", "Integrações", Webhook)}
                 {renderSettingsSidebarItem("themes", "Temas", Palette)}
                 {renderSettingsSidebarItem("gamification", "Gamificação", Trophy)}
+                {renderSettingsSidebarItem("chatbot", "Chatbot", Bot)}
                 {renderSettingsSidebarItem("invites", t("user.invite"), Share2)}
               </div>
             </aside>
@@ -1874,8 +1882,13 @@ export const Admin: React.FC = () => {
                       <div className="icon-box"><Trophy size={20} /></div> Patentes & XP
                     </>
                 }
+                  {settingsTab === "chatbot" &&
+                <>
+                      <div className="icon-box"><Bot size={20} /></div> Chatbot
+                    </>
+                }
                 </h3>
-                {settingsTab !== "invites" && settingsTab !== "gamification" &&
+                {settingsTab !== "invites" && settingsTab !== "gamification" && settingsTab !== "chatbot" &&
               <button
                 onClick={handleSaveSettings}
                 className="liquid-glass-gold px-5 py-2 rounded-lg text-sm font-bold shadow-lg hover:opacity-90 transition-opacity flex items-center gap-2"
@@ -2297,6 +2310,125 @@ export const Admin: React.FC = () => {
 
               {settingsTab === "themes" &&
                 <ThemeEditorPanel localConfig={localConfig} setLocalConfig={setLocalConfig} />
+              }
+
+              {settingsTab === "chatbot" &&
+                <div
+                  className="p-6 rounded-xl shadow-sm animate-fade-in space-y-6"
+                  style={{ backgroundColor: "var(--color-surface)" }}>
+                  
+                  <div
+                    className="p-4 rounded-xl flex items-start gap-3"
+                    style={{
+                      backgroundColor: "color-mix(in srgb, var(--color-accent) 8%, transparent)",
+                      border: "1px solid color-mix(in srgb, var(--color-accent) 15%, transparent)"
+                    }}>
+                    <Bot size={16} className="shrink-0 mt-0.5" style={{ color: "var(--color-accent)" }} />
+                    <p className="text-sm leading-relaxed" style={{ color: "var(--color-text-muted)" }}>
+                      Configure o assistente de IA para buscar materiais e trilhas da plataforma. 
+                      O chatbot usa busca por palavras-chave para encontrar conteúdos relacionados às perguntas dos usuários.
+                    </p>
+                  </div>
+
+                  {/* Chatbot Ativo */}
+                  <div className="flex items-center justify-between p-4 rounded-xl" style={{ backgroundColor: "var(--color-bg)" }}>
+                    <div className="flex items-center gap-3">
+                      <div className="icon-box-sm"><Bot size={16} /></div>
+                      <div>
+                        <p className="text-sm font-medium" style={{ color: "var(--color-text-main)" }}>Chatbot Ativo</p>
+                        <p className="text-xs" style={{ color: "var(--color-text-muted)" }}>Exibe o botão do assistente na plataforma</p>
+                      </div>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => setChatbotConfig({ ...chatbotConfig, enabled: !chatbotConfig.enabled })}
+                      className={`w-12 h-6 rounded-full transition-colors ${chatbotConfig.enabled ? 'bg-green-500' : 'bg-gray-600'}`}
+                    >
+                      <span className={`block w-5 h-5 rounded-full bg-white transition-transform ${chatbotConfig.enabled ? 'translate-x-6' : 'translate-x-0.5'}`} />
+                    </button>
+                  </div>
+
+                  {/* Webhook URL */}
+                  <div>
+                    <label className="block text-sm font-medium mb-2" style={{ color: "var(--color-text-main)" }}>
+                      URL do Webhook (n8n)
+                    </label>
+                    <input
+                      type="url"
+                      placeholder="https://seu-n8n.com/webhook/chat-rag"
+                      value={chatbotConfig.webhookUrl}
+                      onChange={(e) => setChatbotConfig({ ...chatbotConfig, webhookUrl: e.target.value })}
+                      className="w-full px-4 py-3 rounded-xl border border-white/10 bg-white/5"
+                      style={{ color: "var(--color-text-main)" }}
+                      disabled={!chatbotConfig.enabled}
+                    />
+                    <p className="text-xs mt-1.5" style={{ color: "var(--color-text-muted)" }}>
+                      Configure o endpoint do n8n para processar mensagens com RAG. Deixe vazio para usar modo demo.
+                    </p>
+                  </div>
+
+                  {/* Perfis Permitidos */}
+                  <div>
+                    <label className="block text-sm font-medium mb-3" style={{ color: "var(--color-text-main)" }}>
+                      Perfis que podem usar o Chatbot
+                    </label>
+                    <div className="grid grid-cols-2 gap-3">
+                      {(['client', 'distributor', 'consultant', 'manager'] as Role[]).map((role) => (
+                        <label
+                          key={role}
+                          className="flex items-center gap-3 p-3 rounded-lg cursor-pointer transition-colors"
+                          style={{ 
+                            backgroundColor: chatbotConfig.allowedRoles.includes(role) 
+                              ? 'color-mix(in srgb, var(--color-accent) 10%, transparent)'
+                              : 'var(--color-bg)',
+                            border: chatbotConfig.allowedRoles.includes(role)
+                              ? '1px solid var(--color-accent)'
+                              : '1px solid transparent'
+                          }}
+                        >
+                          <input
+                            type="checkbox"
+                            checked={chatbotConfig.allowedRoles.includes(role)}
+                            onChange={(e) => {
+                              if (e.target.checked) {
+                                setChatbotConfig({ ...chatbotConfig, allowedRoles: [...chatbotConfig.allowedRoles, role] });
+                              } else {
+                                setChatbotConfig({ ...chatbotConfig, allowedRoles: chatbotConfig.allowedRoles.filter(r => r !== role) });
+                              }
+                            }}
+                            className="w-4 h-4 rounded"
+                            disabled={!chatbotConfig.enabled}
+                          />
+                          <span className="text-sm font-medium" style={{ color: "var(--color-text-main)" }}>
+                            {role === 'client' && 'Cliente'}
+                            {role === 'distributor' && 'Distribuidor'}
+                            {role === 'consultant' && 'Consultor'}
+                            {role === 'manager' && 'Gestor'}
+                          </span>
+                        </label>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Botão Salvar */}
+                  <div className="pt-4 border-t" style={{ borderColor: "var(--color-border)" }}>
+                    <button
+                      onClick={async () => {
+                        try {
+                          await mockDb.updateChatbotConfig(chatbotConfig);
+                          alert('Configurações do Chatbot salvas com sucesso!');
+                        } catch (error) {
+                          console.error('Erro ao salvar chatbot config:', error);
+                          alert('Erro ao salvar configurações');
+                        }
+                      }}
+                      className="liquid-glass-gold px-6 py-3 rounded-xl font-medium flex items-center gap-2"
+                      style={{ color: "var(--color-accent)" }}
+                    >
+                      <Save size={18} /> Salvar Configurações
+                    </button>
+                  </div>
+                </div>
               }
 
               {settingsTab === "invites" &&

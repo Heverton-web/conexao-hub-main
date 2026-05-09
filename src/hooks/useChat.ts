@@ -9,6 +9,7 @@ import {
   ChatMessage,
   ChatResponse,
 } from '../lib/chatService';
+import { useAuth } from '../contexts/AuthContext';
 
 interface UseChatReturn {
   messages: ChatMessage[];
@@ -19,6 +20,7 @@ interface UseChatReturn {
 }
 
 export function useChat(): UseChatReturn {
+  const { user } = useAuth();
   const [messages, setMessages] = useState<ChatMessage[]>(() => loadChatHistory());
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -34,7 +36,7 @@ export function useChat(): UseChatReturn {
     setIsLoading(true);
 
     try {
-      const response: ChatResponse = await sendChatMessage(content);
+      const response: ChatResponse = await sendChatMessage(content, user?.id);
       const assistantMsg = createAssistantMessage(response);
       
       const finalMessages = [...updatedMessages, assistantMsg];
@@ -46,7 +48,7 @@ export function useChat(): UseChatReturn {
     } finally {
       setIsLoading(false);
     }
-  }, [messages, isLoading]);
+  }, [messages, isLoading, user]);
 
   const clearChat = useCallback(() => {
     setMessages([]);
