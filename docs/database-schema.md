@@ -13,7 +13,9 @@
 5. [Triggers](#5-triggers)
 6. [Edge Functions](#6-edge-functions)
 7. [Storage Buckets](#7-storage-buckets)
-8. [Convenções de RLS](#8-convenções-de-rls)
+8. [Badges](#313-badges)
+9. [User Badges](#314-user_badges)
+10. [Convenções de RLS](#8-convenções-de-rls)
 
 ---
 
@@ -56,6 +58,7 @@ Dados de perfil dos usuários (espelho de `auth.users`).
 | `status` | `app_status` | default `pending` |
 | `allowed_types` | `material_type[]` | restrição opcional por tipo |
 | `points` | int | XP acumulado |
+| `streak_days` | int | Dias consecutivos de acesso |
 | `preferences` | jsonb | `{ theme, language }` |
 | `rejection_reason` | text | preenchido se status=rejected |
 
@@ -210,6 +213,34 @@ Configuração global da plataforma (singleton `id=1`).
 > O app opera em **dark mode permanente**. `theme_light` é mantido apenas para compat e não é consumido pelo frontend.
 
 **RLS:** todos leem (público); apenas `super_admin` faz UPDATE/INSERT.
+
+### 3.13 `badges`
+Definições das conquistas/badges da plataforma.
+
+| Coluna | Tipo | Notas |
+|---|---|---|
+| `id` | uuid PK | |
+| `name` | text | Nome da conquista |
+| `description` | text | |
+| `icon_name` | text | Nome do ícone Lucide |
+| `trigger_type` | text | `material_completed`, `collection_completed`, etc. |
+| `trigger_value` | int | Valor necessário para conquistar |
+| `points_reward` | int | XP bônus ao ganhar |
+| `color` | text | Cor hex para UI |
+
+**RLS:** todos leem; apenas `super_admin` gerencia.
+
+### 3.14 `user_badges`
+Junção usuários ↔ badges conquistados.
+
+| Coluna | Tipo | Notas |
+|---|---|---|
+| `id` | uuid PK | |
+| `user_id` | uuid | refs profiles.id |
+| `badge_id` | uuid | refs badges.id |
+| `earned_at` | timestamptz | Data da conquista |
+
+**RLS:** usuário vê seus próprios badges. `super_admin`/`manager` veem todos.
 
 ---
 

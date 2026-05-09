@@ -107,9 +107,12 @@ class InMemoryStore {
     const assets: MockRow[] = [
       { id: 'ast-1', material_id: 'mat-1', language: 'pt-br', url: 'https://exemplo.com/material1.pdf', subtitle_url: null, status: 'published' },
       { id: 'ast-2', material_id: 'mat-2', language: 'pt-br', url: 'https://exemplo.com/material2.mp4', subtitle_url: null, status: 'published' },
+      { id: 'ast-3', material_id: 'mat-3', language: 'pt-br', url: 'https://exemplo.com/material3.pdf', subtitle_url: null, status: 'published' },
+      { id: 'ast-4', material_id: 'mat-4', language: 'pt-br', url: 'https://exemplo.com/material4.html', subtitle_url: null, status: 'published' },
+      { id: 'ast-5', material_id: 'mat-5', language: 'pt-br', url: 'https://exemplo.com/material5.mp4', subtitle_url: null, status: 'published' },
     ];
     this.data.set('material_assets', assets);
-    this.counters.set('material_assets', 2);
+    this.counters.set('material_assets', 5);
   }
 
   private seedCollections() {
