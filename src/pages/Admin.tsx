@@ -276,7 +276,7 @@ export const Admin: React.FC = () => {
   const [rejectingUser, setRejectingUser] = useState<UserProfile | null>(null);
   // Chatbot config state
   const [chatbotConfig, setChatbotConfig] = useState({
-    enabled: false,
+    enabled: true,
     webhookUrl: '',
     allowedRoles: ['client', 'distributor', 'consultant', 'manager'] as Role[]
   });
