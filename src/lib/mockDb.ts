@@ -547,6 +547,18 @@ export const mockDb = {
   // ---- Gamification Levels ----
 
   getGamificationLevels: async (): Promise<GamificationLevel[]> => {
+    if (isMock()) {
+      const levels = mockStore.get('gamification_levels');
+      return levels.map((l: any) => ({
+        id: l.id,
+        name: l.name,
+        minPoints: l.min_points,
+        orderIndex: l.order_index,
+        color: l.color || '#c9a655',
+        createdAt: l.created_at,
+        updatedAt: l.updated_at,
+      }));
+    }
     const { data, error } = await supabase.from('gamification_levels').select('*').order('order_index');
     if (error) throw error;
     return (data || []).map((l: any) => ({
@@ -561,11 +573,27 @@ export const mockDb = {
   },
 
   createGamificationLevel: async (name: string, minPoints: number, orderIndex: number, color: string = '#c9a655'): Promise<void> => {
+    if (isMock()) {
+      mockStore.insert('gamification_levels', {
+        name,
+        min_points: minPoints,
+        order_index: orderIndex,
+        color,
+        created_at: new Date().toISOString(),
+      });
+      return;
+    }
     const { error } = await supabase.from('gamification_levels').insert({ name, min_points: minPoints, order_index: orderIndex, color });
     if (error) throw error;
   },
 
   updateGamificationLevel: async (id: string, name: string, minPoints: number, orderIndex: number, color?: string): Promise<void> => {
+    if (isMock()) {
+      const updates: any = { name, min_points: minPoints, order_index: orderIndex };
+      if (color !== undefined) updates.color = color;
+      mockStore.update('gamification_levels', id, updates);
+      return;
+    }
     const payload: any = { name, min_points: minPoints, order_index: orderIndex };
     if (color !== undefined) payload.color = color;
     const { error } = await supabase.from('gamification_levels').update(payload).eq('id', id);
@@ -573,6 +601,10 @@ export const mockDb = {
   },
 
   deleteGamificationLevel: async (id: string): Promise<void> => {
+    if (isMock()) {
+      mockStore.delete('gamification_levels', id);
+      return;
+    }
     const { error } = await supabase.from('gamification_levels').delete().eq('id', id);
     if (error) throw error;
   },
