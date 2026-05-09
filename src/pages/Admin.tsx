@@ -1587,6 +1587,9 @@ export const Admin: React.FC = () => {
       {/* Users Tab */}
       {activeTab === "users" &&
       <div className="animate-fade-in space-y-6">
+          {/* Ranking antes da lista */}
+          <RankingBoard showToggle={true} defaultExpanded={true} />
+
           <div
           className="p-4 rounded-xl shadow-sm flex flex-col md:flex-row gap-4 items-center"
           style={{ backgroundColor: "var(--color-surface)" }}>
@@ -1836,11 +1839,6 @@ export const Admin: React.FC = () => {
                 </tbody>
               </table>
             </div>
-          </div>
-
-          {/* Ranking de XP por Role */}
-          <div className="mt-8">
-            <RankingBoard currentUserId={user?.id} />
           </div>
         </div>
       }

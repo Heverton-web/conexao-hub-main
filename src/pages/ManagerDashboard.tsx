@@ -53,6 +53,7 @@ import {
   Legend,
 } from "recharts";
 import { SkeletonTable } from "../components/hub/SkeletonTable";
+import { RankingBoard } from "../components/hub/RankingBoard";
 
 export const ManagerDashboard: React.FC = () => {
   const { t, language } = useLanguage();
@@ -475,6 +476,9 @@ export const ManagerDashboard: React.FC = () => {
       {/* ===== USERS TAB ===== */}
       {activeTab === "users" && (
         <div className="animate-fade-in">
+          {/* Ranking antes da lista */}
+          <RankingBoard showToggle={true} defaultExpanded={true} />
+
           <div className="p-4 rounded-xl shadow-sm flex flex-col md:flex-row gap-4 items-center mb-6" style={{ backgroundColor: "var(--color-surface)" }}>
             <div className="relative flex-1 w-full">
               <Search className="absolute left-3 top-2.5" size={18} style={{ color: "var(--color-text-muted)" }} />
@@ -857,6 +861,7 @@ export const ManagerDashboard: React.FC = () => {
                 </div>
               </div>
 
+              {/* Ranking de XP por Role */}
               {/* Trail Metrics */}
               <div>
                 <h3 className="text-sm font-bold uppercase tracking-wider mb-4 flex items-center gap-2" style={{ color: "var(--color-text-muted)" }}>
