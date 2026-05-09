@@ -17,6 +17,7 @@ import {
 } from 'lucide-react';
 import { Progress } from '../components/ui/progress';
 import { TrailCompletionCelebration } from '../components/hub/TrailCompletionCelebration';
+import { ChatWidget } from '../components/hub/ChatWidget';
 import { colorMix } from '../lib/utils';
 
 export const Dashboard: React.FC = () => {
@@ -559,6 +560,8 @@ export const Dashboard: React.FC = () => {
         bonusXp={celebration?.bonusXp || 0}
         onClose={() => setCelebration(null)}
       />
+
+      <ChatWidget />
     </div>
   );
 };

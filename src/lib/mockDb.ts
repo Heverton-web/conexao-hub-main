@@ -975,6 +975,74 @@ export const mockDb = {
     }
   },
 
+  // ---- Chatbot Config ----
+  getChatbotConfig: async (): Promise<{ enabled: boolean; webhookUrl: string; allowedRoles: string[] }> => {
+    const { data, error } = await supabase.from('chatbot_config').select('*').limit(1).single();
+    
+    if (error && error.code !== 'PGRST116') {
+      console.error('Error fetching chatbot config:', error);
+    }
+
+    if (data) {
+      return {
+        enabled: data.enabled ?? false,
+        webhookUrl: data.webhook_url ?? '',
+        allowedRoles: data.allowed_roles ?? ['client', 'distributor', 'consultant', 'manager'],
+      };
+    }
+
+    // Return default config if none exists
+    return {
+      enabled: false,
+      webhookUrl: '',
+      allowedRoles: ['client', 'distributor', 'consultant', 'manager'],
+    };
+  },
+
+  updateChatbotConfig: async (config: { enabled: boolean; webhookUrl: string; allowedRoles: string[] }): Promise<void> => {
+    const { data: existing } = await supabase.from('chatbot_config').select('id').limit(1).single();
+
+    if (existing) {
+      const { error } = await supabase
+        .from('chatbot_config')
+        .update({
+          enabled: config.enabled,
+          webhook_url: config.webhookUrl,
+          allowed_roles: config.allowedRoles,
+          updated_at: new Date().toISOString(),
+        })
+        .eq('id', existing.id);
+      if (error) throw error;
+    } else {
+      const { error } = await supabase
+        .from('chatbot_config')
+        .insert({
+          enabled: config.enabled,
+          webhook_url: config.webhookUrl,
+          allowed_roles: config.allowedRoles,
+        });
+      if (error) throw error;
+    }
+  },
+
+  // ---- Chatbot Logs ----
+  saveChatLog: async (log: {
+    userId: string;
+    message: string;
+    response: string;
+    materialsFound?: number;
+    collectionsFound?: number;
+  }): Promise<void> => {
+    const { error } = await supabase.from('chat_logs').insert({
+      user_id: log.userId,
+      message: log.message,
+      response: log.response,
+      materials_found: log.materialsFound || 0,
+      collections_found: log.collectionsFound || 0,
+    });
+    if (error) console.error('Error saving chat log:', error);
+  },
+
   login: async () => {},
   register: async () => {},
   loginMock: async () => {},
