@@ -81,11 +81,11 @@ class InMemoryStore {
 
   private seedUserRoles() {
     const roles: MockRow[] = [
-      { user_id: 'mock-admin', role: 'super_admin' },
-      { user_id: 'mock-client', role: 'client' },
-      { user_id: 'mock-distrib', role: 'distributor' },
-      { user_id: 'mock-consult', role: 'consultant' },
-      { user_id: 'mock-manager', role: 'manager' },
+      { id: 'ur-1', user_id: 'mock-admin', role: 'super_admin' },
+      { id: 'ur-2', user_id: 'mock-client', role: 'client' },
+      { id: 'ur-3', user_id: 'mock-distrib', role: 'distributor' },
+      { id: 'ur-4', user_id: 'mock-consult', role: 'consultant' },
+      { id: 'ur-5', user_id: 'mock-manager', role: 'manager' },
     ];
     this.data.set('user_roles', roles);
     this.counters.set('user_roles', 5);
@@ -126,10 +126,10 @@ class InMemoryStore {
 
   private seedCollectionItems() {
     const items: MockRow[] = [
-      { collection_id: 'col-1', material_id: 'mat-1', order_index: 1 },
-      { collection_id: 'col-1', material_id: 'mat-3', order_index: 2 },
-      { collection_id: 'col-2', material_id: 'mat-2', order_index: 1 },
-      { collection_id: 'col-2', material_id: 'mat-4', order_index: 2 },
+      { id: 'ci-1', collection_id: 'col-1', material_id: 'mat-1', order_index: 1 },
+      { id: 'ci-2', collection_id: 'col-1', material_id: 'mat-3', order_index: 2 },
+      { id: 'ci-3', collection_id: 'col-2', material_id: 'mat-2', order_index: 1 },
+      { id: 'ci-4', collection_id: 'col-2', material_id: 'mat-4', order_index: 2 },
     ];
     this.data.set('collection_items', items);
     this.counters.set('collection_items', 4);
@@ -167,7 +167,7 @@ class InMemoryStore {
 
   private seedSystemConfig() {
     const config: MockRow[] = [
-      { id: 1, app_name: 'Conexão Hub', app_logo: null, theme_dark: {}, theme_mode: {}, environment_themes: {}, show_mock_login_cards: true, created_at: new Date().toISOString() },
+      { id: '1', app_name: 'Conexão Hub', app_logo: null, theme_dark: {}, theme_mode: {}, environment_themes: {}, show_mock_login_cards: true, created_at: new Date().toISOString() },
     ];
     this.data.set('system_config', config);
   }
