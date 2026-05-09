@@ -85,6 +85,7 @@ import { InviteShareModal } from "../components/hub/InviteShareModal";
 import { RejectUserModal } from "../components/hub/RejectUserModal";
 import { CollectionFormModal } from "../components/hub/CollectionFormModal";
 import { SkeletonTable } from "../components/hub/SkeletonTable";
+import { RankingBoard } from "../components/hub/RankingBoard";
 import {
   AreaChart,
   Area,
@@ -1835,6 +1836,11 @@ export const Admin: React.FC = () => {
                 </tbody>
               </table>
             </div>
+          </div>
+
+          {/* Ranking de XP por Role */}
+          <div className="mt-8">
+            <RankingBoard currentUserId={user?.id} />
           </div>
         </div>
       }

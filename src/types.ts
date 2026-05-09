@@ -200,6 +200,19 @@ export function getNextLevelThreshold(points: number): number {
   return 100;
 }
 
+// Ranking
+export interface UserRanking {
+  position: number;
+  userId: string;
+  name: string;
+  role: Role;
+  points: number;
+  level: UserLevel;
+  avatar?: string;
+}
+
+export type RoleFilter = Role | 'all';
+
 // Webhook Events
 export type WebhookEvent =
   | 'user.registered'

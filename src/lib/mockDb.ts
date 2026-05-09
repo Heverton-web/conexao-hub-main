@@ -1,5 +1,5 @@
 import { supabase } from './supabaseClient';
-import { Material, UserProfile, Role, SystemConfig, ColorScheme, UserStatus, AccessLog, Language, MaterialAsset, Collection, CollectionItem, UserProgress, ThemeModeConfig, EnvironmentThemes, Webhook, WebhookEventFilter, WebhookLog, SystemIntegrations } from '../types';
+import { Material, UserProfile, Role, SystemConfig, ColorScheme, UserStatus, AccessLog, Language, MaterialAsset, Collection, CollectionItem, UserProgress, ThemeModeConfig, EnvironmentThemes, Webhook, WebhookEventFilter, WebhookLog, SystemIntegrations, getUserLevel } from '../types';
 import { DEFAULT_DARK, DEFAULT_THEME_MODE, mergeScheme, DEFAULT_ENVIRONMENT_THEMES } from './themeDefaults';
 import { encrypt, decrypt } from './crypto';
 import { mockMode } from './mockMode';
@@ -607,6 +607,61 @@ export const mockDb = {
     }
     const { error } = await supabase.from('gamification_levels').delete().eq('id', id);
     if (error) throw error;
+  },
+
+  getUserRanking: async (roleFilter?: string): Promise<any[]> => {
+    if (isMock()) {
+      const profiles = mockStore.get('profiles');
+      const userRoles = mockStore.get('user_roles');
+      
+      const usersWithRoles = profiles.map(p => {
+        const roleRecord = userRoles.find((r: any) => r.user_id === p.id);
+        return {
+          ...p,
+          role: roleRecord?.role || p.role
+        };
+      });
+
+      const filtered = roleFilter && roleFilter !== 'all'
+        ? usersWithRoles.filter((u: any) => u.role === roleFilter)
+        : usersWithRoles;
+
+      const sorted = filtered.sort((a: any, b: any) => (b.points || 0) - (a.points || 0));
+
+      return sorted.map((u: any, idx: number) => ({
+        position: idx + 1,
+        userId: u.id,
+        name: u.name,
+        role: u.role,
+        points: u.points || 0,
+        level: getUserLevel(u.points || 0),
+      }));
+    }
+
+    const { data, error } = await supabase
+      .from('profiles')
+      .select('*, user_roles(role)')
+      .order('points', { ascending: false });
+    
+    if (error) throw error;
+
+    const users = (data || []).map((u: any) => ({
+      ...u,
+      role: u.user_roles?.[0]?.role || u.role
+    }));
+
+    const filtered = roleFilter && roleFilter !== 'all'
+      ? users.filter((u: any) => u.role === roleFilter)
+      : users;
+
+    return filtered.map((u: any, idx: number) => ({
+      position: idx + 1,
+      userId: u.id,
+      name: u.name,
+      role: u.role,
+      points: u.points || 0,
+      level: getUserLevel(u.points || 0),
+    }));
   },
 
   // ---- Collection Progress ----
