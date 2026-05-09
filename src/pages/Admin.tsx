@@ -380,11 +380,19 @@ export const Admin: React.FC = () => {
     mockDb.getInviteTokens().then(setInviteTokens).catch((e) => console.error(e));
   };
   const generateInviteToken = async () => {
+    if (!inviteRole) {
+      toast.error("Selecione um perfil para o convite");
+      return;
+    }
     setInviteGenerating(true);
     try {
+      console.log("DEBUG: Gerando convite para role:", inviteRole, "dias:", inviteExpiry);
       await mockDb.createInviteToken(inviteRole, inviteExpiry);
+      console.log("DEBUG: Convite gerado com sucesso");
       loadInviteTokens();
+      toast.success("Convite gerado com sucesso!");
     } catch (e: any) {
+      console.error("DEBUG: Erro ao gerar convite:", e);
       toast.error('Erro ao gerar convite: ' + e.message);
     }
     setInviteGenerating(false);
@@ -2627,13 +2635,22 @@ export const Admin: React.FC = () => {
                       </div>
                       <button
                     onClick={async () => {
-                      if (!newLevelName.trim()) return;
-                      const nextOrder = gamificationLevels.length;
-                      await mockDb.createGamificationLevel(newLevelName.trim(), newLevelPoints, nextOrder, newLevelColor);
-                      setNewLevelName("");
-                      setNewLevelPoints(0);
-                      setNewLevelColor("#c9a655");
-                      loadGamificationLevels();
+                      if (!newLevelName.trim()) {
+                        toast.error("Nome da patente é obrigatório");
+                        return;
+                      }
+                      try {
+                        const nextOrder = gamificationLevels.length;
+                        await mockDb.createGamificationLevel(newLevelName.trim(), newLevelPoints, nextOrder, newLevelColor);
+                        setNewLevelName("");
+                        setNewLevelPoints(0);
+                        setNewLevelColor("#c9a655");
+                        loadGamificationLevels();
+                        toast.success("Patente criada com sucesso!");
+                      } catch (e: any) {
+                        console.error("DEBUG: Erro ao criar patente:", e);
+                        toast.error("Erro ao criar patente: " + e.message);
+                      }
                     }}
                     className="liquid-glass-gold px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2"
                     style={{ color: "var(--color-accent)" }}>
