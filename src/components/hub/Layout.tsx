@@ -3,8 +3,7 @@ import { useAuth } from '../../contexts/AuthContext';
 import { useLanguage } from '../../contexts/LanguageContext';
 import { useBrand } from '../../contexts/BrandContext';
 import { useNavigate } from 'react-router-dom';
-import { LogOut, Globe, Star, Zap, MessageCircle } from 'lucide-react';
-import { ChatWidget } from '../../components/hub/ChatWidget';
+import { LogOut, Globe, Star, Zap } from 'lucide-react';
 import { getUserLevel } from '../../types';
 import { mockDb, GamificationLevel } from '../../lib/mockDb';
 import { colorMix } from '../../lib/utils';
@@ -82,8 +81,6 @@ export const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) =>
                         <option value="es-es">ES</option>
                     </select>
                 </div>
-
-                <ChatWidget showIconOnly />
 
                 <div className="flex items-center gap-1.5 sm:gap-3 pl-1 sm:pl-2">
                     <div className="flex items-center gap-2 sm:gap-3 rounded-full p-1 pr-2 sm:pr-4 transition-all duration-300 cursor-default group" style={{ backgroundColor: colorMix('var(--color-bg)', 50, 'rgba(15,23,42,0.5)'), border: `1px solid ${colorMix('var(--color-border)', 50, 'rgba(255,255,255,0.1)')}` }}>
