@@ -18,7 +18,7 @@ services:
 
     # Adicionado mapeamento de porta para acesso direto via IP enquanto o Traefik não é configurado
     ports:
-      - "80:80"
+      - "8080:80"
 
     deploy:
       resources:
