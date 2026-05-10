@@ -49,11 +49,15 @@ git checkout nome-da-minha-ideia
 ```
 
 ### B. Criar a Imagem de Teste (Build)
-Em vez de usar o nome padrão, vamos dar um "nome de teste" para essa imagem:
+Como o projeto usa variáveis de ambiente para o Supabase, você **precisa** passá-las no comando de build:
+
 ```bash
-docker build -t hevertonperes/conexao-hub:teste-versao-1 .
+docker build \
+  --build-arg VITE_SUPABASE_URL="SUA_URL_DO_SUPABASE" \
+  --build-arg VITE_SUPABASE_PUBLISHABLE_KEY="SUA_CHAVE_PUBLISHABLE" \
+  -t hevertonperes/conexao-hub:teste-arquitetura .
 ```
-*Dica: O `:teste-versao-1` é uma "tag". Ela garante que você não vai apagar a imagem que está rodando no site oficial.*
+*Dica: O `:teste-arquitetura` é uma "tag". Ela garante que você não vai apagar a imagem que está rodando no site oficial.*
 
 ---
 
