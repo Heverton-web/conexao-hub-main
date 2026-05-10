@@ -4,7 +4,7 @@ export type MockModeConfig = {
 };
 
 const defaultConfig: MockModeConfig = {
-  enabled: true,
+  enabled: import.meta.env.DEV, // Default to true in DEV, false in PROD
   simulateNetworkDelay: 50,
 };
 

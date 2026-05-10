@@ -27,7 +27,7 @@ export interface GamificationLevel {
 }
 
 
-let isMockMode = false;
+// Redundant local variable removed. Using mockMode.enabled via isMock() instead.
 
 const localUsers: UserProfile[] = [
     { id: 'mock-admin', name: 'Super Admin (Mock)', email: 'admin@demo.com', role: 'super_admin', whatsapp: '11999999999', status: 'active', points: 0, preferences: { theme: 'dark', language: 'pt-br' } },
@@ -136,11 +136,11 @@ export const mockDb = {
 
   enableMockMode: () => {
       console.log("🟡 MOCK MODE ACTIVATED");
-      isMockMode = true;
+      mockMode.enable();
   },
 
   disableMockMode: () => {
-      isMockMode = false;
+      mockMode.disable();
   },
 
   getSystemConfig: async (): Promise<SystemConfig> => {
@@ -328,7 +328,7 @@ export const mockDb = {
   },
 
   getUsers: async (): Promise<UserProfile[]> => {
-    if (isMockMode) {
+    if (isMock()) {
       return localUsers;
     }
     const { data: profiles, error } = await supabase.from('profiles').select('*').order('name');
@@ -344,8 +344,8 @@ export const mockDb = {
   },
 
   getMaterials: async (role: Role): Promise<Material[]> => {
-    console.log("📦 getMaterials called with role:", role, "isMockMode:", isMockMode);
-    if (isMockMode) {
+    console.log("📦 getMaterials called with role:", role, "isMock:", isMock());
+    if (isMock()) {
       const filtered = localMaterials.filter(m => m.active && m.allowedRoles.includes(role));
       console.log("📦 Returning mock materials:", filtered.length);
       return filtered;
@@ -365,12 +365,25 @@ export const mockDb = {
   },
 
   logAccess: async (materialId: string, userId: string, language: Language): Promise<void> => {
+    if (isMock()) {
+      localAccessLogs.push({
+        id: `log-mock-${Date.now()}`,
+        materialId,
+        materialTitle: localMaterials.find(m => m.id === materialId)?.title['pt-br'] || 'Material Mock',
+        userId,
+        userName: localUsers.find(u => u.id === userId)?.name || 'Usuário Mock',
+        userRole: localUsers.find(u => u.id === userId)?.role || 'client',
+        language,
+        timestamp: new Date().toISOString()
+      });
+      return;
+    }
     const { error } = await supabase.from('access_logs').insert({ material_id: materialId, user_id: userId, language: language });
     if (error) console.error("Error logging access:", error);
   },
 
   getAccessLogs: async (): Promise<AccessLog[]> => {
-    if (isMockMode) {
+    if (isMock()) {
       return localAccessLogs;
     }
     const { data: logs, error } = await supabase
@@ -419,7 +432,7 @@ export const mockDb = {
   // ---- Collections ----
 
   getCollections: async (role: Role): Promise<Collection[]> => {
-    if (isMockMode) {
+    if (isMock()) {
       return localCollections.filter(c => c.active && c.allowedRoles.includes(role));
     }
     let query = supabase.from('collections').select('*').order('created_at', { ascending: false });
@@ -442,7 +455,7 @@ export const mockDb = {
   },
 
   getCollectionItems: async (collectionId: string): Promise<CollectionItem[]> => {
-    if (isMockMode) {
+    if (isMock()) {
       return localCollectionItems.filter(item => item.collectionId === collectionId);
     }
     const { data, error } = await supabase
@@ -500,11 +513,21 @@ export const mockDb = {
   },
 
   deleteCollection: async (id: string): Promise<void> => {
+    if (isMock()) {
+      const idx = localCollections.findIndex(c => c.id === id);
+      if (idx >= 0) localCollections.splice(idx, 1);
+      return;
+    }
     const { error } = await supabase.from('collections').delete().eq('id', id);
     if (error) throw error;
   },
 
   setCollectionItems: async (collectionId: string, materialIds: string[]): Promise<void> => {
+    if (isMock()) {
+      // In mock mode, we just log this as it's a complex operation for the simple mockStore
+      console.log('Mock: Setting collection items', { collectionId, materialIds });
+      return;
+    }
     await supabase.from('collection_items').delete().eq('collection_id', collectionId);
     if (materialIds.length === 0) return;
     const items = materialIds.map((materialId, idx) => ({ collection_id: collectionId, material_id: materialId, order_index: idx }));
@@ -515,7 +538,7 @@ export const mockDb = {
   // ---- User Progress ----
 
   getUserProgress: async (userId: string): Promise<UserProgress[]> => {
-    if (isMockMode) {
+    if (isMock()) {
       return localUserProgress.filter(p => p.userId === userId);
     }
     const { data, error } = await supabase.from('user_progress').select('*').eq('user_id', userId);
@@ -532,6 +555,20 @@ export const mockDb = {
   },
 
   upsertProgress: async (userId: string, materialId: string, status: 'started' | 'completed', collectionId?: string): Promise<void> => {
+    if (isMock()) {
+      const existingIdx = localUserProgress.findIndex(p => p.userId === userId && p.materialId === materialId && p.collectionId === collectionId);
+      const now = new Date().toISOString();
+      if (existingIdx >= 0) {
+        localUserProgress[existingIdx] = { ...localUserProgress[existingIdx], status, completedAt: status === 'completed' ? now : undefined };
+      } else {
+        localUserProgress.push({ id: `up-mock-${Date.now()}`, userId, materialId, collectionId, status, createdAt: now, completedAt: status === 'completed' ? now : undefined });
+      }
+      if (status === 'completed') {
+        const progressCount = localUserProgress.filter(p => p.userId === userId && p.status === 'completed').length;
+        await mockDb.checkAndAwardBadges(userId, 'material_completed', progressCount);
+      }
+      return;
+    }
     const payload: any = { user_id: userId, material_id: materialId, status, collection_id: collectionId || null };
     if (status === 'completed') payload.completed_at = new Date().toISOString();
     const { error } = await supabase.from('user_progress').upsert(payload, { onConflict: 'user_id,material_id,collection_id' });
@@ -545,9 +582,18 @@ export const mockDb = {
   },
 
   addPoints: async (userId: string, points: number): Promise<void> => {
-    const { data: profile } = await supabase.from('profiles').select('points').eq('id', userId).single();
-    const currentPoints = (profile?.points || 0) + points;
-    await supabase.from('profiles').update({ points: currentPoints }).eq('id', userId);
+    let currentPoints = 0;
+    if (isMock()) {
+      const user = localUsers.find(u => u.id === userId);
+      if (user) {
+        user.points = (user.points || 0) + points;
+        currentPoints = user.points;
+      }
+    } else {
+      const { data: profile } = await supabase.from('profiles').select('points').eq('id', userId).single();
+      currentPoints = (profile?.points || 0) + points;
+      await supabase.from('profiles').update({ points: currentPoints }).eq('id', userId);
+    }
     
     // Check for badges related to points
     await mockDb.checkAndAwardBadges(userId, 'points_reached', currentPoints);
@@ -691,7 +737,7 @@ export const mockDb = {
   },
 
   getAllCollectionProgress: async (): Promise<CollectionProgress[]> => {
-    if (isMockMode) {
+    if (isMock()) {
       return localCollectionProgress;
     }
     const { data, error } = await supabase.from('collection_progress').select('*');
