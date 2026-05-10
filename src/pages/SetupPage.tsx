@@ -54,11 +54,11 @@ export const SetupPage: React.FC = () => {
         // 3. Inicializar system_config se não existir
         const { data: existingConfig } = await supabase.from('system_config').select('id').limit(1);
         if (!existingConfig || existingConfig.length === 0) {
-          await supabase.from('system_config').insert({
+          await (supabase.from('system_config') as any).insert({
             id: 1,
             app_name: 'Hub Conexão',
             logo_url: '/favicon.ico',
-            theme_dark: DEFAULT_DARK,
+            theme_dark: DEFAULT_DARK as any,
             updated_at: new Date().toISOString()
           });
         }
