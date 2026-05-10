@@ -223,6 +223,12 @@ END;
 $$ LANGUAGE plpgsql SECURITY DEFINER;
 
 -- POLICIES (Versão corrigida sem recursão)
+-- Limpar policies antigas que podem causar conflito
+DROP POLICY IF EXISTS "Public Read Config" ON public.system_config;
+DROP POLICY IF EXISTS "Admin Manage Config" ON public.system_config;
+DROP POLICY IF EXISTS "Users read own profile" ON public.profiles;
+DROP POLICY IF EXISTS "Admins manage profiles" ON public.profiles;
+
 DO $$ BEGIN
     CREATE POLICY "Public Read Config" ON public.system_config FOR SELECT USING (true);
 EXCEPTION WHEN duplicate_object THEN null; END $$;
