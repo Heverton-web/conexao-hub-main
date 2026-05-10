@@ -49,7 +49,7 @@ git checkout feat/primeiro-acesso
 ```
 
 ### B. Criar a Imagem de Teste (Build)
-Use o comando completo abaixo para construir a imagem com as suas chaves reais:
+Use o comando **exato** abaixo para construir a imagem. Ele já inclui as suas chaves e desativa o modo de teste:
 
 ```bash
 docker build \
@@ -77,10 +77,10 @@ Agora vamos dizer ao Docker Swarm para usar essa imagem de teste.
 
 ## 🛡️ 5. Segurança: Como Reverter (Rollback)
 
-Se você abrir o site e algo estiver errado, não entre em pânico. Siga este passo para voltar ao normal:
+Se você abrir o site e algo estiver errado (como a tela preta), não entre em pânico. Siga este passo para voltar ao normal:
 
 1.  Volte no **Web Editor** do Portainer.
-2.  Mude a imagem de volta para a original: `image: hevertonperes/conexao-hub:latest`.
+2.  Mude a imagem de volta para a original (que estava antes): `image: hevertonperes/conexao-hub:latest`.
 3.  Clique em **Update the stack**.
 4.  O site antigo volta a funcionar em segundos.
 
@@ -89,9 +89,9 @@ Se você abrir o site e algo estiver errado, não entre em pânico. Siga este pa
 ## ✅ 6. Quando o Teste der Certo?
 Se tudo estiver perfeito na imagem de teste, você pode:
 1.  Fazer o **Merge** no GitHub (unir a branch `feat/primeiro-acesso` com a `main`).
-2.  Na VPS, voltar para a branch `main`: `git checkout main` e `git pull`.
+2.  Na VPS, voltar para a branch `main`: `git checkout main` e depois `git pull`.
 3.  Fazer o build oficial: `docker build -t hevertonperes/conexao-hub:latest .`.
 4.  No Portainer, voltar a imagem para `:latest`.
 
 ---
-*Manual atualizado com dados reais de produção para a Feature de Primeiro Acesso.*
+*Manual finalizado com dados reais de produção.*
