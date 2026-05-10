@@ -19,13 +19,14 @@ import { Dashboard } from "./pages/Dashboard";
 import { Admin } from "./pages/Admin";
 import { RegistrationProgress } from "./components/hub/RegistrationProgress";
 import { WebhooksPage } from "./pages/WebhooksPage";
+import { SetupPage } from "./pages/SetupPage";
 
 const queryClient = new QueryClient({
   defaultOptions: { queries: { retry: 1 } },
 });
 
 const AppContent = () => {
-  const { user, isAuthenticated, isLoading } = useAuth();
+  const { user, isAuthenticated, isLoading, isSetupRequired } = useAuth();
   const { setActiveEnvironment } = useBrand();
 
   // Set active environment based on user role
@@ -48,6 +49,9 @@ const AppContent = () => {
   }
 
   if (!isAuthenticated || !user) {
+    if (isSetupRequired) {
+      return <SetupPage />;
+    }
     return <AuthPage />;
   }
 

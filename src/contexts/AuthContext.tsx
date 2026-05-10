@@ -14,6 +14,7 @@ interface AuthContextType {
   logout: () => void;
   isLoading: boolean;
   isDbMissing: boolean;
+  isSetupRequired: boolean;
   addUserPoints: (points: number) => void;
 }
 
@@ -23,6 +24,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [user, setUser] = useState<UserProfile | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isDbMissing, setIsDbMissing] = useState(false);
+  const [isSetupRequired, setIsSetupRequired] = useState(false);
 
   useEffect(() => {
     const safetyTimeout = setTimeout(() => {
@@ -32,6 +34,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
     const initAuth = async () => {
         await checkDbConnection();
+        await checkSetupRequired();
 
         const { data: { session } } = await supabase.auth.getSession();
 
@@ -63,6 +66,32 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     if (error && error.code === '42P01') {
         setIsDbMissing(true);
         setIsLoading(false);
+    }
+  };
+
+  const checkSetupRequired = async () => {
+    // Se o banco estiver faltando, não conseguimos checar o setup ainda
+    if (isDbMissing) return;
+
+    try {
+      const { data, error } = await (supabase.from('profiles') as any)
+        .select('id')
+        .eq('role', 'super_admin')
+        .limit(1);
+      
+      if (error) {
+        console.error("Erro ao checar setup:", error);
+        return;
+      }
+
+      if (!data || data.length === 0) {
+        console.log("Configuração inicial necessária: nenhum super_admin encontrado.");
+        setIsSetupRequired(true);
+      } else {
+        setIsSetupRequired(false);
+      }
+    } catch (err) {
+      console.error("Erro na verificação de setup:", err);
     }
   };
 
@@ -212,7 +241,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   return (
-    <AuthContext.Provider value={{ user, isAuthenticated: !!user, login, loginMock, register, logout, isLoading, isDbMissing, addUserPoints }}>
+    <AuthContext.Provider value={{ user, isAuthenticated: !!user, login, loginMock, register, logout, isLoading, isDbMissing, isSetupRequired, addUserPoints }}>
       {!isLoading && children}
     </AuthContext.Provider>
   );
