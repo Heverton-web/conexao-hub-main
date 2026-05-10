@@ -113,19 +113,22 @@ export const AuthPage: React.FC = () => {
     setError('');
 
     try {
-      // 1. Criar o usuário no Auth
+      // 1. Tentar criar ou recuperar o usuário
       const { data: authData, error: authError } = await supabase.auth.signUp({
         email,
         password,
         options: { data: { name, role: 'super_admin' } }
       });
 
-      if (authError) throw authError;
+      // Se o erro for que o usuário já existe, não tem problema, vamos apenas tentar logar e atualizar o perfil
+      if (authError && !authError.message.includes('already registered')) throw authError;
 
-      if (authData.user) {
-        // 2. Criar o perfil como ACTIVE imediatamente
+      const userId = authData.user?.id || (await supabase.auth.signInWithPassword({ email, password })).data.user?.id;
+
+      if (userId) {
+        // 2. Forçar perfil como Super Admin e Ativo (mesmo que já exista)
         await (supabase.from('profiles') as any).upsert({
-          id: authData.user.id,
+          id: userId,
           name,
           email,
           role: 'super_admin',
@@ -133,7 +136,7 @@ export const AuthPage: React.FC = () => {
           preferences: { theme: 'dark', language: 'pt-br' }
         });
 
-        // 3. Inicializar configurações de branding se não existirem
+        // 3. Inicializar configurações de branding
         const { data: existingConfig } = await supabase.from('system_config').select('id').limit(1);
         if (!existingConfig || existingConfig.length === 0) {
           await (supabase.from('system_config') as any).insert({
@@ -145,12 +148,12 @@ export const AuthPage: React.FC = () => {
           });
         }
 
-        // 4. Logar imediatamente para pular a tela de análise
+        // 4. Logar para garantir a sessão ativa
         await login(email, password);
+        setSetupSuccess(true);
+        toast.success("Plataforma inicializada com sucesso!");
+        setTimeout(() => window.location.href = '/dashboard', 1000);
       }
-
-      setSetupSuccess(true);
-      toast.success("Super Admin criado com sucesso!");
     } catch (err: any) {
       setError(err.message || "Erro no setup inicial");
     } finally {
