@@ -78,6 +78,7 @@ export const DEFAULT_ENVIRONMENT_THEMES: EnvironmentThemes = {
   global: { ...DEFAULT_GLOBAL_EFFECTS },
   auth: {
     ...DEFAULT_GLOBAL_EFFECTS,
+    pageBg: '#0f172a',
     blob1Color: '#00508f',
     blob2Color: '#00508f',
     blob3Color: '#00508f',
@@ -91,6 +92,7 @@ export const DEFAULT_ENVIRONMENT_THEMES: EnvironmentThemes = {
   },
   client: {
     ...DEFAULT_GLOBAL_EFFECTS,
+    pageBg: '#0f172a',
     blob1Color: '#00508f',
     blob2Color: '#00508f',
     blob3Color: '#00508f',
@@ -104,6 +106,7 @@ export const DEFAULT_ENVIRONMENT_THEMES: EnvironmentThemes = {
   },
   manager: {
     ...DEFAULT_GLOBAL_EFFECTS,
+    pageBg: '#0f172a',
     blob1Color: '#00508f',
     blob2Color: '#00508f',
     blob3Color: '#00508f',

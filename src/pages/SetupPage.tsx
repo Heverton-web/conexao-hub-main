@@ -4,6 +4,7 @@ import { Shield, Rocket, Mail, Lock, User, CheckCircle2, Loader2, AlertTriangle,
 import { toast } from 'sonner';
 import { colorMix } from '../lib/utils';
 import { useBrand } from '../contexts/BrandContext';
+import { DEFAULT_DARK } from '../lib/themeDefaults';
 
 export const SetupPage: React.FC = () => {
   const { config } = useBrand();
@@ -56,6 +57,8 @@ export const SetupPage: React.FC = () => {
           await supabase.from('system_config').insert({
             id: 1,
             app_name: 'Hub Conexão',
+            logo_url: '/favicon.ico',
+            theme_dark: DEFAULT_DARK,
             updated_at: new Date().toISOString()
           });
         }
