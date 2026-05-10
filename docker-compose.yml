@@ -16,10 +16,9 @@ services:
     container_name: conexao_hub_app
     restart: always
 
-    # Adicionado mapeamento de porta para acesso direto via IP enquanto o Traefik não é configurado
-    ports:
-      - "8080:80"
-
+    # No modo Traefik, não expomos portas diretamente para o mundo
+    # O Traefik cuida disso na porta 80/443
+    
     deploy:
       resources:
         limits:
@@ -37,8 +36,17 @@ services:
       - VITE_GEMINI_API_KEY=${VITE_GEMINI_API_KEY}
       - VITE_OPENAI_API_KEY=${VITE_OPENAI_API_KEY}
 
+    ## 🌐 Configurações para o seu Traefik
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.conexao_hub.rule=Host(`hub.vpsconexao.org`)"
+      - "traefik.http.routers.conexao_hub.entrypoints=websecure"
+      - "traefik.http.routers.conexao_hub.tls.certresolver=letsencryptresolver" # Confirme se este é o nome do seu resolver de SSL
+      - "traefik.http.services.conexao_hub.loadbalancer.server.port=80"
+
 ## --------------------------- INFRA --------------------------- ##
 
 networks:
   network_conexao:
-    driver: bridge # O próprio Docker vai criar essa rede de forma correta e aberta
+    external: true
+    name: network_conexao
