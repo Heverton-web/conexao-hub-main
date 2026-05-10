@@ -1,26 +1,26 @@
 import React from "react";
-import { Toaster } from "@/components/ui/toaster";
-import { Toaster as Sonner } from "@/components/ui/sonner";
-import { TooltipProvider } from "@/components/ui/tooltip";
+import { Toaster } from "@/presentation/components/ui/toaster";
+import { Toaster as Sonner } from "@/presentation/components/ui/sonner";
+import { TooltipProvider } from "@/presentation/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, useNavigate } from "react-router-dom";
-import { ThemeProvider } from "./contexts/ThemeContext";
-import { LanguageProvider } from "./contexts/LanguageContext";
-import { BrandProvider } from "./contexts/BrandContext";
-import { AuthProvider, useAuth } from "./contexts/AuthContext";
-import { useBrand } from "./contexts/BrandContext";
-import { ShortcutProvider } from "./contexts/ShortcutContext";
-import { Layout } from "./components/hub/Layout";
-import { GlobalEffects } from "./components/hub/GlobalEffects";
-import { KeyboardHelpModal } from "./components/hub/KeyboardHelpModal";
-import { AuthPage } from "./pages/AuthPage";
-import { ManagerDashboard } from "./pages/ManagerDashboard";
-import { Dashboard } from "./pages/Dashboard";
-import { Admin } from "./pages/Admin";
-import { RegistrationProgress } from "./components/hub/RegistrationProgress";
-import { WebhooksPage } from "./pages/WebhooksPage";
-import { SetupPage } from "./pages/SetupPage";
-import KnowledgeCenter from "./pages/KnowledgeCenter";
+import { ThemeProvider } from "./presentation/contexts/ThemeContext";
+import { LanguageProvider } from "./presentation/contexts/LanguageContext";
+import { BrandProvider } from "./presentation/contexts/BrandContext";
+import { AuthProvider, useAuth } from "./presentation/contexts/AuthContext";
+import { useBrand } from "./presentation/contexts/BrandContext";
+import { ShortcutProvider } from "./presentation/contexts/ShortcutContext";
+import { Layout } from "./presentation/components/hub/Layout";
+import { GlobalEffects } from "./presentation/components/hub/GlobalEffects";
+import { KeyboardHelpModal } from "./presentation/components/hub/KeyboardHelpModal";
+import { AuthPage } from "./presentation/pages/AuthPage";
+import { ManagerDashboard } from "./presentation/pages/ManagerDashboard";
+import { Dashboard } from "./presentation/pages/Dashboard";
+import { Admin } from "./presentation/pages/Admin";
+import { RegistrationProgress } from "./presentation/components/hub/RegistrationProgress";
+import { WebhooksPage } from "./presentation/pages/WebhooksPage";
+import { SetupPage } from "./presentation/pages/SetupPage";
+import KnowledgeCenter from "./presentation/pages/KnowledgeCenter";
 
 const queryClient = new QueryClient({
   defaultOptions: { queries: { retry: 1 } },
