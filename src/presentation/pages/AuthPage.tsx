@@ -11,6 +11,7 @@ import { colorMix } from '@/shared/utils/utils';
 import { MockLoginCards } from '@/presentation/components/hub/MockLoginCards';
 import { DEFAULT_DARK } from '@/infrastructure/config/themeDefaults';
 import { supabase } from '@/infrastructure/database/supabaseClient';
+
 export const AuthPage: React.FC = () => {
   const { login, register, loginMock, isDbMissing, isSetupRequired } = useAuth();
   const { t } = useLanguage();
@@ -60,7 +61,6 @@ export const AuthPage: React.FC = () => {
         setTokenValidating(false);
       });
     } else if (roleParam) {
-      // Cadastro sem token não é permitido — redireciona para login
       setTokenError('Cadastro permitido apenas via link de convite válido.');
       setIsLogin(false);
     }
@@ -69,9 +69,6 @@ export const AuthPage: React.FC = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
-
-    if (!isLogin) {
-    }
 
     try {
       if (isLogin) {
@@ -116,6 +113,7 @@ export const AuthPage: React.FC = () => {
     setError('');
 
     try {
+      // 1. Criar o usuário no Auth
       const { data: authData, error: authError } = await supabase.auth.signUp({
         email,
         password,
@@ -125,6 +123,7 @@ export const AuthPage: React.FC = () => {
       if (authError) throw authError;
 
       if (authData.user) {
+        // 2. Criar o perfil como ACTIVE imediatamente
         await (supabase.from('profiles') as any).upsert({
           id: authData.user.id,
           name,
@@ -134,6 +133,7 @@ export const AuthPage: React.FC = () => {
           preferences: { theme: 'dark', language: 'pt-br' }
         });
 
+        // 3. Inicializar configurações de branding se não existirem
         const { data: existingConfig } = await supabase.from('system_config').select('id').limit(1);
         if (!existingConfig || existingConfig.length === 0) {
           await (supabase.from('system_config') as any).insert({
@@ -144,11 +144,13 @@ export const AuthPage: React.FC = () => {
             updated_at: new Date().toISOString()
           });
         }
+
+        // 4. Logar imediatamente para pular a tela de análise
+        await login(email, password);
       }
 
       setSetupSuccess(true);
       toast.success("Super Admin criado com sucesso!");
-      setTimeout(() => window.location.reload(), 2000);
     } catch (err: any) {
       setError(err.message || "Erro no setup inicial");
     } finally {

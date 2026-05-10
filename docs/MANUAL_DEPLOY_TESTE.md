@@ -46,6 +46,7 @@ Entre na pasta do projeto e baixe as novidades do GitHub:
 cd conexao-hub-main
 git fetch origin
 git checkout feat/primeiro-acesso
+git pull origin feat/primeiro-acesso
 ```
 
 ### B. Criar a Imagem de Teste (Build)
