@@ -18,6 +18,7 @@ export const AuthPage: React.FC = () => {
   
   const [setupLoading, setSetupLoading] = useState(false);
   const [setupSuccess, setSetupSuccess] = useState(false);
+  const [manualSetup, setManualSetup] = useState(false);
 
   const [isLogin, setIsLogin] = useState(() => {
     const params = new URLSearchParams(window.location.search);
@@ -173,7 +174,7 @@ export const AuthPage: React.FC = () => {
         {renderLogo()}
 
         <div className="text-center mb-8 relative z-10">
-          {isSetupRequired ? (
+          {(isSetupRequired || manualSetup) ? (
             <div className="animate-fade-in">
               <h2 className="text-3xl font-bold mb-3 tracking-tight" style={{ color: 'var(--color-text-main)' }}>Primeiro Acesso</h2>
               <p className="text-sm font-medium leading-relaxed" style={{ color: 'var(--color-text-muted)' }}>
@@ -263,8 +264,18 @@ export const AuthPage: React.FC = () => {
               <p className="text-sm text-zinc-400">Administrador configurado. Redirecionando...</p>
             </div>
           </div>
-        ) : isSetupRequired ? (
+        ) : (isSetupRequired || manualSetup) ? (
           <form onSubmit={handleFirstAccess} className="space-y-5 relative z-10">
+            {(manualSetup && !isSetupRequired) && (
+              <button 
+                type="button"
+                onClick={() => setManualSetup(false)}
+                className="flex items-center gap-2 text-xs font-bold uppercase tracking-widest mb-4 hover:opacity-70 transition-all"
+                style={{ color: 'var(--color-accent)' }}
+              >
+                <ArrowLeft size={14} /> Voltar ao Login
+              </button>
+            )}
             <div className="group">
               <label className="block text-xs font-bold uppercase tracking-wider mb-1.5 pl-1" style={{ color: 'var(--color-text-muted)' }}>Nome do Administrador</label>
               <div className="relative">
@@ -370,6 +381,17 @@ export const AuthPage: React.FC = () => {
                 <ChevronRight size={18} className="group-hover/btn:translate-x-1 transition-transform" />
              </span>
           </button>
+
+          {isLogin && (
+            <button
+              type="button"
+              onClick={() => setManualSetup(true)}
+              className="w-full mt-4 text-[10px] font-bold uppercase tracking-[0.2em] text-center py-3 border border-white/5 rounded-xl hover:bg-white/5 hover:border-white/10 transition-all opacity-40 hover:opacity-100"
+              style={{ color: 'var(--color-text-muted)' }}
+            >
+              Primeiro Acesso (SuperAdmin)
+            </button>
+          )}
         </form>
         )}
 
