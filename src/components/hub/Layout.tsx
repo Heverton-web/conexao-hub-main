@@ -3,7 +3,7 @@ import { useAuth } from '../../contexts/AuthContext';
 import { useLanguage } from '../../contexts/LanguageContext';
 import { useBrand } from '../../contexts/BrandContext';
 import { useNavigate } from 'react-router-dom';
-import { LogOut, Globe, Star, Zap } from 'lucide-react';
+import { LogOut, Globe, Star, Zap, BookOpen } from 'lucide-react';
 import { getUserLevel } from '../../types';
 import { mockDb, GamificationLevel } from '../../lib/mockDb';
 import { colorMix } from '../../lib/utils';
@@ -50,7 +50,10 @@ export const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) =>
                   : `0 8px 32px var(--color-shadow, rgba(0,0,0,0.3)), inset 0 1px 0 ${colorMix('var(--color-glass-tint)', 30, 'rgba(255,255,255,0.12)')}, inset 0 -1px 0 ${colorMix('var(--color-glass-tint)', 10, 'rgba(255,255,255,0.04)')}`,
               }}
             >
-            <div className="flex items-center space-x-4 group cursor-default">
+            <button 
+              onClick={() => navigate('/')}
+              className="flex items-center space-x-4 group cursor-pointer hover:opacity-80 transition-all"
+            >
                 <div className="relative">
                     <div className="absolute inset-0 blur-lg opacity-20 group-hover:opacity-40 transition-opacity duration-500 rounded-full" style={{ backgroundColor: 'var(--color-accent)' }}></div>
                     {config.logoUrl ? (
@@ -62,7 +65,7 @@ export const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) =>
                     )}
                 </div>
                 <h1 className="text-xl font-bold hidden sm:block tracking-tight transition-colors duration-300" style={{ color: 'var(--color-text-main)' }}>{config.appName}</h1>
-            </div>
+            </button>
 
             <div className="flex items-center gap-1.5 sm:gap-3">
                 <div className="flex items-center gap-1 sm:gap-2 rounded-full px-1 py-1 sm:px-1.5 sm:py-1.5 transition-colors group" style={{ backgroundColor: colorMix('var(--color-bg)', 50, 'rgba(15,23,42,0.5)'), border: `1px solid ${colorMix('var(--color-border)', 50, 'rgba(255,255,255,0.1)')}` }}>
@@ -115,7 +118,20 @@ export const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) =>
                     )}
 
                     <button
+                      onClick={() => navigate('/knowledge-center')}
+                      className="group relative w-8 h-8 sm:w-10 sm:h-10 flex items-center justify-center rounded-full transition-all duration-300 hover:shadow-lg"
+                      style={{ backgroundColor: 'color-mix(in srgb, var(--color-primary, #3b82f6) 15%, transparent)', color: 'var(--color-primary, #3b82f6)' }}
+                      onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = 'var(--color-primary, #3b82f6)'; e.currentTarget.style.color = 'white'; }}
+                      onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = 'color-mix(in srgb, var(--color-primary, #3b82f6) 15%, transparent)'; e.currentTarget.style.color = 'var(--color-primary, #3b82f6)'; }}
+                      title="Central de Conhecimento"
+                    >
+                      <BookOpen size={16} className="sm:hidden transition-transform duration-300" />
+                      <BookOpen size={18} className="hidden sm:block transition-transform duration-300" />
+                    </button>
+
+                    <button
                         onClick={logout}
+
                         className="group relative w-8 h-8 sm:w-10 sm:h-10 flex items-center justify-center rounded-full transition-all duration-300 hover:text-white hover:shadow-lg"
                         style={{ backgroundColor: 'var(--color-error-bg)', color: 'var(--color-error)' }}
                         onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = 'var(--color-error)'; }}

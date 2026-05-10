@@ -35,7 +35,7 @@ export const GlobalEffects: React.FC = () => {
           }}
         />
         <div
-          className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')]"
+          className="absolute inset-0 bg-[url('/noise.svg')]"
           style={{
             opacity: 'var(--env-grain-opacity)',
             mixBlendMode: 'var(--env-grain-blend)' as any,

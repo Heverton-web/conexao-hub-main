@@ -1,0 +1,30 @@
+[
+  {
+    "id": "docker-full",
+    "title": "Infraestrutura & Docker",
+    "description": "Manual completo para deploy, configuração de VPS, Docker e manutenção do servidor.",
+    "icon": "Box",
+    "category": "Infraestrutura",
+    "roles": ["super_admin"],
+    "sections": [
+      { "id": "pre-req", "title": "Pré-requisitos", "path": "/docs/manual_docker_hub/01-pre-requisitos.md", "type": "md" },
+      { "id": "supabase-conf", "title": "Configuração Supabase", "path": "/docs/manual_docker_hub/02-configuracao-supabase.md", "type": "md" },
+      { "id": "env-vars", "title": "Variáveis de Ambiente", "path": "/docs/manual_docker_hub/03-variaveis-ambiente.md", "type": "md" },
+      { "id": "deploy-step", "title": "Executando o Deploy", "path": "/docs/manual_docker_hub/04-deploy-primeiro-passo.md", "type": "md" }
+    ]
+  },
+  {
+    "id": "branding-full",
+    "title": "Branding & Identidade",
+    "description": "Guia de estilo, cores, logotipos e personalização visual da sua plataforma.",
+    "icon": "Palette",
+    "category": "Design",
+    "roles": ["super_admin", "admin"],
+    "sections": [
+      { "id": "brand-guide", "title": "Guia Geral", "path": "/docs/manual_branding/branding-guide.md", "type": "md" },
+      { "id": "color-system", "title": "Sistema de Cores", "path": "/docs/manual_branding/02-sistema-cores.md", "type": "md" },
+      { "id": "visual-effects", "title": "Efeitos Visuais", "path": "/docs/manual_branding/04-efeitos-visuais.md", "type": "md" },
+      { "id": "ui-components", "title": "Componentes UI", "path": "/docs/manual_branding/06-componentes-ui.md", "type": "md" }
+    ]
+  }
+]

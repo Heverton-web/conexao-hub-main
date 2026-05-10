@@ -20,6 +20,7 @@ import { Admin } from "./pages/Admin";
 import { RegistrationProgress } from "./components/hub/RegistrationProgress";
 import { WebhooksPage } from "./pages/WebhooksPage";
 import { SetupPage } from "./pages/SetupPage";
+import KnowledgeCenter from "./pages/KnowledgeCenter";
 
 const queryClient = new QueryClient({
   defaultOptions: { queries: { retry: 1 } },
@@ -68,7 +69,10 @@ const AppContent = () => {
       <Layout>
         <GlobalEffects />
         <KeyboardHelpModal />
-        {isAdmin ? <Admin /> : isManager ? <ManagerDashboard /> : <Dashboard />}
+        <Routes>
+          <Route path="/knowledge-center" element={<KnowledgeCenter />} />
+          <Route path="/" element={isAdmin ? <Admin /> : isManager ? <ManagerDashboard /> : <Dashboard />} />
+        </Routes>
       </Layout>
     </ShortcutProvider>
   );
