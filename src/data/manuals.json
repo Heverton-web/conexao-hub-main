@@ -42,6 +42,17 @@
     ]
   },
   {
+    "id": "vps-git-deploy",
+    "title": "Deploy VPS & Git",
+    "description": "Guia estratégico para implantação profissional em servidores Linux utilizando Git Clone e Docker Compose.",
+    "icon": "Server",
+    "category": "Infraestrutura",
+    "roles": ["super_admin"],
+    "sections": [
+      { "id": "vps-01", "title": "Passo a Passo", "path": "/docs/SUPER_ADMIN/manual_deploy_vps/01-passo-a-passo.md", "type": "md" }
+    ]
+  },
+  {
     "id": "branding-full",
     "title": "Branding & Identidade",
     "description": "Guia de estilo, cores, logotipos e personalização visual da sua plataforma.",

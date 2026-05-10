@@ -5,6 +5,7 @@ services:
 ## --------------------------- CONEXÃO HUB --------------------------- ##
 
   app:
+    # Seção de Build: Necessária para construir a imagem na VPS a partir do código
     build:
       context: .
       args:
@@ -13,63 +14,37 @@ services:
         - VITE_GEMINI_API_KEY=${VITE_GEMINI_API_KEY}
         - VITE_OPENAI_API_KEY=${VITE_OPENAI_API_KEY}
     
-    container_name: conexao_hub_app # [OPCIONAL] Nome do container no Docker
+    container_name: conexao_hub_app
     restart: always
 
+    deploy:
+      resources:
+        limits:
+          cpus: "1"
+          memory: 1024M
+
     networks:
-      - network_conexao # [IMPORTANTE] Deve ser a mesma rede definida no final deste arquivo
+      - network_conexao
 
     environment:
       - NODE_ENV=production
-      - TZ=America/Sao_Paulo # [ALTERAR] Fuso horário do cliente (Ex: America/Sao_Paulo)
+      - TZ=America/Sao_Paulo
+      - VITE_SUPABASE_URL=${VITE_SUPABASE_URL}
+      - VITE_SUPABASE_ANON_KEY=${VITE_SUPABASE_ANON_KEY}
+      - VITE_GEMINI_API_KEY=${VITE_GEMINI_API_KEY}
+      - VITE_OPENAI_API_KEY=${VITE_OPENAI_API_KEY}
 
-    ## 📊 Gestão de Logs (Evita que o disco do cliente lote)
-    logging:
-      driver: "json-file"
-      options:
-        max-size: "10m"
-        max-file: "3"
-
-    ## 🏥 Teste de Saúde
-    healthcheck:
-      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost/"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
-      start_period: 20s
-
-    ## 📦 Volumes para Auditoria de Logs do Nginx
-    volumes:
-      - ./logs/nginx:/var/log/nginx
-
-    ## 🚀 Deploy e Recursos (Ajustar conforme o plano contratado pelo cliente)
-    deploy:
-      mode: replicated
-      replicas: 1
-      placement:
-        constraints:
-          - node.role == manager
-      resources:
-        limits:
-          cpus: "1"      # [ALTERAR] Limite de CPU (1 = 100%)
-          memory: 1024M  # [ALTERAR] Limite de Memória RAM
-      
-      ## 🔐 Configurações Traefik (ALTERAR PARA O DOMÍNIO DO CLIENTE)
-      labels:
-        - "traefik.enable=true"
-        - "traefik.http.routers.conexao_hub.rule=Host(`hub.vpsconexao.org`)" # [ALTERAR] Domínio do cliente
-        - "traefik.http.routers.conexao_hub.entrypoints=websecure"
-        - "traefik.http.routers.conexao_hub.priority=10"
-        - "traefik.http.routers.conexao_hub.tls.certresolver=letsencryptresolver" # [ALTERAR] Nome do resolver de SSL no Traefik
-        - "traefik.http.routers.conexao_hub.service=conexao_hub"
-        - "traefik.http.services.conexao_hub.loadbalancer.server.port=80"
+    ## 🌐 Configurações Traefik
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.conexao_hub.rule=Host(`hub.vpsconexao.org`)"
+      - "traefik.http.routers.conexao_hub.entrypoints=websecure"
+      - "traefik.http.routers.conexao_hub.tls.certresolver=letsencryptresolver"
+      - "traefik.http.services.conexao_hub.loadbalancer.server.port=80"
 
 ## --------------------------- INFRA --------------------------- ##
 
 networks:
   network_conexao:
     external: true
-    name: network_conexao # [ALTERAR] Nome da rede externa existente na VPS do cliente
-
-
-    driver: bridge
+    name: network_conexao
