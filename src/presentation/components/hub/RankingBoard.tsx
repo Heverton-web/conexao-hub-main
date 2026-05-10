@@ -273,71 +273,72 @@ export function RankingBoard({ currentUserId, showToggle = true, defaultExpanded
                 )}
               </div>
 
-              {/* Lista completa (opcional - abaixo do podium) */}
-              <div className="space-y-2">
+              {/* Lista completa Ultra Premium */}
+              <div className="space-y-3 mt-4">
                 {rankings.slice(0, 10).map((user) => {
                   const isCurrentUser = user.userId === currentUserId;
                   
                   return (
                     <div 
                       key={user.userId}
-                      className={`flex items-center gap-3 p-3 rounded-xl transition-all ${
+                      className={`group flex items-center gap-4 p-4 rounded-2xl transition-all duration-300 border ${
                         isCurrentUser 
-                          ? 'border-2' 
-                          : ''
+                          ? 'border-[var(--color-accent)]/50 shadow-[0_0_20px_rgba(201,166,85,0.15)]' 
+                          : 'border-white/5 hover:border-white/20'
                       }`}
                       style={{
-                        backgroundColor: isCurrentUser 
-                          ? 'rgba(201, 166, 85, 0.1)' 
-                          : 'var(--color-bg)',
-                        borderColor: isCurrentUser 
-                          ? 'var(--color-accent)' 
-                          : 'transparent'
+                        background: isCurrentUser 
+                          ? 'linear-gradient(90deg, rgba(201, 166, 85, 0.15), rgba(201, 166, 85, 0.05))' 
+                          : 'rgba(255, 255, 255, 0.03)',
+                        backdropFilter: 'blur(10px)'
                       }}
                     >
-                      <div className="w-8 text-center">
-                        {user.position <= 3 ? (
-                          <span className="text-xl">
-                            {user.position === 1 ? '🥇' : user.position === 2 ? '🥈' : '🥉'}
-                          </span>
+                      {/* Posição com Ícone ou Número */}
+                      <div className="w-10 flex justify-center items-center">
+                        {user.position === 1 ? (
+                          <Trophy size={22} className="text-[var(--color-accent)] drop-shadow-[0_0_8px_rgba(201,166,85,0.5)]" />
+                        ) : user.position === 2 ? (
+                          <Trophy size={20} className="text-slate-300 drop-shadow-[0_0_8px_rgba(255,255,255,0.3)]" />
+                        ) : user.position === 3 ? (
+                          <Trophy size={18} className="text-orange-700" />
                         ) : (
-                          <span 
-                            className="text-sm font-bold"
-                            style={{ color: 'var(--color-text-muted)' }}
-                          >
-                            {user.position}
+                          <span className="text-sm font-black opacity-40" style={{ color: 'var(--color-text-main)' }}>
+                            {user.position.toString().padStart(2, '0')}
                           </span>
                         )}
                       </div>
 
-                      <div className="flex-1 min-w-0">
-                        <div className="flex items-center gap-2">
-                          <User size={14} style={{ color: 'var(--color-text-muted)' }} />
-                          <span 
-                            className="font-medium truncate"
-                            style={{ color: 'var(--color-text-main)' }}
-                          >
-                            {user.name}
-                          </span>
-                          {isCurrentUser && (
-                            <span 
-                              className="text-xs px-2 py-0.5 rounded-full"
-                              style={{ 
-                                backgroundColor: 'var(--color-accent)', 
-                                color: 'var(--color-bg)' 
-                              }}
-                            >
-                              Você
+                      {/* Info do Usuário */}
+                      <div className="flex-1 flex items-center gap-3 min-w-0">
+                        <div className="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center border border-white/10 group-hover:scale-110 transition-transform">
+                          <User size={18} className="text-[var(--color-text-muted)]" />
+                        </div>
+                        <div className="flex flex-col min-w-0">
+                          <div className="flex items-center gap-2">
+                            <span className="font-bold text-sm sm:text-base truncate" style={{ color: 'var(--color-text-main)' }}>
+                              {user.name}
                             </span>
-                          )}
+                            {isCurrentUser && (
+                              <span className="text-[9px] font-black px-2 py-0.5 rounded-full uppercase tracking-tighter"
+                                style={{ backgroundColor: 'var(--color-accent)', color: 'black' }}
+                              >
+                                Você
+                              </span>
+                            )}
+                          </div>
+                          <span className="text-[10px] font-medium opacity-50 uppercase tracking-widest" style={{ color: 'var(--color-text-muted)' }}>
+                            {getRoleLabel(user.role)}
+                          </span>
                         </div>
                       </div>
 
-                      <div className="flex items-center gap-2">
+                      {/* Badge de Cargo (Compacto) */}
+                      <div className="hidden sm:block">
                         <span 
-                          className="text-xs px-2 py-1 rounded-full"
+                          className="text-[10px] font-black px-3 py-1 rounded-lg border uppercase tracking-wider"
                           style={{ 
-                            backgroundColor: getRoleBadgeColor(user.role) + '20',
+                            backgroundColor: getRoleBadgeColor(user.role) + '15',
+                            borderColor: getRoleBadgeColor(user.role) + '30',
                             color: getRoleBadgeColor(user.role)
                           }}
                         >
@@ -345,17 +346,20 @@ export function RankingBoard({ currentUserId, showToggle = true, defaultExpanded
                         </span>
                       </div>
 
-                      <div className="flex items-center gap-1 min-w-[80px] justify-end">
-                        <span style={{ color: getLevelColor(user.level) }}>
+                      {/* Pontuação Final */}
+                      <div className="flex items-center gap-4 pl-4 border-l border-white/10">
+                        <div className="flex flex-col items-end">
+                          <div className="flex items-center gap-1">
+                            <span className="text-lg font-black tracking-tight" style={{ color: 'var(--color-accent)' }}>
+                              {user.points}
+                            </span>
+                            <Star size={12} className="fill-[var(--color-warning)] text-[var(--color-warning)]" />
+                          </div>
+                          <span className="text-[9px] font-bold opacity-40 uppercase" style={{ color: 'var(--color-text-main)' }}>Total XP</span>
+                        </div>
+                        <div className="text-xl filter drop-shadow-md group-hover:scale-125 transition-transform">
                           {getLevelIcon(user.level)}
-                        </span>
-                        <span 
-                          className="text-sm font-bold"
-                          style={{ color: 'var(--color-accent)' }}
-                        >
-                          {user.points}
-                        </span>
-                        <Star size={10} style={{ fill: 'var(--color-warning)', color: 'var(--color-warning)' }} />
+                        </div>
                       </div>
                     </div>
                   );
