@@ -1,5 +1,29 @@
 [
   {
+    "id": "chatbot-rag",
+    "title": "Chatbot & IA (RAG)",
+    "description": "Documentação técnica completa sobre o assistente de IA, arquitetura RAG e fluxos de automação n8n.",
+    "icon": "Cpu",
+    "category": "Inteligência Artificial",
+    "roles": ["super_admin"],
+    "sections": [
+      { "id": "ia-00", "title": "Índice Geral", "path": "/docs/SUPER_ADMIN/manual_chatbot_rag/00-indice.md", "type": "md" },
+      { "id": "ia-01", "title": "Visão Geral", "path": "/docs/SUPER_ADMIN/manual_chatbot_rag/01-visao-geral.md", "type": "md" },
+      { "id": "ia-02", "title": "Pré-requisitos", "path": "/docs/SUPER_ADMIN/manual_chatbot_rag/02-pre-requisitos.md", "type": "md" },
+      { "id": "ia-03", "title": "Migração de Banco", "path": "/docs/SUPER_ADMIN/manual_chatbot_rag/03-migration-banco.md", "type": "md" },
+      { "id": "ia-04", "title": "Serviço de Chat", "path": "/docs/SUPER_ADMIN/manual_chatbot_rag/04-servico-chat.md", "type": "md" },
+      { "id": "ia-05", "title": "Hook useChat", "path": "/docs/SUPER_ADMIN/manual_chatbot_rag/05-hook-usechat.md", "type": "md" },
+      { "id": "ia-06", "title": "Componente Widget", "path": "/docs/SUPER_ADMIN/manual_chatbot_rag/06-componente-chatwidget.md", "type": "md" },
+      { "id": "ia-07", "title": "Integração Dashboard", "path": "/docs/SUPER_ADMIN/manual_chatbot_rag/07-integracao-dashboard.md", "type": "md" },
+      { "id": "ia-08", "title": "Modo Demo", "path": "/docs/SUPER_ADMIN/manual_chatbot_rag/08-modo-demo.md", "type": "md" },
+      { "id": "ia-09", "title": "Modo Produção", "path": "/docs/SUPER_ADMIN/manual_chatbot_rag/09-modo-producao.md", "type": "md" },
+      { "id": "ia-10", "title": "Fluxos n8n", "path": "/docs/SUPER_ADMIN/manual_chatbot_rag/10-fluxo-n8n.md", "type": "md" },
+      { "id": "ia-11", "title": "Testes de Sistema", "path": "/docs/SUPER_ADMIN/manual_chatbot_rag/11-testes.md", "type": "md" },
+      { "id": "ia-12", "title": "Solução de Problemas", "path": "/docs/SUPER_ADMIN/manual_chatbot_rag/12-solucao-problemas.md", "type": "md" },
+      { "id": "ia-13", "title": "Atualizações Futuras", "path": "/docs/SUPER_ADMIN/manual_chatbot_rag/13-atualizacoes-futuras.md", "type": "md" }
+    ]
+  },
+  {
     "id": "docker-full",
     "title": "Infraestrutura & Docker",
     "description": "Manual completo para deploy, configuração de VPS, Docker e manutenção do servidor.",
@@ -7,10 +31,14 @@
     "category": "Infraestrutura",
     "roles": ["super_admin"],
     "sections": [
-      { "id": "pre-req", "title": "Pré-requisitos", "path": "/docs/manual_docker_hub/01-pre-requisitos.md", "type": "md" },
-      { "id": "supabase-conf", "title": "Configuração Supabase", "path": "/docs/manual_docker_hub/02-configuracao-supabase.md", "type": "md" },
-      { "id": "env-vars", "title": "Variáveis de Ambiente", "path": "/docs/manual_docker_hub/03-variaveis-ambiente.md", "type": "md" },
-      { "id": "deploy-step", "title": "Executando o Deploy", "path": "/docs/manual_docker_hub/04-deploy-primeiro-passo.md", "type": "md" }
+      { "id": "dk-01", "title": "Pré-requisitos", "path": "/docs/SUPER_ADMIN/manual_docker_hub/01-pre-requisitos.md", "type": "md" },
+      { "id": "dk-02", "title": "Configuração Supabase", "path": "/docs/SUPER_ADMIN/manual_docker_hub/02-configuracao-supabase.md", "type": "md" },
+      { "id": "dk-03", "title": "Variáveis de Ambiente", "path": "/docs/SUPER_ADMIN/manual_docker_hub/03-variaveis-ambiente.md", "type": "md" },
+      { "id": "dk-04", "title": "Executando o Deploy", "path": "/docs/SUPER_ADMIN/manual_docker_hub/04-deploy-primeiro-passo.md", "type": "md" },
+      { "id": "dk-05", "title": "Setup Super Admin", "path": "/docs/SUPER_ADMIN/manual_docker_hub/05-setup-super-admin.md", "type": "md" },
+      { "id": "dk-06", "title": "Customização White Label", "path": "/docs/SUPER_ADMIN/manual_docker_hub/06-customizacao-white-label.md", "type": "md" },
+      { "id": "dk-07", "title": "Troubleshooting", "path": "/docs/SUPER_ADMIN/manual_docker_hub/07-troubleshooting.md", "type": "md" },
+      { "id": "dk-full", "title": "Manual de Instalação", "path": "/docs/SUPER_ADMIN/manual_docker_hub/MANUAL-INSTALACAO-DOCKER.md", "type": "md" }
     ]
   },
   {
@@ -21,10 +49,71 @@
     "category": "Design",
     "roles": ["super_admin", "admin"],
     "sections": [
-      { "id": "brand-guide", "title": "Guia Geral", "path": "/docs/manual_branding/branding-guide.md", "type": "md" },
-      { "id": "color-system", "title": "Sistema de Cores", "path": "/docs/manual_branding/02-sistema-cores.md", "type": "md" },
-      { "id": "visual-effects", "title": "Efeitos Visuais", "path": "/docs/manual_branding/04-efeitos-visuais.md", "type": "md" },
-      { "id": "ui-components", "title": "Componentes UI", "path": "/docs/manual_branding/06-componentes-ui.md", "type": "md" }
+      { "id": "br-01", "title": "Identidade da Marca", "path": "/docs/SUPER_ADMIN/manual_branding/01-identidade-marca.md", "type": "md" },
+      { "id": "br-02", "title": "Sistema de Cores", "path": "/docs/SUPER_ADMIN/manual_branding/02-sistema-cores.md", "type": "md" },
+      { "id": "br-03", "title": "Tipografia", "path": "/docs/SUPER_ADMIN/manual_branding/03-tipografia.md", "type": "md" },
+      { "id": "br-04", "title": "Efeitos Visuais", "path": "/docs/SUPER_ADMIN/manual_branding/04-efeitos-visuais.md", "type": "md" },
+      { "id": "br-05", "title": "Animações", "path": "/docs/SUPER_ADMIN/manual_branding/05-animacoes.md", "type": "md" },
+      { "id": "br-06", "title": "Componentes UI", "path": "/docs/SUPER_ADMIN/manual_branding/06-componentes-ui.md", "type": "md" },
+      { "id": "br-07", "title": "Biblioteca de Ícones", "path": "/docs/SUPER_ADMIN/manual_branding/07-icones.md", "type": "md" },
+      { "id": "br-08", "title": "Sistema de Gamificação", "path": "/docs/SUPER_ADMIN/manual_branding/08-gamificacao.md", "type": "md" },
+      { "id": "br-09", "title": "Internacionalização", "path": "/docs/SUPER_ADMIN/manual_branding/09-internacionalizacao.md", "type": "md" },
+      { "id": "br-10", "title": "Layout e Espaçamento", "path": "/docs/SUPER_ADMIN/manual_branding/10-layout-espacamento.md", "type": "md" },
+      { "id": "br-full", "title": "Guia Geral de Branding", "path": "/docs/SUPER_ADMIN/manual_branding/branding-guide.md", "type": "md" }
+    ]
+  },
+  {
+    "id": "consultor-full",
+    "title": "Guia do Consultor",
+    "description": "Treinamento completo para consultores: navegação, biblioteca, XP e patentes.",
+    "icon": "User",
+    "category": "Treinamento",
+    "roles": ["super_admin", "consultor"],
+    "sections": [
+      { "id": "co-01", "title": "Introdução", "path": "/docs/CONSULTOR/manual_consultor/01-introducao.md", "type": "md" },
+      { "id": "co-02", "title": "Navegação e Interface", "path": "/docs/CONSULTOR/manual_consultor/02-navegacao-interface.md", "type": "md" },
+      { "id": "co-03", "title": "Biblioteca de Conteúdos", "path": "/docs/CONSULTOR/manual_consultor/03-biblioteca-conteudos.md", "type": "md" },
+      { "id": "co-04", "title": "Trilhas de Aprendizado", "path": "/docs/CONSULTOR/manual_consultor/04-trilhas-aprendizado.md", "type": "md" },
+      { "id": "co-05", "title": "Sistema de XP e Pontos", "path": "/docs/CONSULTOR/manual_consultor/05-sistema-xp-pontos.md", "type": "md" },
+      { "id": "co-06", "title": "Patentes e Níveis", "path": "/docs/CONSULTOR/manual_consultor/06-patentes-niveis.md", "type": "md" },
+      { "id": "co-07", "title": "Badges e Conquistas", "path": "/docs/CONSULTOR/manual_consultor/07-badges-conquistas.md", "type": "md" },
+      { "id": "co-08", "title": "Assistente de IA", "path": "/docs/CONSULTOR/manual_consultor/08-chatbot-assistente.md", "type": "md" },
+      { "id": "co-09", "title": "Configurações de Perfil", "path": "/docs/CONSULTOR/manual_consultor/09-configuracoes.md", "type": "md" },
+      { "id": "co-full", "title": "Manual Completo", "path": "/docs/CONSULTOR/manual_consultor/MANUAL-CONSULTOR.md", "type": "md" }
+    ]
+  },
+  {
+    "id": "distribuidor-full",
+    "title": "Gestão de Distribuição",
+    "description": "Manual estratégico para distribuidores: gestão de equipe, performance regional e governança.",
+    "icon": "Users",
+    "category": "Gestão",
+    "roles": ["super_admin", "distributor"],
+    "sections": [
+      { "id": "di-01", "title": "Introdução Estratégica", "path": "/docs/DISTRIBUIDOR/manual_distribuidor/01-introducao.md", "type": "md" },
+      { "id": "di-02", "title": "Painel de Gestão Regional", "path": "/docs/DISTRIBUIDOR/manual_distribuidor/02-painel-gestao-regional.md", "type": "md" },
+      { "id": "di-03", "title": "Supervisão de Consultores", "path": "/docs/DISTRIBUIDOR/manual_distribuidor/03-supervisao-consultores.md", "type": "md" },
+      { "id": "di-04", "title": "Gestão de Materiais", "path": "/docs/DISTRIBUIDOR/manual_distribuidor/04-gestao-materiais-suporte.md", "type": "md" },
+      { "id": "di-05", "title": "Gamificação de Liderança", "path": "/docs/DISTRIBUIDOR/manual_distribuidor/05-gamificacao-lideranca.md", "type": "md" },
+      { "id": "di-06", "title": "Análise de Dados", "path": "/docs/DISTRIBUIDOR/manual_distribuidor/06-analise-dados-relatorios.md", "type": "md" },
+      { "id": "di-full", "title": "Manual Completo", "path": "/docs/DISTRIBUIDOR/manual_distribuidor/MANUAL-DISTRIBUIDOR.md", "type": "md" }
+    ]
+  },
+  {
+    "id": "cliente-full",
+    "title": "Manual do Cliente",
+    "description": "Manuais de Instrução prático para profissionais: catálogo técnico, biblioteca científica e suporte clínico.",
+    "icon": "HeartPulse",
+    "category": "Suporte",
+    "roles": ["super_admin", "admin", "client"],
+    "sections": [
+      { "id": "cl-01", "title": "Bem-vindo ao Hub", "path": "/docs/CLIENTE/manual_cliente/01-introducao.md", "type": "md" },
+      { "id": "cl-02", "title": "Catálogo Técnico", "path": "/docs/CLIENTE/manual_cliente/02-navegacao-catalogo.md", "type": "md" },
+      { "id": "cl-03", "title": "Biblioteca de Estudos", "path": "/docs/CLIENTE/manual_cliente/03-biblioteca-conhecimento.md", "type": "md" },
+      { "id": "cl-04", "title": "Minha Jornada de Evolução", "path": "/docs/CLIENTE/manual_cliente/04-evolucao-reconhecimento.md", "type": "md" },
+      { "id": "cl-05", "title": "IA Especialista", "path": "/docs/CLIENTE/manual_cliente/05-assistente-ia.md", "type": "md" },
+      { "id": "cl-06", "title": "Suporte e Conectividade", "path": "/docs/CLIENTE/manual_cliente/06-suporte-conectividade.md", "type": "md" },
+      { "id": "cl-full", "title": "Manual Completo", "path": "/docs/CLIENTE/manual_cliente/MANUAL-CLIENTE.md", "type": "md" }
     ]
   }
 ]

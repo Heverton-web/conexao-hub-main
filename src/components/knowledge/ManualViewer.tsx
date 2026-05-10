@@ -44,18 +44,34 @@ export const ManualViewer: React.FC<ManualViewerProps> = ({
 
   const activeSection = sections.find(s => s.id === activeSectionId) || sections[0];
 
+  const scrollAreaRef = React.useRef<HTMLDivElement>(null);
+
   useEffect(() => {
     if (isOpen && activeSection) {
       setLoading(true);
+      
+      // Resetar scroll para o topo imediatamente ao trocar de seção
+      if (scrollAreaRef.current) {
+        const viewport = scrollAreaRef.current.querySelector('[data-radix-scroll-area-viewport]');
+        if (viewport) viewport.scrollTop = 0;
+      }
+
       fetch(activeSection.path)
-        .then((res) => res.text())
+        .then((res) => {
+          if (!res.ok) throw new Error("Arquivo não encontrado");
+          const contentType = res.headers.get("content-type");
+          if (contentType?.includes("text/html") && activeSection.type === "md") {
+            throw new Error("O servidor retornou HTML para um arquivo Markdown (provavelmente 404).");
+          }
+          return res.text();
+        })
         .then((text) => {
           setContent(text);
           setLoading(false);
         })
         .catch((err) => {
           console.error("Erro ao carregar manual:", err);
-          setContent("Erro ao carregar o conteúdo do manual.");
+          setContent("# ⚠️ Capítulo não encontrado\n\nEste material ainda está sendo sincronizado ou o link está incorreto. Por favor, tente outro capítulo.");
           setLoading(false);
         });
     }
@@ -207,7 +223,7 @@ export const ManualViewer: React.FC<ManualViewerProps> = ({
                 {manualTitle}
               </DialogTitle>
               <DialogDescription className="text-zinc-500 font-medium">
-                Central de Conhecimento • {activeSection?.title}
+                Manuais de Instrução • {activeSection?.title}
               </DialogDescription>
             </div>
           </div>
@@ -251,7 +267,7 @@ export const ManualViewer: React.FC<ManualViewerProps> = ({
 
           {/* 📄 Visualizador de Conteúdo */}
           <main className="flex-1 relative bg-black/20">
-            <ScrollArea className="h-full">
+            <ScrollArea ref={scrollAreaRef} className="h-full">
               <div className="max-w-4xl mx-auto p-12 lg:p-20">
                 {loading ? (
                   <div className="flex flex-col items-center justify-center py-40 gap-4">
@@ -259,15 +275,15 @@ export const ManualViewer: React.FC<ManualViewerProps> = ({
                     <span className="text-zinc-500 font-medium animate-pulse tracking-widest uppercase text-xs">Sincronizando conteúdo...</span>
                   </div>
                 ) : activeSection?.type === "html" ? (
-                  <div className="bg-white rounded-3xl overflow-hidden shadow-2xl h-[800px] border border-zinc-800">
+                  <div className="bg-white rounded-3xl overflow-hidden shadow-2xl h-[75vh] border border-zinc-800 animate-in fade-in zoom-in duration-500">
                     <iframe 
-                      srcDoc={content} 
+                      src={activeSection.path} 
                       className="w-full h-full border-none"
                       title={activeSection.title}
                     />
                   </div>
                 ) : (
-                  <article className="animate-in fade-in slide-in-from-bottom-4 duration-700">
+                  <article className="animate-in fade-in slide-in-from-bottom-4 duration-700 pb-20">
                     <ReactMarkdown 
                       remarkPlugins={[remarkGfm]}
                       components={MarkdownComponents as any}
