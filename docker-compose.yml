@@ -30,12 +30,19 @@ services:
       - VITE_GEMINI_API_KEY=${VITE_GEMINI_API_KEY}
       - VITE_OPENAI_API_KEY=${VITE_OPENAI_API_KEY}
 
-    ## 🌐 Configurações Traefik (Labels compatíveis com Portainer)
+    ## 🌐 Configurações Traefik (Segurança e Redirecionamento)
     labels:
       - "traefik.enable=true"
+      # Roteador Seguro (HTTPS)
       - "traefik.http.routers.conexao_hub.rule=Host(`hub.vpsconexao.org`)"
       - "traefik.http.routers.conexao_hub.entrypoints=websecure"
       - "traefik.http.routers.conexao_hub.tls.certresolver=letsencryptresolver"
+      # Redirecionamento Automático (HTTP -> HTTPS)
+      - "traefik.http.routers.conexao_hub_http.rule=Host(`hub.vpsconexao.org`)"
+      - "traefik.http.routers.conexao_hub_http.entrypoints=web"
+      - "traefik.http.routers.conexao_hub_http.middlewares=conexao_redirect"
+      - "traefik.http.middlewares.conexao_redirect.redirectscheme.scheme=https"
+      # Porta interna do container (Nginx/Vite)
       - "traefik.http.services.conexao_hub.loadbalancer.server.port=80"
 
 ## --------------------------- INFRA --------------------------- ##
