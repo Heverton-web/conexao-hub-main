@@ -23,7 +23,7 @@ git checkout -b feat/primeiro-acesso
 
 ### B. Salvar o Trabalho (Commit)
 Após fazer as alterações, salve-as localmente:
-```powershell
+```bash
 git add .
 git commit -m "feat: arquitetura limpa e fluxo de primeiro acesso finalizados"
 ```
