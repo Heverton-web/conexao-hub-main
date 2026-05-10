@@ -5,7 +5,6 @@ services:
 ## --------------------------- CONEXÃO HUB --------------------------- ##
 
   app:
-    # Seção de Build: Necessária para construir a imagem na VPS a partir do código
     build:
       context: .
       args:
@@ -16,6 +15,10 @@ services:
     
     container_name: conexao_hub_app
     restart: always
+
+    # Adicionado mapeamento de porta para acesso direto via IP enquanto o Traefik não é configurado
+    ports:
+      - "80:80"
 
     deploy:
       resources:
@@ -34,17 +37,8 @@ services:
       - VITE_GEMINI_API_KEY=${VITE_GEMINI_API_KEY}
       - VITE_OPENAI_API_KEY=${VITE_OPENAI_API_KEY}
 
-    ## 🌐 Configurações Traefik
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.conexao_hub.rule=Host(`hub.vpsconexao.org`)"
-      - "traefik.http.routers.conexao_hub.entrypoints=websecure"
-      - "traefik.http.routers.conexao_hub.tls.certresolver=letsencryptresolver"
-      - "traefik.http.services.conexao_hub.loadbalancer.server.port=80"
-
 ## --------------------------- INFRA --------------------------- ##
 
 networks:
   network_conexao:
-    external: true
-    name: network_conexao
+    driver: bridge # O próprio Docker vai criar essa rede de forma correta e aberta
