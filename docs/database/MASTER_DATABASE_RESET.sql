@@ -211,15 +211,24 @@ ALTER TABLE public.badge_assignments ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.chatbot_config ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.chat_logs ENABLE ROW LEVEL SECURITY;
 
--- POLICIES (Com garantias de que a coluna role existe)
+-- FUNÇÃO PARA EVITAR RECURSÃO INFINITA NO RLS
+CREATE OR REPLACE FUNCTION public.check_is_admin()
+RETURNS BOOLEAN AS $$
+BEGIN
+  RETURN EXISTS (
+    SELECT 1 FROM public.profiles
+    WHERE id = auth.uid() AND role = 'super_admin'
+  );
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
+
+-- POLICIES (Versão corrigida sem recursão)
 DO $$ BEGIN
     CREATE POLICY "Public Read Config" ON public.system_config FOR SELECT USING (true);
 EXCEPTION WHEN duplicate_object THEN null; END $$;
 
 DO $$ BEGIN
-    CREATE POLICY "Admin Manage Config" ON public.system_config FOR ALL USING (
-      EXISTS (SELECT 1 FROM public.profiles WHERE id = auth.uid() AND role = 'super_admin')
-    );
+    CREATE POLICY "Admin Manage Config" ON public.system_config FOR ALL USING (public.check_is_admin());
 EXCEPTION WHEN duplicate_object THEN null; END $$;
 
 DO $$ BEGIN
@@ -227,9 +236,7 @@ DO $$ BEGIN
 EXCEPTION WHEN duplicate_object THEN null; END $$;
 
 DO $$ BEGIN
-    CREATE POLICY "Admins manage profiles" ON public.profiles FOR ALL USING (
-      EXISTS (SELECT 1 FROM public.profiles WHERE id = auth.uid() AND role = 'super_admin')
-    );
+    CREATE POLICY "Admins manage profiles" ON public.profiles FOR ALL USING (public.check_is_admin());
 EXCEPTION WHEN duplicate_object THEN null; END $$;
 
 -- 5. DADOS INICIAIS (SEED)
