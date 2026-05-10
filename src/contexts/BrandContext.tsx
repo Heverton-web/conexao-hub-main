@@ -14,7 +14,8 @@ interface BrandContextType {
 const BrandContext = createContext<BrandContextType | undefined>(undefined);
 
 const defaults: SystemConfig = {
-  appName: 'Hub Conexão',
+  appName: 'Conexão',
+  logoUrl: '/favicon.ico',
   themeDark: DEFAULT_DARK,
   themeMode: DEFAULT_THEME_MODE,
   environmentThemes: DEFAULT_ENVIRONMENT_THEMES,
@@ -121,6 +122,16 @@ export const BrandProvider: React.FC<{ children: React.ReactNode }> = ({ childre
 
     styleTag.innerHTML = css;
     document.title = config.appName;
+
+    // Update favicon dynamically
+    const faviconUrl = config.logoUrl || '/favicon.ico';
+    let faviconLink: HTMLLinkElement | null = document.querySelector("link[rel~='icon']");
+    if (!faviconLink) {
+      faviconLink = document.createElement('link');
+      faviconLink.rel = 'icon';
+      document.head.appendChild(faviconLink);
+    }
+    faviconLink.href = faviconUrl;
   }, [config, activeEnvironment]);
 
   const updateConfig = async (newConfig: SystemConfig) => {

@@ -147,7 +147,8 @@ export const mockDb = {
     const { data, error } = await supabase.from('system_config').select('*').eq('id', 1).single();
 
     const defaults: SystemConfig = {
-        appName: 'Hub Conexão',
+        appName: 'Conexão',
+        logoUrl: '/favicon.ico',
         themeDark: DEFAULT_DARK,
         themeMode: DEFAULT_THEME_MODE,
         showMockLoginCards: true,
