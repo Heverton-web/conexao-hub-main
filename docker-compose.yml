@@ -6,8 +6,7 @@ services:
 
   app:
     # No modo Portainer/Swarm, usamos a imagem pré-construída no Docker Hub
-    # [ALTERAR] Troque 'seu-usuario/conexao-hub' pelo seu nome de usuário no Docker Hub
-    image: seu-usuario/conexao-hub:latest
+    image: hevertonperes/conexao-hub:latest
     
     # container_name e build foram removidos para compatibilidade com Portainer Stacks
     
