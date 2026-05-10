@@ -74,7 +74,7 @@ export const WebhooksPage: React.FC = () => {
       <div className="max-w-4xl mx-auto">
         <div className="flex items-center gap-4 mb-8">
           <button
-            onClick={() => navigate('/admin')}
+            onClick={() => navigate('/')}
             className="p-2 rounded-lg hover:bg-white/10"
             style={{ color: 'var(--color-text-muted)' }}
           >
