@@ -43,7 +43,7 @@ Agora você vai entrar no terminal da sua VPS (letras pretas e brancas) para pre
 ### A. Atualizar o código na VPS
 Entre na pasta do projeto e baixe as novidades do GitHub:
 ```bash
-cd conexao-hub-main
+cd /root/conexao-hub-main
 git fetch origin
 git checkout feat/primeiro-acesso
 git pull origin feat/primeiro-acesso

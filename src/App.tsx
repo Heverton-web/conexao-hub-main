@@ -53,8 +53,8 @@ const AppContent = () => {
     return <AuthPage />;
   }
 
-  // Show progress screen for pending/rejected users (unless admin)
-  if (user.status === 'pending' || user.status === 'rejected') {
+  // Show progress screen for pending/rejected users (super_admin always bypasses)
+  if ((user.status === 'pending' || user.status === 'rejected') && user.role !== 'super_admin') {
     return <RegistrationProgress />;
   }
 
