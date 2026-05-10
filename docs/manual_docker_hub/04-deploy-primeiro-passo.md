@@ -17,18 +17,19 @@ docker compose up -d --build
 Para garantir que tudo subiu corretamente, verifique os logs:
 
 ```bash
-docker logs -f conexao-hub
+docker logs -f conexao_hub_app
 ```
 
 Você deve ver mensagens do Nginx indicando que o servidor está pronto.
 
 ## 3. Acessando a Interface
-Abra o seu navegador e acesse:
-`http://localhost:8080` (se estiver no seu PC)
-ou
-`http://IP-DO-SERVIDOR:8080` (se estiver em uma VPS)
+Como a aplicação está configurada para usar o Traefik, acesse via domínio configurado:
+
+1.  **Via Domínio (Recomendado):** `https://hub.vpsconexao.org`
+2.  **Via IP (Local/Teste):** `http://IP-DO-SERVIDOR:8080` (A porta 8080 está mapeada para testes rápidos).
 
 Se tudo estiver correto, você verá a tela de **Setup Inicial** do Super Admin.
+
 
 ---
 **Nota:** Se a página não carregar, verifique se a porta 8080 está liberada no seu firewall.

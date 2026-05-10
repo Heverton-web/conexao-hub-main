@@ -37,7 +37,8 @@ nano .env # Insira suas chaves aqui
 docker compose up -d --build
 ```
 
-Após isso, acesse `http://seu-ip:8080` para realizar o setup inicial.
+Após isso, acesse `https://hub.vpsconexao.org` (ou seu domínio configurado) para realizar o setup inicial.
+
 
 ---
 **Powered by Conexão Hub Team**

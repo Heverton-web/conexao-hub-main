@@ -21,6 +21,14 @@ docker --version
 docker compose version
 ```
 
+## 3. Infraestrutura de Rede (VPS)
+Como o projeto utiliza uma rede externa para integração (Ex: Traefik), você deve garantir que a rede `network_conexao` exista no seu Docker Host:
+
+```bash
+docker network create network_conexao
+```
+
+
 ## 3. Conectividade
 Certifique-se de que as seguintes portas estão abertas no seu Firewall (UFW/AWS Security Groups):
 - **8080**: Porta padrão da aplicação (pode ser alterada no docker-compose).
