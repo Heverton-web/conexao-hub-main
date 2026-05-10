@@ -4,7 +4,7 @@ import { Material, Language, MaterialType, Role, MaterialAsset } from '@/shared/
 import { useLanguage } from '@/presentation/contexts/LanguageContext';
 import { X, Save, FileText, Image as ImageIcon, Video, Check, Users, Shield, Link as LinkIcon, AlertCircle, Star, Headphones, Globe, Upload, Languages, Copy, CheckCircle2, Loader2, Sparkles } from 'lucide-react';
 import { TagInput } from './TagInput';
-import { supabase } from '@/integrations/supabase/client';
+import { supabase } from '@/infrastructure/database/supabase/client';
 import { colorMix } from '@/shared/utils/utils';
 import { toast } from '@/presentation/hooks/use-toast';
 import { translateText, summarizeText } from '@/infrastructure/external/aiService';

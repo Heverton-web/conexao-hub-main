@@ -1,7 +1,7 @@
 import { supabase } from './supabaseClient';
-import { Material, UserProfile, Role, SystemConfig, ColorScheme, UserStatus, AccessLog, Language, MaterialAsset, Collection, CollectionItem, UserProgress, ThemeModeConfig, EnvironmentThemes, Webhook, WebhookEventFilter, WebhookLog, SystemIntegrations, getUserLevel, Badge, UserBadge, BadgeWithDetails } from '../../../shared/types/types';
-import { DEFAULT_DARK, DEFAULT_THEME_MODE, mergeScheme, DEFAULT_ENVIRONMENT_THEMES } from './themeDefaults';
-import { encrypt, decrypt } from './crypto';
+import { Material, UserProfile, Role, SystemConfig, ColorScheme, UserStatus, AccessLog, Language, MaterialAsset, Collection, CollectionItem, UserProgress, ThemeModeConfig, EnvironmentThemes, Webhook, WebhookEventFilter, WebhookLog, SystemIntegrations, getUserLevel, Badge, UserBadge, BadgeWithDetails } from '@/shared/types/types';
+import { DEFAULT_DARK, DEFAULT_THEME_MODE, mergeScheme, DEFAULT_ENVIRONMENT_THEMES } from '../config/themeDefaults';
+import { encrypt, decrypt } from '@/shared/utils/crypto';
 import { mockMode } from './mockMode';
 import { mockStore } from './mockStore';
 

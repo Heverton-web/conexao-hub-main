@@ -3,7 +3,7 @@ import { useAuth } from '@/presentation/contexts/AuthContext';
 import { useLanguage } from '@/presentation/contexts/LanguageContext';
 import { useShortcuts } from '@/presentation/contexts/ShortcutContext';
 import { mockDb } from '../../infrastructure/database/mockDb';
-import { Material, Language, MaterialType, UserProgress, Collection, getUserLevel, getNextLevelThreshold } from '../../../shared/types/types';
+import { Material, Language, MaterialType, UserProgress, Collection, getUserLevel, getNextLevelThreshold } from '@/shared/types/types';
 import { WebhookEvents } from '../../infrastructure/external/webhookDispatcher';
 import { MaterialCard } from '@/presentation/components/hub/MaterialCard';
 import { CollectionCard } from '@/presentation/components/hub/CollectionCard';
@@ -20,7 +20,7 @@ import { TrailCompletionCelebration } from '@/presentation/components/hub/TrailC
 import { ChatWidget } from '@/presentation/components/hub/ChatWidget';
 import { BadgeDisplay, BadgeGrid } from '@/presentation/components/hub/BadgeDisplay';
 import { BadgeNotification, useBadgeNotification } from '@/presentation/components/hub/BadgeNotification';
-import { colorMix } from '../../../shared/utils/utils';
+import { colorMix } from '@/shared/utils/utils';
 
 export const Dashboard: React.FC = () => {
   const { user, addUserPoints } = useAuth();

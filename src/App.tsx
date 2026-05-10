@@ -19,7 +19,7 @@ import { Dashboard } from "./presentation/pages/Dashboard";
 import { Admin } from "./presentation/pages/Admin";
 import { RegistrationProgress } from "./presentation/components/hub/RegistrationProgress";
 import { WebhooksPage } from "./presentation/pages/WebhooksPage";
-import { SetupPage } from "./presentation/pages/SetupPage";
+
 import KnowledgeCenter from "./presentation/pages/KnowledgeCenter";
 
 const queryClient = new QueryClient({
@@ -50,9 +50,6 @@ const AppContent = () => {
   }
 
   if (!isAuthenticated || !user) {
-    if (isSetupRequired) {
-      return <SetupPage />;
-    }
     return <AuthPage />;
   }
 

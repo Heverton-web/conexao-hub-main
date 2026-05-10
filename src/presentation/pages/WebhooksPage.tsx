@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Zap, Plus, Edit, Trash2, ArrowLeft } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { mockDb } from '../../infrastructure/database/mockDb';
-import { Webhook, WebhookEvent, WEBHOOK_EVENTS, Role } from '../../../shared/types/types';
+import { Webhook, WebhookEvent, WEBHOOK_EVENTS, Role } from '@/shared/types/types';
 import { toast } from 'sonner';
 
 export const WebhooksPage: React.FC = () => {

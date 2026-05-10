@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { toast } from 'sonner';
-import { UserProfile, Role } from '../../../shared/types/types';
+import { UserProfile, Role } from '@/shared/types/types';
 import { supabase } from '../../infrastructure/database/supabaseClient';
 import { mockDb } from '../../infrastructure/database/mockDb';
 import { WebhookEvents } from '../../infrastructure/external/webhookDispatcher';

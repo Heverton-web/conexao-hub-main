@@ -4,11 +4,11 @@ import { Search, Library, Filter, BookOpen, ArrowLeft, ChevronRight, Hash } from
 import { Input } from "@/presentation/components/ui/input";
 import { KnowledgeCard } from "@/presentation/components/knowledge/KnowledgeCard";
 import { ManualViewer } from "@/presentation/components/knowledge/ManualViewer";
-import manualsData from "@/data/manuals.json";
+import manualsData from "@/shared/data/manuals.json";
 import { useAuth } from "@/presentation/contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/presentation/components/ui/button";
-import { cn } from "@/lib/utils";
+import { cn } from "@/shared/utils/utils";
 
 export default function KnowledgeCenter() {
   const { user } = useAuth();

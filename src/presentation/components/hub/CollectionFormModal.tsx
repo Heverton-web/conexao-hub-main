@@ -6,7 +6,7 @@ import { X, Save, Users, Check, Star, Image as ImageIcon, AlertCircle, Search, C
 import { toast } from '@/presentation/hooks/use-toast';
 import { mockDb } from '@/infrastructure/database/mockDb';
 import { Material } from '@/shared/types/types';
-import { supabase } from '../../integrations/supabase/client';
+import { supabase } from '@/infrastructure/database/supabase/client';
 import { colorMix } from '@/shared/utils/utils';
 
 interface CollectionFormModalProps {

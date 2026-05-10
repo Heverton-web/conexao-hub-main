@@ -1,5 +1,5 @@
-import { mockDb } from './mockDb';
-import { AIFunction, SystemIntegrations } from '../../../shared/types/types';
+import { mockDb } from '@/infrastructure/database/mockDb';
+import { AIFunction, SystemIntegrations } from '@/shared/types/types';
 
 interface AIProvider {
   name: string;

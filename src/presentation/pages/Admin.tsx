@@ -2037,11 +2037,11 @@ export const Admin: React.FC = () => {
                               try {
                                 const ext = file.name.split('.').pop() || 'png';
                                 const fileName = `logo-${Date.now()}.${ext}`;
-                                const { data: uploadData, error: uploadError } = await (await import('@/integrations/supabase/client')).supabase.storage
+                                const { data: uploadData, error: uploadError } = await (await import('@/infrastructure/database/supabase/client')).supabase.storage
                                   .from('branding')
                                   .upload(fileName, file, { upsert: true });
                                 if (uploadError) throw uploadError;
-                                const { data: urlData } = (await import('@/integrations/supabase/client')).supabase.storage
+                                const { data: urlData } = (await import('@/infrastructure/database/supabase/client')).supabase.storage
                                   .from('branding')
                                   .getPublicUrl(uploadData.path);
                                 setLocalConfig({ ...localConfig, logoUrl: urlData.publicUrl });

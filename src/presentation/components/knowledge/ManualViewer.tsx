@@ -14,7 +14,7 @@ import {
 import { ScrollArea } from "@/presentation/components/ui/scroll-area";
 import { Button } from "@/presentation/components/ui/button";
 import { Download, X, ChevronRight, FileText, Copy, Check } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { cn } from "@/shared/utils/utils";
 import { toast } from "sonner";
 
 interface Section {

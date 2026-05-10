@@ -1,4 +1,4 @@
-import { ColorScheme, ThemeModeConfig, EnvironmentEffects, EnvironmentThemes } from '../../../shared/types/types';
+import { ColorScheme, ThemeModeConfig, EnvironmentEffects, EnvironmentThemes } from '@/shared/types/types';
 
 export const DEFAULT_DARK: ColorScheme = {
   background: '#0f172a',

@@ -1,6 +1,6 @@
 import { supabase } from './supabaseClient';
-import { mockDb } from './mockDb';
-import { Role, Material, Collection } from '../../../shared/types/types';
+import { mockDb } from '@/infrastructure/database/mockDb';
+import { Role, Material, Collection } from '@/shared/types/types';
 
 export interface ChatMessage {
   id: string;

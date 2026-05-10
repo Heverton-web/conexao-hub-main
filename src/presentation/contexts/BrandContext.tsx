@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useEffect, useState, useCallback } from 'react';
-import { SystemConfig, ColorScheme, EnvironmentKey, EnvironmentEffects } from '../../../shared/types/types';
+import { SystemConfig, ColorScheme, EnvironmentKey, EnvironmentEffects } from '@/shared/types/types';
 import { mockDb } from '../../infrastructure/database/mockDb';
 import { DEFAULT_DARK, DEFAULT_THEME_MODE, DEFAULT_ENVIRONMENT_THEMES } from '../../infrastructure/config/themeDefaults';
 

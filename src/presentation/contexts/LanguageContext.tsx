@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState } from 'react';
-import { Language } from '../../../shared/types/types';
+import { Language } from '@/shared/types/types';
 
 interface LanguageContextType {
   language: Language;

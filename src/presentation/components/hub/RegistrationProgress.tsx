@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useAuth } from '@/presentation/contexts/AuthContext';
 import { useBrand } from '@/presentation/contexts/BrandContext';
-import { supabase } from '@/integrations/supabase/client';
+import { supabase } from '@/infrastructure/database/supabase/client';
 import { Clock, XCircle, CheckCircle, LogIn, MessageCircle } from 'lucide-react';
 import confetti from 'canvas-confetti';
 

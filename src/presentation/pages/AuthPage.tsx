@@ -2,17 +2,22 @@ import React, { useState, useEffect } from 'react';
 import { useAuth } from '@/presentation/contexts/AuthContext';
 import { useLanguage } from '@/presentation/contexts/LanguageContext';
 import { useBrand } from '@/presentation/contexts/BrandContext';
-import { UserPlus, ArrowLeft, Eye, EyeOff, Shield, Sparkles, Briefcase, User, Database, AlertTriangle, ChevronRight, Loader2 } from 'lucide-react';
-import { Role } from '../../../shared/types/types';
+import { UserPlus, ArrowLeft, Eye, EyeOff, Shield, Sparkles, Briefcase, User, Database, AlertTriangle, ChevronRight, Loader2, Rocket, CheckCircle2, Lock } from 'lucide-react';
+import { Role } from '@/shared/types/types';
 import { SqlSetupModal } from '@/presentation/components/hub/SqlSetupModal';
 import { mockDb } from '../../infrastructure/database/mockDb';
 import { toast } from 'sonner';
-import { colorMix } from '../../../shared/utils/utils';
+import { colorMix } from '@/shared/utils/utils';
 import { MockLoginCards } from '@/presentation/components/hub/MockLoginCards';
+import { DEFAULT_DARK } from '@/infrastructure/config/themeDefaults';
+import { supabase } from '@/infrastructure/database/supabaseClient';
 export const AuthPage: React.FC = () => {
-  const { login, register, loginMock, isDbMissing } = useAuth();
+  const { login, register, loginMock, isDbMissing, isSetupRequired } = useAuth();
   const { t } = useLanguage();
   const { config } = useBrand();
+  
+  const [setupLoading, setSetupLoading] = useState(false);
+  const [setupSuccess, setSetupSuccess] = useState(false);
 
   const [isLogin, setIsLogin] = useState(() => {
     const params = new URLSearchParams(window.location.search);
@@ -104,6 +109,52 @@ export const AuthPage: React.FC = () => {
     }
      </div>;
 
+  const handleFirstAccess = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setSetupLoading(true);
+    setError('');
+
+    try {
+      const { data: authData, error: authError } = await supabase.auth.signUp({
+        email,
+        password,
+        options: { data: { name, role: 'super_admin' } }
+      });
+
+      if (authError) throw authError;
+
+      if (authData.user) {
+        await (supabase.from('profiles') as any).upsert({
+          id: authData.user.id,
+          name,
+          email,
+          role: 'super_admin',
+          status: 'active',
+          preferences: { theme: 'dark', language: 'pt-br' }
+        });
+
+        const { data: existingConfig } = await supabase.from('system_config').select('id').limit(1);
+        if (!existingConfig || existingConfig.length === 0) {
+          await (supabase.from('system_config') as any).insert({
+            id: 1,
+            app_name: 'Conexão Hub',
+            logo_url: '/favicon.ico',
+            theme_dark: DEFAULT_DARK as any,
+            updated_at: new Date().toISOString()
+          });
+        }
+      }
+
+      setSetupSuccess(true);
+      toast.success("Super Admin criado com sucesso!");
+      setTimeout(() => window.location.reload(), 2000);
+    } catch (err: any) {
+      setError(err.message || "Erro no setup inicial");
+    } finally {
+      setSetupLoading(false);
+    }
+  };
+
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen p-4 relative overflow-hidden">
@@ -122,21 +173,28 @@ export const AuthPage: React.FC = () => {
         {renderLogo()}
 
         <div className="text-center mb-8 relative z-10">
-          {!isLogin && invitedRole ?
-          <div className="animate-fade-in">
+          {isSetupRequired ? (
+            <div className="animate-fade-in">
+              <h2 className="text-3xl font-bold mb-3 tracking-tight" style={{ color: 'var(--color-text-main)' }}>Primeiro Acesso</h2>
+              <p className="text-sm font-medium leading-relaxed" style={{ color: 'var(--color-text-muted)' }}>
+                Seja bem-vindo. Crie sua conta de <span style={{ color: 'var(--color-accent)' }}>Super Administrador</span> para inicializar a plataforma.
+              </p>
+            </div>
+          ) : !isLogin && invitedRole ? (
+            <div className="animate-fade-in">
               <h2 className="text-3xl font-bold mb-2 tracking-tight" style={{ color: 'var(--color-text-main)' }}>
                 Cadastro de {invitedRole === 'client' ? 'Clientes' : invitedRole === 'distributor' ? 'Distribuidores' : invitedRole === 'consultant' ? 'Consultores' : invitedRole === 'manager' ? 'Gestores' : 'Administradores'}
               </h2>
               <p className="text-sm leading-relaxed" style={{ color: 'var(--color-text-muted)' }}>
                 Acesse materiais exclusivos e acompanhe as novidades da plataforma {config.appName}.
               </p>
-            </div> :
-
-          <>
+            </div>
+          ) : (
+            <>
               <h2 className="text-3xl font-bold mb-3 tracking-tight" style={{ color: 'var(--color-text-main)' }}>{isLogin ? t('auth.login') : t('auth.register')}</h2>
               <p className="text-lg font-medium bg-clip-text text-transparent animate-shimmer bg-[length:200%_100%]" style={{ backgroundImage: 'linear-gradient(90deg, var(--color-gradient-start), var(--color-gradient-mid), var(--color-gradient-end), var(--color-gradient-start))' }}>{config.appName}</p>
             </>
-          }
+          )}
         </div>
 
         <div className="space-y-4 mb-6 relative z-10">
@@ -195,7 +253,54 @@ export const AuthPage: React.FC = () => {
           }
         </div>
 
-        {!tokenError && !tokenValidating && (isLogin || inviteToken) && (
+        {setupSuccess ? (
+          <div className="text-center py-10 space-y-6 animate-fade-in">
+            <div className="w-20 h-20 bg-green-500/20 rounded-full flex items-center justify-center mx-auto ring-4 ring-green-500/10">
+              <CheckCircle2 size={40} className="text-green-500 animate-bounce" />
+            </div>
+            <div className="space-y-2">
+              <p className="text-xl font-bold text-white">Sucesso!</p>
+              <p className="text-sm text-zinc-400">Administrador configurado. Redirecionando...</p>
+            </div>
+          </div>
+        ) : isSetupRequired ? (
+          <form onSubmit={handleFirstAccess} className="space-y-5 relative z-10">
+            <div className="group">
+              <label className="block text-xs font-bold uppercase tracking-wider mb-1.5 pl-1" style={{ color: 'var(--color-text-muted)' }}>Nome do Administrador</label>
+              <div className="relative">
+                <User className="absolute left-4 top-1/2 -translate-y-1/2 text-zinc-500" size={18} />
+                <input type="text" required placeholder="Nome Completo" className="w-full p-4 pl-12 rounded-xl border border-white/10 bg-white/5 focus:ring-2 outline-none transition-all" style={{ color: 'var(--color-text-main)' }} value={name} onChange={(e) => setName(e.target.value)} />
+              </div>
+            </div>
+            <div className="group">
+              <label className="block text-xs font-bold uppercase tracking-wider mb-1.5 pl-1" style={{ color: 'var(--color-text-muted)' }}>Email de Acesso</label>
+              <div className="relative">
+                <Briefcase className="absolute left-4 top-1/2 -translate-y-1/2 text-zinc-500" size={18} />
+                <input type="email" required placeholder="admin@exemplo.com" className="w-full p-4 pl-12 rounded-xl border border-white/10 bg-white/5 focus:ring-2 outline-none transition-all" style={{ color: 'var(--color-text-main)' }} value={email} onChange={(e) => setEmail(e.target.value)} />
+              </div>
+            </div>
+            <div className="group">
+              <label className="block text-xs font-bold uppercase tracking-wider mb-1.5 pl-1" style={{ color: 'var(--color-text-muted)' }}>Senha Mestra</label>
+              <div className="relative">
+                <Lock className="absolute left-4 top-1/2 -translate-y-1/2 text-zinc-500" size={18} />
+                <input type={showPassword ? "text" : "password"} required placeholder="Mínimo 6 caracteres" className="w-full p-4 pl-12 pr-12 rounded-xl border border-white/10 bg-white/5 focus:ring-2 outline-none transition-all" style={{ color: 'var(--color-text-main)' }} value={password} onChange={(e) => setPassword(e.target.value)} />
+                <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-4 top-1/2 -translate-y-1/2 text-zinc-500">
+                  {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+                </button>
+              </div>
+            </div>
+
+            <button type="submit" disabled={setupLoading} className="w-full relative overflow-hidden text-zinc-900 font-bold py-4 rounded-xl transition-all shadow-lg flex items-center justify-center gap-2 group/btn mt-6 hover:scale-[1.02]" style={{ background: `linear-gradient(135deg, var(--color-gradient-start) 0%, var(--color-gradient-mid) 40%, var(--color-gradient-end) 70%, var(--color-gradient-start) 100%)` }}>
+               {setupLoading ? <Loader2 size={24} className="animate-spin" /> : (
+                 <>
+                   <Rocket size={20} />
+                   <span>Inicializar Hub</span>
+                   <ChevronRight size={18} />
+                 </>
+               )}
+            </button>
+          </form>
+        ) : !tokenError && !tokenValidating && (isLogin || inviteToken) && (
         <form onSubmit={handleSubmit} className="space-y-5 relative z-10">
           {!isLogin &&
           <div className="group">

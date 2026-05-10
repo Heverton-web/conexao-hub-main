@@ -1,5 +1,5 @@
-import { mockDb } from './mockDb';
-import { WebhookEvent, Role } from '../../../shared/types/types';
+import { mockDb } from '@/infrastructure/database/mockDb';
+import { WebhookEvent, Role } from '@/shared/types/types';
 
 interface WebhookPayload {
   event: WebhookEvent;

@@ -3,7 +3,7 @@ import { createPortal } from 'react-dom';
 import { Material, Language, MaterialAsset } from '@/shared/types/types';
 import { useLanguage } from '@/presentation/contexts/LanguageContext';
 import { X, Save, Upload, Link as LinkIcon } from 'lucide-react';
-import { supabase } from '@/integrations/supabase/client';
+import { supabase } from '@/infrastructure/database/supabase/client';
 import { colorMix } from '@/shared/utils/utils';
 
 interface AssetManagerModalProps {

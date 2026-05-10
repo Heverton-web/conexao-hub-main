@@ -1,0 +1,44 @@
+[
+  {
+    "id": "manual-auth",
+    "title": "Configuração de Autenticação",
+    "description": "Como configurar e gerenciar o acesso de usuários e roles no sistema.",
+    "icon": "ShieldCheck",
+    "category": "Segurança",
+    "roles": ["super_admin", "manager"],
+    "sections": [
+      {
+        "title": "Primeiro Acesso",
+        "content": "O sistema detecta automaticamente se não há um Super Admin configurado e solicita a criação do primeiro perfil."
+      }
+    ]
+  },
+  {
+    "id": "manual-branding",
+    "title": "Identidade Visual (White Label)",
+    "description": "Personalize logos, cores e o nome da plataforma para seus clientes.",
+    "icon": "Palette",
+    "category": "Design",
+    "roles": ["super_admin"],
+    "sections": [
+      {
+        "title": "Cores de Acento",
+        "content": "Utilize o seletor de cores no painel Admin para definir a cor primária do sistema."
+      }
+    ]
+  },
+  {
+    "id": "manual-webhook",
+    "title": "Integração via Webhooks",
+    "description": "Guia técnico para conectar o Conexão Hub a sistemas externos (n8n, Make).",
+    "icon": "Zap",
+    "category": "Integração",
+    "roles": ["super_admin", "developer"],
+    "sections": [
+      {
+        "title": "Eventos Disponíveis",
+        "content": "O sistema dispara eventos para novos usuários, conclusão de trilhas e acessos a materiais."
+      }
+    ]
+  }
+]
