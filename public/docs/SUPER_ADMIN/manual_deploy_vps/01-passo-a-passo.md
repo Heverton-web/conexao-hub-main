@@ -16,26 +16,27 @@ Este guia descreve o método oficial e profissional de implantação da platafor
 ## 🛠️ Passo a Passo (O Caminho do Super Admin)
 
 ### Passo 1: Construção da Imagem e Injeção de Variáveis
-Como o Conexão Hub é uma aplicação React (Vite), as chaves do Supabase devem ser injetadas **durante a compilação**. Faça isso no terminal de uma máquina com acesso ao código (pode ser a própria VPS):
+Como o Conexão Hub é uma aplicação React (Vite), as configurações devem ser injetadas **durante a compilação**. 
 
-1. Acesse o servidor e baixe/atualize o projeto:
-```bash
-git clone https://github.com/Heverton-web/conexao-hub-main.git
-cd conexao-hub-main
-```
+⚠️ **Atenção:** Nunca salve as suas chaves reais neste manual, pois ele é público no GitHub! Guarde o comando abaixo em um bloco de notas seguro no seu computador.
 
-2. Autentique-se no Docker Hub:
-```bash
-docker login -u seu_usuario
-```
+Execute o Build no terminal (substituindo pelos valores reais):
 
-3. Execute o Build injetando as variáveis (substitua pelos valores reais):
 ```bash
 docker build \
-  --build-arg VITE_SUPABASE_URL="https://sua-url-aqui.supabase.co" \
-  --build-arg VITE_SUPABASE_PUBLISHABLE_KEY="sua-chave-aqui" \
+  --build-arg VITE_SUPABASE_URL="https://[sua-url].supabase.co" \
+  --build-arg VITE_SUPABASE_PUBLISHABLE_KEY="eyJhbG..." \
+  --build-arg VITE_GEMINI_API_KEY="AIzaSy..." \
+  --build-arg VITE_ENABLE_MOCK_MODE=false \
   -t seu_usuario/conexao-hub:latest .
 ```
+
+**Explicando o Código:**
+*   `--build-arg VITE_SUPABASE_URL`: Diz ao sistema onde o banco de dados Supabase mora.
+*   `--build-arg VITE_SUPABASE_PUBLISHABLE_KEY`: A chave que dá permissão ao site para consultar os dados.
+*   `--build-arg VITE_GEMINI_API_KEY`: Injeta a chave da Inteligência Artificial do Google para o chatbot e IA do sistema.
+*   `--build-arg VITE_ENABLE_MOCK_MODE`: Se for `true`, o sistema não usará o banco de dados real e rodará dados de teste (modo simulação). Na VPS em produção, deixe sempre `false` ou omita essa linha.
+*   `-t hevertonperes/conexao-hub:latest`: Etiqueta a imagem recém-criada com a sua identidade para enviarmos ao Armazém.
 
 4. Envie a imagem compilada para o Docker Hub:
 ```bash
