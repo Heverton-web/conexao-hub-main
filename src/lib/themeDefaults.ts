@@ -57,29 +57,30 @@ export function mergeScheme(partial: Partial<ColorScheme> | undefined, defaults:
 
 /* ─── Environment Effects Defaults ─── */
 
+// Valores exatos lidos dos prints do painel de configuração
 const DEFAULT_GLOBAL_EFFECTS: EnvironmentEffects = {
   pageBg: '#0f172a',
-  blob1Color: '#003b2f',
-  blob2Color: '#003b2f',
-  blob3Color: '#003b2f',
+  blob1Color: '#00508f',
+  blob2Color: '#00508f',
+  blob3Color: '#00508f',
   blobOpacity: '0.20',
   blobSize: '36',
-  blobBlur: '1000',
+  blobBlur: '500',
   grainOpacity: '0.10',
   grainBlendMode: 'overlay',
   grainContrast: '150',
-  glassOpacity: '0.40',
-  glassBlur: '24',
-  glassBorderOpacity: '0.10',
+  glassOpacity: '0.08',
+  glassBlur: '56',
+  glassBorderOpacity: '0.05',
 };
 
 export const DEFAULT_ENVIRONMENT_THEMES: EnvironmentThemes = {
   global: { ...DEFAULT_GLOBAL_EFFECTS },
   auth: {
     ...DEFAULT_GLOBAL_EFFECTS,
-    blob1Color: '#003b2f',
-    blob2Color: '#003b2f',
-    blob3Color: '#003b2f',
+    blob1Color: '#00508f',
+    blob2Color: '#00508f',
+    blob3Color: '#00508f',
     blobOpacity: '0.20',
     blobSize: '36',
     blobBlur: '1000',
@@ -89,9 +90,9 @@ export const DEFAULT_ENVIRONMENT_THEMES: EnvironmentThemes = {
   },
   client: {
     ...DEFAULT_GLOBAL_EFFECTS,
-    blob1Color: '#003b2f',
-    blob2Color: '#003b2f',
-    blob3Color: '#003b2f',
+    blob1Color: '#00508f',
+    blob2Color: '#00508f',
+    blob3Color: '#00508f',
     blobOpacity: '0.20',
     blobSize: '36',
     blobBlur: '1000',
@@ -101,9 +102,9 @@ export const DEFAULT_ENVIRONMENT_THEMES: EnvironmentThemes = {
   },
   manager: {
     ...DEFAULT_GLOBAL_EFFECTS,
-    blob1Color: '#003b2f',
-    blob2Color: '#003b2f',
-    blob3Color: '#003b2f',
+    blob1Color: '#00508f',
+    blob2Color: '#00508f',
+    blob3Color: '#00508f',
     blobOpacity: '0.20',
     blobSize: '36',
     blobBlur: '1000',
@@ -114,9 +115,9 @@ export const DEFAULT_ENVIRONMENT_THEMES: EnvironmentThemes = {
   admin: {
     ...DEFAULT_GLOBAL_EFFECTS,
     pageBg: '#1f1b3c',
-    blob1Color: '#003b2f',
-    blob2Color: '#003b2f',
-    blob3Color: '#003b2f',
+    blob1Color: '#00508f',
+    blob2Color: '#00508f',
+    blob3Color: '#00508f',
     blobOpacity: '0.20',
     blobSize: '36',
     blobBlur: '1000',
