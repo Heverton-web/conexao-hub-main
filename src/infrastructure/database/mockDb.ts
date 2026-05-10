@@ -195,23 +195,16 @@ export const mockDb = {
       return user;
     }
 
-    const [profileResult, roleResult] = await Promise.all([
-      supabase.from('profiles').select('*').eq('id', id).single(),
-      supabase.from('user_roles').select('role').eq('user_id', id).limit(1).single()
-    ]);
-
-    if (profileResult.error) {
-        if (profileResult.error.code === 'PGRST116') return null;
-        if (profileResult.error.code === '42P01') throw profileResult.error;
-        console.error("DB Read Error:", profileResult.error);
+    const { data: profile, error } = await supabase.from('profiles').select('*').eq('id', id).single();
+    
+    if (error) {
+        if (error.code === 'PGRST116') return null;
+        if (error.code === '42P01') throw error;
+        console.error("DB Read Error:", error);
         return null;
     }
 
-    const data = {
-      ...profileResult.data,
-      user_roles: roleResult.data ? [roleResult.data] : []
-    };
-    return mapProfileFromDb(data);
+    return mapProfileFromDb(profile);
   },
 
   updateUserStatus: async (userId: string, status: UserStatus, rejectionReason?: string): Promise<void> => {
@@ -335,13 +328,7 @@ export const mockDb = {
     const { data: profiles, error } = await supabase.from('profiles').select('*').order('name');
     if (error) throw error;
     
-    const { data: roles } = await supabase.from('user_roles').select('user_id, role');
-    const roleMap = new Map((roles || []).map((r: any) => [r.user_id, r.role]));
-    
-    return (profiles || []).map((p: any) => mapProfileFromDb({
-      ...p,
-      user_roles: roleMap.has(p.id) ? [{ role: roleMap.get(p.id) }] : []
-    }));
+    return (profiles || []).map((p: any) => mapProfileFromDb(p));
   },
 
   getMaterials: async (role: Role): Promise<Material[]> => {
@@ -696,7 +683,7 @@ export const mockDb = {
 
     const { data, error } = await supabase
       .from('profiles')
-      .select('*, user_roles(role)')
+      .select('*')
       .order('points', { ascending: false });
     
     if (error) throw error;

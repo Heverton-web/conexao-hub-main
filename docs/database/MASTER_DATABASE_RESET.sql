@@ -153,6 +153,37 @@ CREATE TABLE IF NOT EXISTS public.chat_logs (
 
 -- 3. FUNÇÕES E TRIGGERS
 
+-- Função para criar perfil automaticamente ao registrar no Auth
+CREATE OR REPLACE FUNCTION public.handle_new_user()
+RETURNS TRIGGER
+LANGUAGE plpgsql
+SECURITY DEFINER
+SET search_path = public
+AS $$
+BEGIN
+  INSERT INTO public.profiles (id, email, name, role, status)
+  VALUES (
+    NEW.id,
+    NEW.email,
+    COALESCE(NEW.raw_user_meta_data->>'name', 'Novo Usuário'),
+    COALESCE((NEW.raw_user_meta_data->>'role')::public.app_role, 'client'),
+    'active' -- Forçamos ativo para testes e primeiro acesso
+  )
+  ON CONFLICT (id) DO UPDATE SET
+    email = EXCLUDED.email,
+    name = EXCLUDED.name,
+    role = EXCLUDED.role,
+    status = 'active';
+  RETURN NEW;
+END;
+$$;
+
+-- Trigger de criação de usuário
+DROP TRIGGER IF EXISTS on_auth_user_created ON auth.users;
+CREATE TRIGGER on_auth_user_created
+  AFTER INSERT ON auth.users
+  FOR EACH ROW EXECUTE FUNCTION public.handle_new_user();
+
 CREATE OR REPLACE FUNCTION public.update_updated_at_column()
 RETURNS TRIGGER AS $$
 BEGIN
