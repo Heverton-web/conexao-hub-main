@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { mockDb } from '@/infrastructure/database/mockDb';
-import { Trophy, ChevronDown, User, Star, ChevronUp, ChevronDown as ChevronDownIcon, Eye, EyeOff } from 'lucide-react';
+import { Trophy, ChevronDown, User, Star, ChevronUp, ChevronDown as ChevronDownIcon, Eye, EyeOff, Crown } from 'lucide-react';
 import { Role, UserLevel } from '@/shared/types/types';
 
 interface UserRanking {
@@ -173,10 +173,10 @@ export function RankingBoard({ currentUserId, showToggle = true, defaultExpanded
                     <div className="relative mb-3">
                       <div className="absolute -inset-2 bg-slate-400/20 blur-xl rounded-full group-hover:bg-slate-400/40 transition-all duration-500" />
                       <div 
-                        className="relative w-16 h-16 sm:w-20 sm:h-20 rounded-full flex items-center justify-center text-3xl sm:text-4xl border-2 border-slate-400/30 backdrop-blur-md"
+                        className="relative w-16 h-16 sm:w-20 sm:h-20 rounded-full flex items-center justify-center border-2 border-slate-400/30 backdrop-blur-md"
                         style={{ background: 'linear-gradient(135deg, rgba(192, 192, 192, 0.4) 0%, rgba(192, 192, 192, 0.1) 100%)' }}
                       >
-                        🥈
+                        <Trophy size={32} className="text-slate-300 drop-shadow-[0_0_8px_rgba(255,255,255,0.3)]" />
                       </div>
                     </div>
                     <div 
@@ -207,13 +207,15 @@ export function RankingBoard({ currentUserId, showToggle = true, defaultExpanded
                       <div className="absolute -inset-1 bg-gradient-to-t from-[var(--color-accent)] to-transparent opacity-40 blur-md rounded-full" />
                       
                       <div 
-                        className="relative w-24 h-24 sm:w-28 sm:h-28 rounded-full flex items-center justify-center text-5xl sm:text-6xl border-4 border-[var(--color-accent)] shadow-[0_0_30px_rgba(201,166,85,0.4)] z-10 bg-[var(--color-bg)]/80 backdrop-blur-xl"
+                        className="relative w-24 h-24 sm:w-28 sm:h-28 rounded-full flex items-center justify-center border-4 border-[var(--color-accent)] shadow-[0_0_30px_rgba(201,166,85,0.4)] z-10 bg-[var(--color-bg)]/80 backdrop-blur-xl"
                       >
-                        🥇
+                        <Trophy size={48} className="text-[var(--color-accent)] drop-shadow-[0_0_12px_rgba(201,166,85,0.6)]" />
                       </div>
                       
-                      {/* Coroa flutuante */}
-                      <div className="absolute -top-4 left-1/2 -translate-x-1/2 text-2xl drop-shadow-lg z-20">👑</div>
+                      {/* Coroa vetorial premium */}
+                      <div className="absolute -top-6 left-1/2 -translate-x-1/2 drop-shadow-[0_0_15px_rgba(201,166,85,0.8)] z-20">
+                        <Crown size={32} className="fill-[var(--color-accent)] text-[var(--color-accent)] animate-pulse" />
+                      </div>
                     </div>
 
                     <div 
@@ -235,9 +237,6 @@ export function RankingBoard({ currentUserId, showToggle = true, defaultExpanded
                         </span>
                         <span className="text-[9px] font-bold opacity-60" style={{ color: 'var(--color-text-main)' }}>XP</span>
                       </div>
-                      <span className="text-xs mt-1 filter drop-shadow-sm">
-                        {getLevelIcon(top3[0].level)}
-                      </span>
                     </div>
                   </div>
                 )}
@@ -248,10 +247,10 @@ export function RankingBoard({ currentUserId, showToggle = true, defaultExpanded
                     <div className="relative mb-3">
                       <div className="absolute -inset-2 bg-orange-600/10 blur-xl rounded-full group-hover:bg-orange-600/30 transition-all duration-500" />
                       <div 
-                        className="relative w-16 h-16 sm:w-20 sm:h-20 rounded-full flex items-center justify-center text-3xl sm:text-4xl border-2 border-orange-800/30 backdrop-blur-md"
+                        className="relative w-16 h-16 sm:w-20 sm:h-20 rounded-full flex items-center justify-center border-2 border-orange-800/30 backdrop-blur-md"
                         style={{ background: 'linear-gradient(135deg, rgba(205, 127, 50, 0.4) 0%, rgba(205, 127, 50, 0.1) 100%)' }}
                       >
-                        🥉
+                        <Trophy size={32} className="text-orange-700 drop-shadow-[0_0_8px_rgba(205,127,50,0.3)]" />
                       </div>
                     </div>
                     <div 
