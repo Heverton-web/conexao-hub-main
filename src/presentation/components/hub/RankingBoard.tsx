@@ -165,71 +165,77 @@ export function RankingBoard({ currentUserId, showToggle = true, defaultExpanded
             </div>
           ) : (
             <>
-              {/* PODIUM - Top 3 */}
-              <div className="flex items-end justify-center gap-2 sm:gap-4 mb-6">
+              {/* PODIUM - Top 3 Ultra Premium */}
+              <div className="flex items-end justify-center gap-2 sm:gap-6 mb-10 mt-8">
                 {/* 2º Lugar */}
                 {top3[1] && (
-                  <div className="flex flex-col items-center">
-                    <div 
-                      className="w-16 h-16 sm:w-20 sm:h-20 rounded-full flex items-center justify-center text-3xl sm:text-4xl mb-2 shadow-lg"
-                      style={{ 
-                        backgroundColor: 'linear-gradient(135deg, #c0c0c0 0%, #e8e8e8 100%)',
-                        boxShadow: '0 4px 20px rgba(192, 192, 192, 0.4)'
-                      }}
-                    >
-                      🥈
+                  <div className="flex flex-col items-center group">
+                    <div className="relative mb-3">
+                      <div className="absolute -inset-2 bg-slate-400/20 blur-xl rounded-full group-hover:bg-slate-400/40 transition-all duration-500" />
+                      <div 
+                        className="relative w-16 h-16 sm:w-20 sm:h-20 rounded-full flex items-center justify-center text-3xl sm:text-4xl border-2 border-slate-400/30 backdrop-blur-md"
+                        style={{ background: 'linear-gradient(135deg, rgba(192, 192, 192, 0.4) 0%, rgba(192, 192, 192, 0.1) 100%)' }}
+                      >
+                        🥈
+                      </div>
                     </div>
                     <div 
-                      className="w-16 sm:w-24 rounded-t-xl flex flex-col items-center px-2 py-3"
+                      className="w-16 sm:w-24 rounded-t-2xl flex flex-col items-center px-2 py-4 border-t border-x border-white/10"
                       style={{ 
-                        backgroundColor: '#c0c0c0',
-                        minHeight: '60px'
+                        background: 'linear-gradient(to bottom, rgba(192, 192, 192, 0.2), transparent)',
+                        height: '70px',
+                        backdropFilter: 'blur(10px)'
                       }}
                     >
-                      <span 
-                        className="text-xs font-bold truncate max-w-full"
-                        style={{ color: '#333' }}
-                        title={top3[1].name}
-                      >
+                      <span className="text-[10px] uppercase tracking-wider mb-1 opacity-50" style={{ color: 'var(--color-text-main)' }}>2º Lugar</span>
+                      <span className="text-xs font-bold truncate max-w-full" style={{ color: 'var(--color-text-main)' }}>
                         {top3[1].name.split(' ')[0]}
                       </span>
-                      <span className="text-xs font-bold" style={{ color: '#555' }}>
-                        {top3[1].points} XP
+                      <span className="text-[11px] font-black mt-1" style={{ color: 'var(--color-text-muted)' }}>
+                        {top3[1].points} <span className="text-[8px] opacity-50">XP</span>
                       </span>
                     </div>
                   </div>
                 )}
 
-                {/* 1º Lugar */}
+                {/* 1º Lugar - O Rei/Rainha */}
                 {top3[0] && (
-                  <div className="flex flex-col items-center -mb-2">
-                    <div 
-                      className="w-20 h-20 sm:w-24 sm:h-24 rounded-full flex items-center justify-center text-4xl sm:text-5xl mb-2 shadow-lg"
-                      style={{ 
-                        backgroundColor: 'linear-gradient(135deg, #ffd700 0%, #ffec8b 50%, #ffd700 100%)',
-                        boxShadow: '0 8px 30px rgba(255, 215, 0, 0.5)'
-                      }}
-                    >
-                      🥇
-                    </div>
-                    <div 
-                      className="w-20 sm:w-28 rounded-t-xl flex flex-col items-center px-2 py-3"
-                      style={{ 
-                        backgroundColor: '#ffd700',
-                        minHeight: '80px'
-                      }}
-                    >
-                      <span 
-                        className="text-sm font-bold truncate max-w-full"
-                        style={{ color: '#333' }}
-                        title={top3[0].name}
+                  <div className="flex flex-col items-center -mb-2 group animate-bounce-slow">
+                    <div className="relative mb-4">
+                      {/* Brilho de Fundo (Halo) */}
+                      <div className="absolute -inset-6 bg-[var(--color-accent)] opacity-20 blur-3xl rounded-full animate-pulse" />
+                      <div className="absolute -inset-1 bg-gradient-to-t from-[var(--color-accent)] to-transparent opacity-40 blur-md rounded-full" />
+                      
+                      <div 
+                        className="relative w-24 h-24 sm:w-28 sm:h-28 rounded-full flex items-center justify-center text-5xl sm:text-6xl border-4 border-[var(--color-accent)] shadow-[0_0_30px_rgba(201,166,85,0.4)] z-10 bg-[var(--color-bg)]/80 backdrop-blur-xl"
                       >
+                        🥇
+                      </div>
+                      
+                      {/* Coroa flutuante */}
+                      <div className="absolute -top-4 left-1/2 -translate-x-1/2 text-2xl drop-shadow-lg z-20">👑</div>
+                    </div>
+
+                    <div 
+                      className="w-24 sm:w-32 rounded-t-3xl flex flex-col items-center px-2 py-5 border-t border-x border-[var(--color-accent)]/30"
+                      style={{ 
+                        background: 'linear-gradient(to bottom, rgba(201, 166, 85, 0.25), transparent)',
+                        height: '100px',
+                        backdropFilter: 'blur(12px)',
+                        boxShadow: '0 -10px 40px rgba(0,0,0,0.3)'
+                      }}
+                    >
+                      <span className="text-[10px] uppercase tracking-[0.2em] mb-1 font-black" style={{ color: 'var(--color-accent)' }}>CAMPEÃO</span>
+                      <span className="text-sm font-black truncate max-w-full" style={{ color: 'var(--color-text-main)' }}>
                         {top3[0].name.split(' ')[0]}
                       </span>
-                      <span className="text-sm font-bold" style={{ color: '#555' }}>
-                        {top3[0].points} XP
-                      </span>
-                      <span className="text-xs" style={{ color: '#666' }}>
+                      <div className="flex items-center gap-1 mt-1">
+                        <span className="text-sm font-black" style={{ color: 'var(--color-accent)' }}>
+                          {top3[0].points}
+                        </span>
+                        <span className="text-[9px] font-bold opacity-60" style={{ color: 'var(--color-text-main)' }}>XP</span>
+                      </div>
+                      <span className="text-xs mt-1 filter drop-shadow-sm">
                         {getLevelIcon(top3[0].level)}
                       </span>
                     </div>
@@ -238,32 +244,30 @@ export function RankingBoard({ currentUserId, showToggle = true, defaultExpanded
 
                 {/* 3º Lugar */}
                 {top3[2] && (
-                  <div className="flex flex-col items-center">
-                    <div 
-                      className="w-16 h-16 sm:w-20 sm:h-20 rounded-full flex items-center justify-center text-3xl sm:text-4xl mb-2 shadow-lg"
-                      style={{ 
-                        backgroundColor: 'linear-gradient(135deg, #cd7f32 0%, #daa06d 100%)',
-                        boxShadow: '0 4px 20px rgba(205, 127, 50, 0.4)'
-                      }}
-                    >
-                      🥉
+                  <div className="flex flex-col items-center group">
+                    <div className="relative mb-3">
+                      <div className="absolute -inset-2 bg-orange-600/10 blur-xl rounded-full group-hover:bg-orange-600/30 transition-all duration-500" />
+                      <div 
+                        className="relative w-16 h-16 sm:w-20 sm:h-20 rounded-full flex items-center justify-center text-3xl sm:text-4xl border-2 border-orange-800/30 backdrop-blur-md"
+                        style={{ background: 'linear-gradient(135deg, rgba(205, 127, 50, 0.4) 0%, rgba(205, 127, 50, 0.1) 100%)' }}
+                      >
+                        🥉
+                      </div>
                     </div>
                     <div 
-                      className="w-16 sm:w-24 rounded-t-xl flex flex-col items-center px-2 py-3"
+                      className="w-16 sm:w-24 rounded-t-2xl flex flex-col items-center px-2 py-4 border-t border-x border-white/10"
                       style={{ 
-                        backgroundColor: '#cd7f32',
-                        minHeight: '50px'
+                        background: 'linear-gradient(to bottom, rgba(205, 127, 50, 0.2), transparent)',
+                        height: '60px',
+                        backdropFilter: 'blur(10px)'
                       }}
                     >
-                      <span 
-                        className="text-xs font-bold truncate max-w-full"
-                        style={{ color: '#333' }}
-                        title={top3[2].name}
-                      >
+                      <span className="text-[10px] uppercase tracking-wider mb-1 opacity-50" style={{ color: 'var(--color-text-main)' }}>3º Lugar</span>
+                      <span className="text-xs font-bold truncate max-w-full" style={{ color: 'var(--color-text-main)' }}>
                         {top3[2].name.split(' ')[0]}
                       </span>
-                      <span className="text-xs font-bold" style={{ color: '#555' }}>
-                        {top3[2].points} XP
+                      <span className="text-[11px] font-black mt-1" style={{ color: 'var(--color-text-muted)' }}>
+                        {top3[2].points} <span className="text-[8px] opacity-50">XP</span>
                       </span>
                     </div>
                   </div>
