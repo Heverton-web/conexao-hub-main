@@ -16,22 +16,22 @@ Antes de começar, entenda a diferença entre as duas ferramentas que usamos:
 Sempre que você quiser fazer uma mudança grande, siga estes passos no terminal do seu computador (VS Code ou terminal local):
 
 ### A. Criar uma "Pasta Separada" (Branch)
-Nunca trabalhe direto na `main`. Crie uma branch para a sua nova ideia:
+Nunca trabalhe direto na `main`. No nosso caso, criamos esta branch:
 ```powershell
-git checkout -b nome-da-minha-ideia
+git checkout -b feat/primeiro-acesso
 ```
 
 ### B. Salvar o Trabalho (Commit)
 Após fazer as alterações, salve-as localmente:
 ```powershell
 git add .
-git commit -m "Explique aqui o que você mudou"
+git commit -m "feat: arquitetura limpa e fluxo de primeiro acesso finalizados"
 ```
 
 ### C. Enviar para a Nuvem (GitHub)
-Envie essa "pasta separada" para o GitHub:
+Envie essa branch para o GitHub:
 ```powershell
-git push origin nome-da-minha-ideia
+git push origin feat/primeiro-acesso
 ```
 
 ---
@@ -43,16 +43,16 @@ Agora você vai entrar no terminal da sua VPS (letras pretas e brancas) para pre
 ### A. Atualizar o código na VPS
 Entre na pasta do projeto e baixe as novidades do GitHub:
 ```bash
-cd /caminho/do/projeto
+cd conexao-hub-main
 git fetch origin
-git checkout nome-da-minha-ideia
+git checkout feat/primeiro-acesso
 ```
 
 ### B. Criar a Imagem de Teste (Build)
-Como o projeto usa variáveis de ambiente para o Supabase, você **precisa** passá-las no comando de build:
+Como o projeto usa variáveis de ambiente para o Supabase, você **precisa** passá-las no comando de build. Use o comando `--no-cache` para garantir que o Docker não use erros antigos:
 
 ```bash
-docker build \
+docker build --no-cache \
   --build-arg VITE_SUPABASE_URL="SUA_URL_DO_SUPABASE" \
   --build-arg VITE_SUPABASE_PUBLISHABLE_KEY="SUA_CHAVE_PUBLISHABLE" \
   -t hevertonperes/conexao-hub:teste-arquitetura .
@@ -67,18 +67,18 @@ Agora vamos dizer ao Docker Swarm para usar essa imagem de teste.
 
 1.  Abra o **Portainer** e vá em **Stacks**.
 2.  Clique na sua Stack e vá no **Web Editor**.
-3.  Localize a linha `image: hevertonperes/conexao-hub:latest`.
-4.  Mude para: `image: hevertonperes/conexao-hub:teste-versao-1`.
+3.  Localize a linha que começa com `image: hevertonperes/conexao-hub...`.
+4.  Mude para: `image: hevertonperes/conexao-hub:teste-arquitetura`.
 5.  Clique em **Update the stack**.
 
 ---
 
 ## 🛡️ 5. Segurança: Como Reverter (Rollback)
 
-Se você abrir o site e algo estiver errado, não entre em pânico. Siga este passo para voltar ao normal:
+Se você abrir o site e algo estiver errado (como a tela preta), não entre em pânico. Siga este passo para voltar ao normal:
 
 1.  Volte no **Web Editor** do Portainer.
-2.  Mude a imagem de volta para a original: `image: hevertonperes/conexao-hub:latest`.
+2.  Mude a imagem de volta para a original (que estava antes): `image: hevertonperes/conexao-hub:latest`.
 3.  Clique em **Update the stack**.
 4.  O site antigo volta a funcionar em segundos.
 
@@ -86,10 +86,10 @@ Se você abrir o site e algo estiver errado, não entre em pânico. Siga este pa
 
 ## ✅ 6. Quando o Teste der Certo?
 Se tudo estiver perfeito na imagem de teste, você pode:
-1.  Fazer o **Merge** no GitHub (unir a branch de teste com a `main`).
-2.  Na VPS, voltar para a branch `main`: `git checkout main` e `git pull`.
+1.  Fazer o **Merge** no GitHub (unir a branch `feat/primeiro-acesso` com a `main`).
+2.  Na VPS, voltar para a branch `main`: `git checkout main` e depois `git pull`.
 3.  Fazer o build oficial: `docker build -t hevertonperes/conexao-hub:latest .`.
 4.  No Portainer, voltar a imagem para `:latest`.
 
 ---
-*Manual criado por Antigravity em 2026.*
+*Manual atualizado por Antigravity em 2026 para a Feature de Primeiro Acesso.*
