@@ -271,39 +271,42 @@ export const AuthPage: React.FC = () => {
               </button>
             )}
             <div className="group">
-              <label className="block text-xs font-bold uppercase tracking-wider mb-1.5 pl-1" style={{ color: 'var(--color-text-muted)' }}>Nome do Administrador</label>
-              <div className="relative">
-                <User className="absolute left-4 top-1/2 -translate-y-1/2 text-zinc-500" size={18} />
-                <input type="text" required placeholder="Nome Completo" className="w-full p-4 pl-12 rounded-xl border border-white/10 bg-white/5 focus:ring-2 outline-none transition-all" style={{ color: 'var(--color-text-main)' }} value={name} onChange={(e) => setName(e.target.value)} />
-              </div>
-            </div>
-            <div className="group">
-              <label className="block text-xs font-bold uppercase tracking-wider mb-1.5 pl-1" style={{ color: 'var(--color-text-muted)' }}>Email de Acesso</label>
+              <label className="block text-xs font-bold uppercase tracking-widest mb-2 pl-1 opacity-50" style={{ color: 'var(--color-text-main)' }}>Email de Acesso</label>
               <div className="relative">
                 <Briefcase className="absolute left-4 top-1/2 -translate-y-1/2 text-zinc-500" size={18} />
                 <input type="email" required placeholder="admin@exemplo.com" className="w-full p-4 pl-12 rounded-xl border border-white/10 bg-white/5 focus:ring-2 outline-none transition-all" style={{ color: 'var(--color-text-main)' }} value={email} onChange={(e) => setEmail(e.target.value)} />
               </div>
             </div>
             <div className="group">
-              <label className="block text-xs font-bold uppercase tracking-wider mb-1.5 pl-1" style={{ color: 'var(--color-text-muted)' }}>Senha Mestra</label>
+              <label className="block text-xs font-bold uppercase tracking-widest mb-2 pl-1 opacity-50" style={{ color: 'var(--color-text-main)' }}>Senha Mestra</label>
               <div className="relative">
                 <Lock className="absolute left-4 top-1/2 -translate-y-1/2 text-zinc-500" size={18} />
-                <input type={showPassword ? "text" : "password"} required placeholder="Mínimo 6 caracteres" className="w-full p-4 pl-12 pr-12 rounded-xl border border-white/10 bg-white/5 focus:ring-2 outline-none transition-all" style={{ color: 'var(--color-text-main)' }} value={password} onChange={(e) => setPassword(e.target.value)} />
+                <input type={showPassword ? "text" : "password"} required placeholder="••••••••" className="w-full p-4 pl-12 pr-12 rounded-xl border border-white/10 bg-white/5 focus:ring-2 outline-none transition-all" style={{ color: 'var(--color-text-main)' }} value={password} onChange={(e) => setPassword(e.target.value)} />
                 <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-4 top-1/2 -translate-y-1/2 text-zinc-500">
                   {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
                 </button>
               </div>
             </div>
 
-            <button type="submit" disabled={setupLoading} className="w-full relative overflow-hidden text-zinc-900 font-bold py-4 rounded-xl transition-all shadow-lg flex items-center justify-center gap-2 group/btn mt-2 hover:scale-[1.02]" style={{ background: `linear-gradient(135deg, var(--color-gradient-start) 0%, var(--color-gradient-mid) 40%, var(--color-gradient-end) 70%, var(--color-gradient-start) 100%)` }}>
+            <button type="submit" disabled={setupLoading} className="w-full relative overflow-hidden text-zinc-900 font-bold py-4 rounded-xl transition-all shadow-lg flex items-center justify-center gap-2 group/btn mt-4 hover:scale-[1.02]" style={{ background: `linear-gradient(135deg, var(--color-gradient-start) 0%, var(--color-gradient-mid) 40%, var(--color-gradient-end) 70%, var(--color-gradient-start) 100%)` }}>
                {setupLoading ? <Loader2 size={24} className="animate-spin" /> : (
                  <>
-                   <Rocket size={20} />
                    <span>Inicializar Hub</span>
                    <ChevronRight size={18} />
                  </>
                )}
             </button>
+
+            <div className="flex justify-center mt-6">
+              <button 
+                type="button"
+                onClick={() => setForceLogin(true)}
+                className="text-[10px] font-bold uppercase tracking-[0.2em] opacity-40 hover:opacity-100 transition-all flex items-center gap-2"
+                style={{ color: 'var(--color-text-muted)' }}
+              >
+                <ArrowLeft size={12} /> Ir para o Login
+              </button>
+            </div>
           </form>
         ) : !tokenError && !tokenValidating && (isLogin || inviteToken || forceLogin) && (
         <form onSubmit={handleSubmit} className="space-y-5 relative z-10">
