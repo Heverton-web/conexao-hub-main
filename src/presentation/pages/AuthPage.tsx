@@ -183,24 +183,12 @@ export const AuthPage: React.FC = () => {
           {(contextSetupRequired || manualSetup) && !forceLogin ? (
             <div className="animate-fade-in">
               <h2 className="text-3xl font-bold mb-3 tracking-tight" style={{ color: 'var(--color-text-main)' }}>Primeiro Acesso</h2>
-              <p className="text-sm font-medium leading-relaxed" style={{ color: 'var(--color-text-muted)' }}>
-                Seja bem-vindo. Crie sua conta de <span style={{ color: 'var(--color-accent)' }}>Super Administrador</span> para inicializar a plataforma.
-              </p>
-            </div>
-          ) : !isLogin && invitedRole ? (
-            <div className="animate-fade-in">
-              <h2 className="text-3xl font-bold mb-2 tracking-tight" style={{ color: 'var(--color-text-main)' }}>
-                Cadastro de {invitedRole === 'client' ? 'Clientes' : invitedRole === 'distributor' ? 'Distribuidores' : invitedRole === 'consultant' ? 'Consultores' : invitedRole === 'manager' ? 'Gestores' : 'Administradores'}
-              </h2>
-              <p className="text-sm leading-relaxed" style={{ color: 'var(--color-text-muted)' }}>
-                Acesse materiais exclusivos e acompanhe as novidades da plataforma {config.appName}.
-              </p>
             </div>
           ) : (
-            <>
-              <h2 className="text-3xl font-bold mb-3 tracking-tight" style={{ color: 'var(--color-text-main)' }}>{isLogin ? t('auth.login') : t('auth.register')}</h2>
-              <p className="text-lg font-medium bg-clip-text text-transparent animate-shimmer bg-[length:200%_100%]" style={{ backgroundImage: 'linear-gradient(90deg, var(--color-gradient-start), var(--color-gradient-mid), var(--color-gradient-end), var(--color-gradient-start))' }}>{config.appName}</p>
-            </>
+            <div className="animate-fade-in">
+              <h2 className="text-3xl font-bold mb-1 tracking-tight" style={{ color: 'var(--color-text-main)' }}>{isLogin ? 'Entrar' : 'Criar Conta'}</h2>
+              <p className="text-sm font-bold tracking-widest uppercase opacity-80" style={{ color: 'var(--color-accent)' }}>Conexão</p>
+            </div>
           )}
         </div>
 
@@ -317,15 +305,17 @@ export const AuthPage: React.FC = () => {
                )}
             </button>
 
-            {/* BOTÃO DE ESCAPE SEGURO */}
-            <button 
-              type="button"
-              onClick={() => setForceLogin(true)}
-              className="w-full text-center text-[10px] font-bold uppercase tracking-widest opacity-60 hover:opacity-100 transition-opacity py-4"
-              style={{ color: 'var(--color-text-muted)' }}
-            >
-              Já tenho uma conta? Ir para o Login
-            </button>
+            {/* BOTÃO DE ESCAPE SUBTIL */}
+            <div className="flex justify-center mt-6">
+              <button 
+                type="button"
+                onClick={() => setForceLogin(true)}
+                className="text-[10px] font-bold uppercase tracking-[0.2em] opacity-20 hover:opacity-100 transition-all"
+                style={{ color: 'var(--color-text-muted)' }}
+              >
+                Modo Admin
+              </button>
+            </div>
           </form>
         ) : !tokenError && !tokenValidating && (isLogin || inviteToken || forceLogin) && (
         <form onSubmit={handleSubmit} className="space-y-5 relative z-10">
@@ -389,29 +379,34 @@ export const AuthPage: React.FC = () => {
             </>
           }
 
-          <button type="submit" className="w-full relative overflow-hidden text-white font-bold py-4 rounded-xl transition-all shadow-lg flex items-center justify-center gap-2 group/btn mt-6 hover:scale-[1.02] active:scale-95" style={{ background: `linear-gradient(135deg, var(--color-gradient-start) 0%, var(--color-gradient-mid) 40%, var(--color-gradient-end) 70%, var(--color-gradient-start) 100%)`, boxShadow: `0 10px 25px -5px ${colorMix('var(--color-gradient-start)', 30, 'rgba(201,166,85,0.3)')}` }}>
-             <div className="absolute inset-0 bg-white/20 translate-y-full group-hover/btn:translate-y-0 transition-transform duration-300 ease-out rounded-xl"></div>
-             <span className="relative z-10 flex items-center gap-2 text-zinc-900">
-                {!isLogin && invitedRole && <UserPlus size={20} />}
+          <button 
+            type="submit" 
+            className="w-full relative overflow-hidden text-zinc-900 font-bold py-4 rounded-xl transition-all shadow-lg flex items-center justify-center gap-2 group/btn mt-6 hover:scale-[1.02] active:scale-95" 
+            style={{ 
+              background: `linear-gradient(135deg, var(--color-gradient-start) 0%, var(--color-gradient-mid) 40%, var(--color-gradient-end) 70%, var(--color-gradient-start) 100%)`,
+              boxShadow: `0 10px 25px -5px ${colorMix('var(--color-gradient-start)', 30, 'rgba(201,166,85,0.3)')}` 
+            }}
+          >
+             <span className="relative z-10 flex items-center gap-2">
                 {isLogin ? 'Entrar na Plataforma' : 'Confirmar Cadastro'}
                 <ChevronRight size={18} className="group-hover/btn:translate-x-1 transition-transform" />
              </span>
           </button>
 
           {isLogin && (
-            <button
-              type="button"
-              onClick={() => setManualSetup(true)}
-              className="w-full mt-4 text-[10px] font-bold uppercase tracking-[0.2em] text-center py-3 border border-white/5 rounded-xl hover:bg-white/5 hover:border-white/10 transition-all opacity-40 hover:opacity-100"
-              style={{ color: 'var(--color-text-muted)' }}
-            >
-              Primeiro Acesso (SuperAdmin)
-            </button>
+            <div className="mt-8 flex justify-center">
+              <button
+                type="button"
+                onClick={() => setManualSetup(true)}
+                className="text-[9px] font-bold uppercase tracking-[0.3em] opacity-10 hover:opacity-100 transition-all"
+                style={{ color: 'var(--color-text-muted)' }}
+              >
+                Primeiro Acesso
+              </button>
+            </div>
           )}
         </form>
         )}
-
-        <MockLoginCards onLogin={loginMock} isVisible={showMockCards} />
 
         {showSqlSetup && <SqlSetupModal onClose={() => setShowSqlSetup(false)} />}
     </div>
