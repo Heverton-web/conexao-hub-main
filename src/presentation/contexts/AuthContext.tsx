@@ -75,8 +75,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
     try {
       const { data, error } = await (supabase.from('profiles') as any)
-        .select('id')
-        .eq('role', 'super_admin')
+        .select('id, user_roles!inner(role)')
+        .eq('user_roles.role', 'super_admin')
         .limit(1);
       
       if (error) {

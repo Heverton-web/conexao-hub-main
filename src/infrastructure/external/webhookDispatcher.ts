@@ -153,7 +153,7 @@ export const WebhookEvents = {
       userId: data.userId,
       userRole: data.userRole,
       materialId: data.materialId,
-      points,
+      points: data.points,
     });
   },
 
@@ -162,7 +162,7 @@ export const WebhookEvents = {
       userId: data.userId,
       userRole: data.userRole,
       collectionId: data.collectionId,
-      points,
+      points: data.points,
     });
   },
 

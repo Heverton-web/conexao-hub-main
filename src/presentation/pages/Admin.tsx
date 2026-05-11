@@ -73,8 +73,13 @@ import {
   Headphones,
   Globe,
   Play,
-Power,
-  Bot } from
+  Power,
+  Bot,
+  Rocket,
+  Diamond,
+  Crown,
+  Flame,
+  Shield } from
   "lucide-react";
 import { BadgeFormModal } from "@/presentation/components/admin/BadgeFormModal";
 import { MaterialFormModal } from "@/presentation/components/hub/MaterialFormModal";
@@ -731,8 +736,8 @@ export const Admin: React.FC = () => {
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-7 gap-3 mb-6">
             {/* Total Materials */}
             <div className="p-4 rounded-xl flex items-center gap-3 shadow-sm" style={{ backgroundColor: "var(--color-surface)" }}>
-              <div className="p-2 rounded-lg" style={{ backgroundColor: "#6366f120" }}>
-                <Layers size={20} style={{ color: "#6366f1" }} />
+              <div className="p-2 rounded-lg" style={{ backgroundColor: "#0ea5e920" }}>
+                <Layers size={20} style={{ color: "#0ea5e9" }} />
               </div>
               <div>
                 <p className="text-2xl font-bold" style={{ color: "var(--color-text-main)" }}>{materials.length}</p>
@@ -741,8 +746,8 @@ export const Admin: React.FC = () => {
             </div>
             {/* Total Trails */}
             <div className="p-4 rounded-xl flex items-center gap-3 shadow-sm" style={{ backgroundColor: "var(--color-surface)" }}>
-              <div className="p-2 rounded-lg" style={{ backgroundColor: "#ec489920" }}>
-                <BookOpen size={20} style={{ color: "#ec4899" }} />
+              <div className="p-2 rounded-lg" style={{ backgroundColor: "#0284c720" }}>
+                <BookOpen size={20} style={{ color: "#0284c7" }} />
               </div>
               <div>
                 <p className="text-2xl font-bold" style={{ color: "var(--color-text-main)" }}>{collections.length}</p>
@@ -752,7 +757,7 @@ export const Admin: React.FC = () => {
             {([
               { type: "pdf" as MaterialType, icon: FileText, label: t("material.type.pdf"), color: "#ef4444" },
               { type: "image" as MaterialType, icon: ImageIcon, label: t("material.type.image"), color: "#3b82f6" },
-              { type: "video" as MaterialType, icon: Video, label: t("material.type.video"), color: "#8b5cf6" },
+              { type: "video" as MaterialType, icon: Video, label: t("material.type.video"), color: "#38bdf8" },
               { type: "audio" as MaterialType, icon: Headphones, label: t("material.type.audio"), color: "#f59e0b" },
               { type: "html" as MaterialType, icon: Globe, label: t("material.type.html"), color: "#10b981" },
             ]).map(({ type, icon: Icon, label, color }) => {
@@ -778,7 +783,7 @@ export const Admin: React.FC = () => {
           {/* Distribution by Role Cards */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
             {([
-              { role: "consultant" as Role, label: "Materiais para Consultores", icon: Users, color: "#6366f1" },
+              { role: "consultant" as Role, label: "Materiais para Consultores", icon: Users, color: "#00508f" },
               { role: "distributor" as Role, label: "Materiais para Distribuidores", icon: Users, color: "#f59e0b" },
               { role: "client" as Role, label: "Materiais para Clientes", icon: Users, color: "#10b981" },
             ] as const).map(({ role, label, icon: RoleIcon, color }) => {
@@ -787,7 +792,7 @@ export const Admin: React.FC = () => {
               const typeBreakdown = [
                 { type: "pdf" as MaterialType, icon: FileText, lbl: "PDFs", clr: "#ef4444" },
                 { type: "image" as MaterialType, icon: ImageIcon, lbl: "Imagens", clr: "#3b82f6" },
-                { type: "video" as MaterialType, icon: Video, lbl: "Vídeos", clr: "#8b5cf6" },
+                { type: "video" as MaterialType, icon: Video, lbl: "Vídeos", clr: "#38bdf8" },
                 { type: "audio" as MaterialType, icon: Headphones, lbl: "Áudios", clr: "#f59e0b" },
                 { type: "html" as MaterialType, icon: Globe, lbl: "Pág. Interativas", clr: "#10b981" },
               ];
@@ -811,7 +816,7 @@ export const Admin: React.FC = () => {
                       );
                     })}
                     <div className="flex items-center gap-2 min-w-0">
-                      <BookOpen size={14} className="shrink-0" style={{ color: "#ec4899" }} />
+                      <BookOpen size={14} className="shrink-0" style={{ color: "#0284c7" }} />
                       <span className="text-xs truncate" style={{ color: "var(--color-text-muted)" }}>Trilhas</span>
                       <span className="text-sm font-bold ml-auto shrink-0" style={{ color: "var(--color-text-main)" }}>{roleCollections.length}</span>
                     </div>
@@ -920,7 +925,7 @@ export const Admin: React.FC = () => {
                     </div>
                     <div className="flex flex-wrap gap-1">
                       {mat.allowedRoles.map((r) => {
-                        const roleColor = r === 'consultant' ? '#6366f1' : r === 'distributor' ? '#f59e0b' : r === 'client' ? '#10b981' : '#8b5cf6';
+                        const roleColor = r === 'consultant' ? '#0ea5e9' : r === 'distributor' ? '#f59e0b' : r === 'client' ? '#10b981' : '#0284c7';
                         return (
                           <span key={r} className="text-[10px] px-1.5 py-0.5 rounded font-bold" style={{ backgroundColor: `${roleColor}20`, color: roleColor }}>{t(`role.${r}`)}</span>
                         );
@@ -979,7 +984,7 @@ export const Admin: React.FC = () => {
                         <td className="p-4">
                           <div className="flex gap-1">
                             {mat.allowedRoles.map((r) => {
-                              const roleColor = r === 'consultant' ? '#6366f1' : r === 'distributor' ? '#f59e0b' : r === 'client' ? '#10b981' : '#8b5cf6';
+                              const roleColor = r === 'consultant' ? '#0ea5e9' : r === 'distributor' ? '#f59e0b' : r === 'client' ? '#10b981' : '#0284c7';
                               return (
                                 <div
                                   key={r}
@@ -1598,8 +1603,6 @@ export const Admin: React.FC = () => {
       {/* Users Tab */}
       {activeTab === "users" &&
       <div className="animate-fade-in space-y-6">
-          {/* Ranking antes da lista */}
-          <RankingBoard showToggle={true} defaultExpanded={true} />
 
           <div
           className="p-4 rounded-xl shadow-sm flex flex-col md:flex-row gap-4 items-center"
@@ -2898,7 +2901,16 @@ export const Admin: React.FC = () => {
                         boxShadow: `0 4px 12px ${badge.color}30`,
                       }}
                     >
-                      <Award size={24} style={{ color: badge.color }} />
+                      {badge.iconName === 'star' && <Star size={24} style={{ color: badge.color }} />}
+                      {badge.iconName === 'book' && <BookOpen size={24} style={{ color: badge.color }} />}
+                      {badge.iconName === 'graduation' && <Award size={24} style={{ color: badge.color }} />}
+                      {badge.iconName === 'rocket' && <Rocket size={24} style={{ color: badge.color }} />}
+                      {badge.iconName === 'trophy' && <Trophy size={24} style={{ color: badge.color }} />}
+                      {badge.iconName === 'diamond' && <Diamond size={24} style={{ color: badge.color }} />}
+                      {badge.iconName === 'crown' && <Crown size={24} style={{ color: badge.color }} />}
+                      {badge.iconName === 'flame' && <Flame size={24} style={{ color: badge.color }} />}
+                      {badge.iconName === 'shield' && <Shield size={24} style={{ color: badge.color }} />}
+                      {(!badge.iconName || badge.iconName === 'stars') && <Trophy size={24} style={{ color: badge.color }} />}
                     </div>
                     <p className="text-sm font-bold text-center" style={{ color: "var(--color-text-main)" }}>
                       {badge.name}

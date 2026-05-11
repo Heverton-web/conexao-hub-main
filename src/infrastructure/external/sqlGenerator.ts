@@ -202,7 +202,7 @@ BEGIN
     INSERT INTO public.gamification_levels (name, min_points, order_index, color) VALUES
       ('Iniciante', 0, 1, '#6b7280'),
       ('Aprendiz', 100, 2, '#3b82f6'),
-      ('Estudante', 300, 3, '#8b5cf6'),
+      ('Estudante', 300, 3, '#38bdf8'),
       ('Especialista', 600, 4, '#06b6d4'),
       ('Mestre', 1000, 5, '#10b981'),
       ('Líder', 2000, 6, '#f59e0b'),
@@ -243,6 +243,52 @@ CREATE TABLE IF NOT EXISTS public.webhooks (
 );
 
 CREATE INDEX idx_webhooks_event ON public.webhooks(event);
+
+-- ============================================
+-- TABELA: badges
+-- ============================================
+CREATE TABLE IF NOT EXISTS public.badges (
+  id text PRIMARY KEY,
+  name text NOT NULL,
+  description text,
+  icon_name text,
+  trigger_type text NOT NULL,
+  trigger_value integer NOT NULL DEFAULT 1,
+  points_reward integer NOT NULL DEFAULT 0,
+  color text DEFAULT '#c9a655',
+  created_at timestamptz NOT NULL DEFAULT now()
+);
+
+-- ============================================
+-- TABELA: user_badges
+-- ============================================
+CREATE TABLE IF NOT EXISTS public.user_badges (
+  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  user_id uuid REFERENCES public.profiles(id) ON DELETE CASCADE,
+  badge_id text REFERENCES public.badges(id) ON DELETE CASCADE,
+  earned_at timestamptz NOT NULL DEFAULT now(),
+  UNIQUE(user_id, badge_id)
+);
+
+CREATE INDEX idx_user_badges_user_id ON public.user_badges(user_id);
+
+-- Inserir badges iniciais
+DO $$
+BEGIN
+  IF NOT EXISTS (SELECT 1 FROM public.badges) THEN
+    INSERT INTO public.badges (id, name, description, icon_name, trigger_type, trigger_value, points_reward, color) VALUES
+      ('badge-1', 'Descobridor', 'Abra seu primeiro material', 'star', 'material_completed', 1, 10, '#ffd700'),
+      ('badge-2', 'Leitor Compromissado', 'Complete 10 materiais', 'book', 'material_completed', 10, 50, '#0ea5e9'),
+      ('badge-3', 'Mestre do Conhecimento', 'Complete 50 materiais', 'graduation', 'material_completed', 50, 200, '#38bdf8'),
+      ('badge-4', 'Primeiro Passo', 'Complete sua primeira trilha', 'rocket', 'collection_completed', 1, 25, '#f59e0b'),
+      ('badge-5', 'Caçador de Trilhas', 'Complete 5 trilhas', 'trophy', 'collection_completed', 5, 100, '#c9a655'),
+      ('badge-6', 'Diamante', 'Alcance 1.000 XP', 'diamond', 'points_reached', 1000, 300, '#06b6d4'),
+      ('badge-7', 'Líder', 'Fique em 1º lugar no ranking', 'crown', 'ranking_position', 1, 150, '#c9a655'),
+      ('badge-8', 'Sequência de Ouro', 'Acesse por 7 dias seguidos', 'flame', 'streak_days', 7, 50, '#ef4444'),
+      ('badge-9', 'Veterano', 'Acesse por 30 dias', 'shield', 'streak_days', 30, 150, '#10b981'),
+      ('badge-10', 'Colecionador XP', 'Complete 500 materiais', 'stars', 'material_completed', 500, 500, '#0284c7');
+  END IF;
+END $$;
 
 -- ============================================
 -- TABELA: webhook_logs

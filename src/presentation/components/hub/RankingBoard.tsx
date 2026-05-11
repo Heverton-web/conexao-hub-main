@@ -50,9 +50,9 @@ const getRoleBadgeColor = (role: Role): string => {
   switch (role) {
     case 'client': return '#10b981';
     case 'distributor': return '#f59e0b';
-    case 'consultant': return '#6366f1';
-    case 'manager': return '#8b5cf6';
-    case 'super_admin': return '#ec4899';
+    case 'consultant': return '#0ea5e9';
+    case 'manager': return '#0284c7';
+    case 'super_admin': return '#c9a655';
     default: return '#6b7280';
   }
 };

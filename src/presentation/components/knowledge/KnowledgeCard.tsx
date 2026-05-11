@@ -33,7 +33,7 @@ export const KnowledgeCard: React.FC<KnowledgeCardProps> = ({
       className="group relative p-6 rounded-[2rem] bg-zinc-900/40 border border-zinc-800/50 hover:border-blue-500/30 transition-all duration-500 backdrop-blur-md flex flex-col h-full cursor-pointer overflow-hidden"
     >
       {/* 🔮 Efeito de Vidro Líquido no Hover */}
-      <div className="absolute inset-0 bg-gradient-to-br from-blue-500/10 via-transparent to-purple-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
+      <div className="absolute inset-0 bg-gradient-to-br from-blue-500/10 via-transparent to-blue-400/5 opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
       
       <div className="flex items-start justify-between mb-4">
         <div className="p-3 rounded-xl bg-zinc-800 text-blue-400 group-hover:bg-blue-500 group-hover:text-white transition-colors">

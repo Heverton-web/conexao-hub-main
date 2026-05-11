@@ -136,7 +136,7 @@ export const ManualViewer: React.FC<ManualViewerProps> = ({
       if (!inline && match) {
         return (
           <div className="relative group my-8">
-            <div className="absolute -inset-px bg-gradient-to-r from-blue-500/20 to-purple-500/20 rounded-xl blur-sm opacity-0 group-hover:opacity-100 transition duration-500" />
+            <div className="absolute -inset-px bg-gradient-to-r from-blue-500/20 to-blue-400/20 rounded-xl blur-sm opacity-0 group-hover:opacity-100 transition duration-500" />
             <div className="relative rounded-xl overflow-hidden border border-zinc-800 bg-zinc-950/50">
               <div className="flex items-center justify-between px-4 py-2 bg-zinc-900/50 border-b border-zinc-800">
                 <span className="text-[10px] font-bold uppercase tracking-widest text-zinc-500">

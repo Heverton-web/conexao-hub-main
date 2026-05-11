@@ -36,6 +36,11 @@ import {
   ChevronRight,
   ChevronUp,
   ChevronDown,
+  Rocket,
+  Diamond,
+  Crown,
+  Flame,
+  Shield
 } from "lucide-react";
 import {
   AreaChart,
@@ -245,8 +250,8 @@ export const ManagerDashboard: React.FC = () => {
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-7 gap-3 mb-6">
             {/* Total Materials */}
             <div className="p-4 rounded-xl flex items-center gap-3 shadow-sm" style={{ backgroundColor: "var(--color-surface)" }}>
-              <div className="p-2 rounded-lg" style={{ backgroundColor: "#6366f120" }}>
-                <Layers size={20} style={{ color: "#6366f1" }} />
+              <div className="p-2 rounded-lg" style={{ backgroundColor: "#0ea5e920" }}>
+                <Layers size={20} style={{ color: "#0ea5e9" }} />
               </div>
               <div>
                 <p className="text-2xl font-bold" style={{ color: "var(--color-text-main)" }}>{materials.length}</p>
@@ -255,8 +260,8 @@ export const ManagerDashboard: React.FC = () => {
             </div>
             {/* Total Trails */}
             <div className="p-4 rounded-xl flex items-center gap-3 shadow-sm" style={{ backgroundColor: "var(--color-surface)" }}>
-              <div className="p-2 rounded-lg" style={{ backgroundColor: "#ec489920" }}>
-                <BookOpen size={20} style={{ color: "#ec4899" }} />
+              <div className="p-2 rounded-lg" style={{ backgroundColor: "#0284c720" }}>
+                <BookOpen size={20} style={{ color: "#0284c7" }} />
               </div>
               <div>
                 <p className="text-2xl font-bold" style={{ color: "var(--color-text-main)" }}>{collections.length}</p>
@@ -266,7 +271,7 @@ export const ManagerDashboard: React.FC = () => {
             {([
               { type: "pdf" as MaterialType, icon: FileText, label: t("material.type.pdf"), color: "#ef4444" },
               { type: "image" as MaterialType, icon: ImageIcon, label: t("material.type.image"), color: "#3b82f6" },
-              { type: "video" as MaterialType, icon: Video, label: t("material.type.video"), color: "#8b5cf6" },
+              { type: "video" as MaterialType, icon: Video, label: t("material.type.video"), color: "#38bdf8" },
               { type: "audio" as MaterialType, icon: Headphones, label: t("material.type.audio"), color: "#f59e0b" },
               { type: "html" as MaterialType, icon: Globe, label: t("material.type.html"), color: "#10b981" },
             ]).map(({ type, icon: Icon, label, color }) => {
@@ -292,7 +297,7 @@ export const ManagerDashboard: React.FC = () => {
           {/* Distribution by Role Cards */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
             {([
-              { role: "consultant" as Role, label: "Materiais para Consultores", icon: Users, color: "#6366f1" },
+              { role: "consultant" as Role, label: "Materiais para Consultores", icon: Users, color: "#0ea5e9" },
               { role: "distributor" as Role, label: "Materiais para Distribuidores", icon: Users, color: "#f59e0b" },
               { role: "client" as Role, label: "Materiais para Clientes", icon: Users, color: "#10b981" },
             ] as const).map(({ role, label, icon: RoleIcon, color }) => {
@@ -301,7 +306,7 @@ export const ManagerDashboard: React.FC = () => {
               const typeBreakdown = [
                 { type: "pdf" as MaterialType, icon: FileText, lbl: "PDFs", clr: "#ef4444" },
                 { type: "image" as MaterialType, icon: ImageIcon, lbl: "Imagens", clr: "#3b82f6" },
-                { type: "video" as MaterialType, icon: Video, lbl: "Vídeos", clr: "#8b5cf6" },
+                { type: "video" as MaterialType, icon: Video, lbl: "Vídeos", clr: "#38bdf8" },
                 { type: "audio" as MaterialType, icon: Headphones, lbl: "Áudios", clr: "#f59e0b" },
                 { type: "html" as MaterialType, icon: Globe, lbl: "Pág. Interativas", clr: "#10b981" },
               ];
@@ -325,7 +330,7 @@ export const ManagerDashboard: React.FC = () => {
                       );
                     })}
                     <div className="flex items-center gap-2 min-w-0">
-                      <BookOpen size={14} className="shrink-0" style={{ color: "#ec4899" }} />
+                      <BookOpen size={14} className="shrink-0" style={{ color: "#0284c7" }} />
                       <span className="text-xs truncate" style={{ color: "var(--color-text-muted)" }}>Trilhas</span>
                       <span className="text-sm font-bold ml-auto shrink-0" style={{ color: "var(--color-text-main)" }}>{roleCollections.length}</span>
                     </div>
@@ -360,7 +365,6 @@ export const ManagerDashboard: React.FC = () => {
               <option value="audio">{t("material.type.audio")}</option>
               <option value="html">{t("material.type.html")}</option>
             </select>
-           </div>
             <button
               type="button"
               onClick={() => setMaterialSortOrder(prev => prev === "asc" ? "desc" : "asc")}
@@ -371,6 +375,7 @@ export const ManagerDashboard: React.FC = () => {
               {materialSortOrder === "asc" ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
               {materialSortOrder === "asc" ? "A→Z" : "Z→A"}
             </button>
+           </div>
 
           {loading ? (
             <SkeletonTable />
@@ -870,7 +875,6 @@ export const ManagerDashboard: React.FC = () => {
                 </div>
               </div>
 
-              {/* Ranking de XP por Role */}
               {/* Trail Metrics */}
               <div>
                 <h3 className="text-sm font-bold uppercase tracking-wider mb-4 flex items-center gap-2" style={{ color: "var(--color-text-muted)" }}>
@@ -925,7 +929,7 @@ export const ManagerDashboard: React.FC = () => {
                               <p className="text-[10px] font-medium" style={{ color: "var(--color-text-muted)" }}>Usuários</p>
                             </div>
                             <div className="text-center p-2 rounded-lg" style={{ backgroundColor: "var(--color-bg)" }}>
-                              <p className="text-lg font-bold" style={{ color: "var(--color-warning)" }}>{inProgress}</p>
+                              <p className="text-lg font-bold" style={{ color: "var(--color-text-main)" }}>{inProgress}</p>
                               <p className="text-[10px] font-medium" style={{ color: "var(--color-text-muted)" }}>Em progresso</p>
                             </div>
                             <div className="text-center p-2 rounded-lg" style={{ backgroundColor: "var(--color-bg)" }}>
@@ -1002,7 +1006,16 @@ export const ManagerDashboard: React.FC = () => {
                         className="w-12 h-12 rounded-full flex items-center justify-center"
                         style={{ backgroundColor: `${badge.color}20`, border: `2px solid ${badge.color}` }}
                       >
-                        <Award size={20} style={{ color: badge.color }} />
+                        {badge.iconName === 'star' && <Star size={20} style={{ color: badge.color }} />}
+                        {badge.iconName === 'book' && <BookOpen size={20} style={{ color: badge.color }} />}
+                        {badge.iconName === 'graduation' && <Award size={20} style={{ color: badge.color }} />}
+                        {badge.iconName === 'rocket' && <Rocket size={20} style={{ color: badge.color }} />}
+                        {badge.iconName === 'trophy' && <Trophy size={20} style={{ color: badge.color }} />}
+                        {badge.iconName === 'diamond' && <Diamond size={20} style={{ color: badge.color }} />}
+                        {badge.iconName === 'crown' && <Crown size={20} style={{ color: badge.color }} />}
+                        {badge.iconName === 'flame' && <Flame size={20} style={{ color: badge.color }} />}
+                        {badge.iconName === 'shield' && <Shield size={20} style={{ color: badge.color }} />}
+                        {(!badge.iconName || badge.iconName === 'stars') && <Trophy size={20} style={{ color: badge.color }} />}
                       </div>
                       <div className="flex gap-2">
                         <button

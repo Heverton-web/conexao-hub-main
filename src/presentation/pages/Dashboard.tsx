@@ -21,6 +21,7 @@ import { ChatWidget } from '@/presentation/components/hub/ChatWidget';
 import { BadgeDisplay, BadgeGrid } from '@/presentation/components/hub/BadgeDisplay';
 import { BadgeNotification, useBadgeNotification } from '@/presentation/components/hub/BadgeNotification';
 import { colorMix } from '@/shared/utils/utils';
+import { RankingBoard } from '@/presentation/components/hub/RankingBoard';
 
 export const Dashboard: React.FC = () => {
   const { user, addUserPoints } = useAuth();
@@ -38,7 +39,7 @@ export const Dashboard: React.FC = () => {
   const [filterType, setFilterType] = useState<MaterialType | 'all'>('all');
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc');
   const [filterTag, setFilterTag] = useState<string>('');
-  const [activeView, setActiveView] = useState<'materials' | 'collections' | 'collection-detail'>('materials');
+  const [activeView, setActiveView] = useState<'materials' | 'collections' | 'collection-detail' | 'ranking'>('materials');
   const [selectedCollection, setSelectedCollection] = useState<Collection | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [celebration, setCelebration] = useState<{ trailName: string; bonusXp: number } | null>(null);
@@ -319,9 +320,17 @@ if (mat.points > 0) {
             >
               <BookOpen size={14} /> Trilhas
             </button>
+            <button
+              onClick={() => setActiveView('ranking')}
+              className={`flex-1 flex items-center justify-center gap-2 py-2.5 text-xs font-bold transition-all rounded-lg ${activeView === 'ranking' ? 'liquid-glass-gold' : ''}`}
+              style={activeView === 'ranking' ? { color: 'var(--color-accent)' } : { color: 'var(--color-text-muted)' }}
+            >
+              <Trophy size={14} /> Ranking
+            </button>
           </div>
 
           {/* Material filters (only in materials view) */}
+
           {activeView === 'materials' && (
             <div className="backdrop-blur-xl border border-white/10 p-2 sm:p-3 rounded-3xl flex flex-row md:flex-col overflow-x-auto md:overflow-visible gap-1.5 sm:gap-2 no-scrollbar shadow-xl shadow-black/5" style={{ backgroundColor: colorMix('var(--color-surface)', 30, 'rgba(30,41,59,0.3)') }}>
               <div className="hidden md:flex items-center justify-between px-4 py-3 mb-2">
@@ -382,6 +391,12 @@ if (mat.points > 0) {
 
       {/* Main content */}
       <div className="flex-1 min-w-0 z-0">
+        {/* Ranking View */}
+        {activeView === 'ranking' && (
+          <div className="animate-fade-in space-y-6">
+            <RankingBoard currentUserId={user?.id} showToggle={false} defaultExpanded={true} />
+          </div>
+        )}
 
         {/* ─── Collection Detail View ─── */}
         {activeView === 'collection-detail' && selectedCollection && (() => {

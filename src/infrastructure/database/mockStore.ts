@@ -214,15 +214,15 @@ class InMemoryStore {
   private seedBadges() {
     const badges: MockRow[] = [
       { id: 'badge-1', name: 'Descobridor', description: 'Abra seu primeiro material', icon_name: 'star', trigger_type: 'material_completed', trigger_value: 1, points_reward: 10, color: '#ffd700', created_at: new Date().toISOString() },
-      { id: 'badge-2', name: 'Leitor Compromissado', description: 'Complete 10 materiais', icon_name: 'book', trigger_type: 'material_completed', trigger_value: 10, points_reward: 50, color: '#6366f1', created_at: new Date().toISOString() },
-      { id: 'badge-3', name: 'Mestre do Conhecimento', description: 'Complete 50 materiais', icon_name: 'graduation', trigger_type: 'material_completed', trigger_value: 50, points_reward: 200, color: '#8b5cf6', created_at: new Date().toISOString() },
+      { id: 'badge-2', name: 'Leitor Compromissado', description: 'Complete 10 materiais', icon_name: 'book', trigger_type: 'material_completed', trigger_value: 10, points_reward: 50, color: '#0ea5e9', created_at: new Date().toISOString() },
+      { id: 'badge-3', name: 'Mestre do Conhecimento', description: 'Complete 50 materiais', icon_name: 'graduation', trigger_type: 'material_completed', trigger_value: 50, points_reward: 200, color: '#38bdf8', created_at: new Date().toISOString() },
       { id: 'badge-4', name: 'Primeiro Passo', description: 'Complete sua primeira trilha', icon_name: 'rocket', trigger_type: 'collection_completed', trigger_value: 1, points_reward: 25, color: '#f59e0b', created_at: new Date().toISOString() },
       { id: 'badge-5', name: 'Caçador de Trilhas', description: 'Complete 5 trilhas', icon_name: 'trophy', trigger_type: 'collection_completed', trigger_value: 5, points_reward: 100, color: '#c9a655', created_at: new Date().toISOString() },
       { id: 'badge-6', name: 'Diamante', description: 'Alcance 1.000 XP', icon_name: 'diamond', trigger_type: 'points_reached', trigger_value: 1000, points_reward: 300, color: '#06b6d4', created_at: new Date().toISOString() },
       { id: 'badge-7', name: 'Líder', description: 'Fique em 1º lugar no ranking', icon_name: 'crown', trigger_type: 'ranking_position', trigger_value: 1, points_reward: 150, color: '#c9a655', created_at: new Date().toISOString() },
       { id: 'badge-8', name: 'Sequência de Ouro', description: 'Acesse por 7 dias seguidos', icon_name: 'flame', trigger_type: 'streak_days', trigger_value: 7, points_reward: 50, color: '#ef4444', created_at: new Date().toISOString() },
       { id: 'badge-9', name: 'Veterano', description: 'Acesse por 30 dias', icon_name: 'shield', trigger_type: 'streak_days', trigger_value: 30, points_reward: 150, color: '#10b981', created_at: new Date().toISOString() },
-      { id: 'badge-10', name: 'Colecionador XP', description: 'Complete 500 materiais', icon_name: 'stars', trigger_type: 'material_completed', trigger_value: 500, points_reward: 500, color: '#ec4899', created_at: new Date().toISOString() },
+      { id: 'badge-10', name: 'Colecionador XP', description: 'Complete 500 materiais', icon_name: 'stars', trigger_type: 'material_completed', trigger_value: 500, points_reward: 500, color: '#0284c7', created_at: new Date().toISOString() },
     ];
     this.data.set('badges', badges);
     this.counters.set('badges', 10);

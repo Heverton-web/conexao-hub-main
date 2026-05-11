@@ -141,9 +141,9 @@ export const ViewerModal: React.FC<ViewerModalProps> = ({ material, language, on
               return (
                 <div className="w-full h-full flex flex-col items-center justify-center max-w-2xl mx-auto p-8 gap-8">
                   <div className="relative">
-                    <div className="absolute inset-0 bg-purple-500/20 blur-3xl rounded-full"></div>
+                    <div className="absolute inset-0 bg-blue-500/20 blur-3xl rounded-full"></div>
                     <div className="relative w-32 h-32 rounded-full bg-white/5 border border-white/10 flex items-center justify-center backdrop-blur-sm">
-                      <Headphones size={64} className="text-purple-400" />
+                      <Headphones size={64} className="text-blue-400" />
                     </div>
                   </div>
                   <h3 className="text-xl font-bold text-white text-center">{displayTitle}</h3>
@@ -161,7 +161,7 @@ export const ViewerModal: React.FC<ViewerModalProps> = ({ material, language, on
             return (
               <div className="w-full h-full flex flex-col items-center justify-center max-w-2xl mx-auto p-8 gap-8">
                 <div className="relative">
-                  <div className="absolute inset-0 bg-purple-500/20 blur-3xl rounded-full"></div>
+                  <div className="absolute inset-0 bg-blue-500/20 blur-3xl rounded-full"></div>
                   <div className="relative w-32 h-32 rounded-full bg-white/5 border border-white/10 flex items-center justify-center backdrop-blur-sm">
                     
                   </div>

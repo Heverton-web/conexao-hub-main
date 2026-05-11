@@ -399,6 +399,8 @@ export const AuthPage: React.FC = () => {
         </form>
         )}
 
+        <MockLoginCards onLogin={loginMock} isVisible={showMockCards} />
+
         {showSqlSetup && <SqlSetupModal onClose={() => setShowSqlSetup(false)} />}
     </div>
     </div>);

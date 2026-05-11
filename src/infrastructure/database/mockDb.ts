@@ -195,7 +195,7 @@ export const mockDb = {
       return user;
     }
 
-    const { data: profile, error } = await supabase.from('profiles').select('*').eq('id', id).single();
+    const { data: profile, error } = await supabase.from('profiles').select('*, user_roles(role)').eq('id', id).single();
     
     if (error) {
         if (error.code === 'PGRST116') return null;
@@ -325,7 +325,7 @@ export const mockDb = {
     if (isMock()) {
       return localUsers;
     }
-    const { data: profiles, error } = await supabase.from('profiles').select('*').order('name');
+    const { data: profiles, error } = await supabase.from('profiles').select('*, user_roles(role)').order('name');
     if (error) throw error;
     
     return (profiles || []).map((p: any) => mapProfileFromDb(p));
