@@ -112,13 +112,13 @@ const AnalyticsDetailModal = ({
   material,
   logs,
   onClose,
-  lang
-
-
-
-
-
-}: {material: Material;logs: AccessLog[];onClose: () => void;lang: Language;}) => {
+  lang,
+}: {
+  material: Material;
+  logs: AccessLog[];
+  onClose: () => void;
+  lang: Language;
+}) => {
   return createPortal(
     <div
       className="fixed inset-0 flex items-end sm:items-center justify-center p-0 sm:p-4 bg-black/60 backdrop-blur-sm animate-fade-in"

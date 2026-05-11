@@ -54,12 +54,17 @@ import {
 } from "recharts";
 import { SkeletonTable } from "@/presentation/components/hub/SkeletonTable";
 import { RankingBoard } from "@/presentation/components/hub/RankingBoard";
+import { BadgeFormModal } from "@/presentation/components/admin/BadgeFormModal";
+import { Badge } from "@/shared/types/types";
 
 export const ManagerDashboard: React.FC = () => {
   const { t, language } = useLanguage();
   const { user } = useAuth();
 
-  const [activeTab, setActiveTab] = useState<"materials" | "users" | "collections" | "analytics">("materials");
+  const [activeTab, setActiveTab] = useState<"materials" | "users" | "collections" | "analytics" | "badges">("materials");
+  const [badges, setBadges] = useState<Badge[]>([]);
+  const [isBadgeFormOpen, setIsBadgeFormOpen] = useState(false);
+  const [editingBadge, setEditingBadge] = useState<Badge | null>(null);
   const [materials, setMaterials] = useState<Material[]>([]);
   const [users, setUsers] = useState<UserProfile[]>([]);
   const [collections, setCollections] = useState<Collection[]>([]);
@@ -106,6 +111,9 @@ export const ManagerDashboard: React.FC = () => {
         setMaterials(mats);
         setCollectionProgress(colProgress);
         setCollections(cols);
+      } else if (activeTab === "badges") {
+        const b = await mockDb.getBadges();
+        setBadges(b);
       }
     } catch (e) {
       console.error(e);
@@ -226,6 +234,7 @@ export const ManagerDashboard: React.FC = () => {
           {renderTabButton("users", t("tab.users"), Users)}
           {renderTabButton("collections", "Trilhas", BookOpen)}
           {renderTabButton("analytics", t("tab.analytics"), BarChart2)}
+          {renderTabButton("badges", "Badges", Award)}
         </div>
       </div>
 
@@ -943,6 +952,90 @@ export const ManagerDashboard: React.FC = () => {
             </div>
           )}
         </div>
+      )}
+
+      {/* ===== BADGES TAB ===== */}
+      {activeTab === "badges" && (
+        <div className="animate-fade-in space-y-6">
+          <div className="flex justify-between items-center">
+            <div>
+              <h3 className="text-lg font-bold" style={{ color: "var(--color-text-main)" }}>Conquistas da Plataforma</h3>
+              <p className="text-sm" style={{ color: "var(--color-text-muted)" }}>
+                Badges que os usuários podem desbloquear ao completar metas.
+              </p>
+            </div>
+            <button
+              onClick={() => { setEditingBadge(null); setIsBadgeFormOpen(true); }}
+              className="liquid-glass-gold px-4 py-2 rounded-lg flex items-center gap-2 font-medium text-sm"
+              style={{ color: "var(--color-accent)" }}
+            >
+              <Award size={16} /> Novo Badge
+            </button>
+          </div>
+
+          {loading ? (
+            <SkeletonTable />
+          ) : badges.length === 0 ? (
+            <div className="flex flex-col items-center justify-center py-16 rounded-xl" style={{ backgroundColor: "var(--color-surface)", color: "var(--color-text-muted)" }}>
+              <Award size={40} className="mb-4 opacity-30" />
+              <p>Nenhum badge criado ainda.</p>
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+              {badges.map((badge) => {
+                const triggerLabels: Record<string, string> = {
+                  material_completed: "Materiais completados",
+                  collection_completed: "Trilhas completas",
+                  points_reached: "XP atingido",
+                  streak_days: "Dias de sequência",
+                  ranking_position: "Posição no ranking",
+                  login_count: "Número de logins",
+                };
+                return (
+                  <div
+                    key={badge.id}
+                    className="p-5 rounded-xl space-y-3"
+                    style={{ backgroundColor: "var(--color-surface)", border: "1px solid var(--color-border)" }}
+                  >
+                    <div className="flex items-start justify-between">
+                      <div
+                        className="w-12 h-12 rounded-full flex items-center justify-center"
+                        style={{ backgroundColor: `${badge.color}20`, border: `2px solid ${badge.color}` }}
+                      >
+                        <Award size={20} style={{ color: badge.color }} />
+                      </div>
+                      <div className="flex gap-2">
+                        <button
+                          onClick={() => { setEditingBadge(badge); setIsBadgeFormOpen(true); }}
+                          className="p-2 rounded-lg"
+                          style={{ backgroundColor: "var(--color-bg)", color: "var(--color-text-muted)" }}
+                        >
+                          <Star size={14} />
+                        </button>
+                      </div>
+                    </div>
+                    <div>
+                      <p className="font-bold" style={{ color: "var(--color-text-main)" }}>{badge.name}</p>
+                      <p className="text-xs mt-1" style={{ color: "var(--color-text-muted)" }}>{badge.description}</p>
+                    </div>
+                    <div className="flex items-center justify-between text-xs" style={{ color: "var(--color-text-muted)" }}>
+                      <span>{triggerLabels[badge.triggerType] || badge.triggerType}: {badge.triggerValue}</span>
+                      <span style={{ color: "var(--color-accent)" }}>+{badge.pointsReward} XP</span>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          )}
+        </div>
+      )}
+
+      {isBadgeFormOpen && (
+        <BadgeFormModal
+          badge={editingBadge}
+          onClose={() => { setIsBadgeFormOpen(false); setEditingBadge(null); }}
+          onSave={() => { setIsBadgeFormOpen(false); setEditingBadge(null); loadData(); }}
+        />
       )}
     </div>
   );
