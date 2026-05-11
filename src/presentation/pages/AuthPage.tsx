@@ -304,18 +304,6 @@ export const AuthPage: React.FC = () => {
                  </>
                )}
             </button>
-
-            {/* BOTÃO DE ESCAPE SUBTIL */}
-            <div className="flex justify-center mt-6">
-              <button 
-                type="button"
-                onClick={() => setForceLogin(true)}
-                className="text-[10px] font-bold uppercase tracking-[0.2em] opacity-20 hover:opacity-100 transition-all"
-                style={{ color: 'var(--color-text-muted)' }}
-              >
-                Modo Admin
-              </button>
-            </div>
           </form>
         ) : !tokenError && !tokenValidating && (isLogin || inviteToken || forceLogin) && (
         <form onSubmit={handleSubmit} className="space-y-5 relative z-10">
