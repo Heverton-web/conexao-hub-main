@@ -13,7 +13,8 @@ import { DEFAULT_DARK } from '@/infrastructure/config/themeDefaults';
 import { supabase } from '@/infrastructure/database/supabaseClient';
 
 export const AuthPage: React.FC = () => {
-  const { login, register, loginMock, isDbMissing, isSetupRequired } = useAuth();
+  const [forceLogin, setForceLogin] = useState(false);
+  const { login, register, loginMock, isDbMissing, isSetupRequired: contextSetupRequired } = useAuth();
   const { t } = useLanguage();
   const { config } = useBrand();
   
@@ -179,7 +180,7 @@ export const AuthPage: React.FC = () => {
         {renderLogo()}
 
         <div className="text-center mb-8 relative z-10">
-          {(isSetupRequired || manualSetup) ? (
+          {(contextSetupRequired || manualSetup) && !forceLogin ? (
             <div className="animate-fade-in">
               <h2 className="text-3xl font-bold mb-3 tracking-tight" style={{ color: 'var(--color-text-main)' }}>Primeiro Acesso</h2>
               <p className="text-sm font-medium leading-relaxed" style={{ color: 'var(--color-text-muted)' }}>
@@ -269,9 +270,9 @@ export const AuthPage: React.FC = () => {
               <p className="text-sm text-zinc-400">Administrador configurado. Redirecionando...</p>
             </div>
           </div>
-        ) : (isSetupRequired || manualSetup) ? (
+        ) : (contextSetupRequired || manualSetup) && !forceLogin ? (
           <form onSubmit={handleFirstAccess} className="space-y-5 relative z-10">
-            {(manualSetup && !isSetupRequired) && (
+            {(manualSetup && !contextSetupRequired) && (
               <button 
                 type="button"
                 onClick={() => setManualSetup(false)}
@@ -306,7 +307,7 @@ export const AuthPage: React.FC = () => {
               </div>
             </div>
 
-            <button type="submit" disabled={setupLoading} className="w-full relative overflow-hidden text-zinc-900 font-bold py-4 rounded-xl transition-all shadow-lg flex items-center justify-center gap-2 group/btn mt-6 hover:scale-[1.02]" style={{ background: `linear-gradient(135deg, var(--color-gradient-start) 0%, var(--color-gradient-mid) 40%, var(--color-gradient-end) 70%, var(--color-gradient-start) 100%)` }}>
+            <button type="submit" disabled={setupLoading} className="w-full relative overflow-hidden text-zinc-900 font-bold py-4 rounded-xl transition-all shadow-lg flex items-center justify-center gap-2 group/btn mt-2 hover:scale-[1.02]" style={{ background: `linear-gradient(135deg, var(--color-gradient-start) 0%, var(--color-gradient-mid) 40%, var(--color-gradient-end) 70%, var(--color-gradient-start) 100%)` }}>
                {setupLoading ? <Loader2 size={24} className="animate-spin" /> : (
                  <>
                    <Rocket size={20} />
@@ -315,8 +316,18 @@ export const AuthPage: React.FC = () => {
                  </>
                )}
             </button>
+
+            {/* BOTÃO DE ESCAPE SEGURO */}
+            <button 
+              type="button"
+              onClick={() => setForceLogin(true)}
+              className="w-full text-center text-[10px] font-bold uppercase tracking-widest opacity-60 hover:opacity-100 transition-opacity py-4"
+              style={{ color: 'var(--color-text-muted)' }}
+            >
+              Já tenho uma conta? Ir para o Login
+            </button>
           </form>
-        ) : !tokenError && !tokenValidating && (isLogin || inviteToken) && (
+        ) : !tokenError && !tokenValidating && (isLogin || inviteToken || forceLogin) && (
         <form onSubmit={handleSubmit} className="space-y-5 relative z-10">
           {!isLogin &&
           <div className="group">
